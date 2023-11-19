@@ -1,0 +1,180 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, width=6.3in, left=1.3in, right=1.3in, height=9.2in, top=1.1in]{geometry}
+\usepackage{amsfonts,amsmath,amssymb,amsthm}
+\usepackage[none]{hyphenat}
+\usepackage{fancyhdr}
+\usepackage[nottoc,notlot,notlof]{tocbibind}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage[table]{xcolor}
+\fancyfoot[R]{\thepage}
+\usepackage{listings}
+\usepackage{ctable}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\usepackage[title, titletoc]{appendix}
+\usepackage{array}
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mylilas}{RGB}{170,55,241}
+\definecolor{mygrey}{RGB}{123,123,123}
+
+
+\newcommand{\einsch}{\,\rule[-5pt]{0.4pt}{15pt}\,{}}
+\parindent 0ex
+\renewcommand{\baselinestretch}{1.5}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\renewcommand{\labelenumi}{\em{(\roman{enumi})}}
+\renewcommand{\labelenumii}{\em{(\alph{enumii})}}
+\captionsetup[figure]{skip=0pt}
+
+
+\begin{document}
+	\begin{titlepage}
+		
+		
+		
+		\begin{center}
+			\normalsize{Ludwig-Maximilians-Universität München \\
+				Mathematisches Institut}\\[15ex]
+			
+			\LARGE{Master's Thesis}\\[1.2ex]	
+			\LARGE{\textbf{Default Forward Rate Models for the Valuation of Loans including Behavioral Aspects}} \\[2.5ex]
+			\Large{\textit{Markus Parhofer}}\\[9ex]
+		\end{center}
+		
+		
+		\begin{center}
+			\includegraphics[width=1.8in]{siegel}\\[13ex]
+		\end{center}
+		
+		\begin{center}
+			\normalsize{}
+			Under supervision of\\
+			Prof. Dr. Christian Fries\\
+			\today\
+			\\
+		\end{center}
+		
+	
+	
+	
+\end{titlepage}
+
+\tableofcontents
+\thispagestyle{empty}
+\clearpage
+
+
+	
+	
+	% ------------------------------Content------------------------
+	
+	
+	% ----------- Intro -----------
+	
+	
+	
+	\section{Introduction}
+	\subsection{Motivation}
+	\subsection{Aim of the thesis}
+	
+	
+	
+	
+	% ------ Defaultable LMM ------
+	
+	
+	
+	\pagebreak
+	\section{Defaultable LIBOR Market Models}
+	In this section we will introduce defaultable LIBOR market models that we can use to value credits and credit options.\\
+	Our main source for this section is the article "Defaultable Discrete Forward Rate Model with Covariance Structure guaranteeing Positive Credit Spreads" authored by Christian Fries \cite{FriesDLMM}.\\
+
+	\subsection{The Defaultable Forward Rate}
+		We remain in the same setting as in the non-defaultable model, where we have a LIBOR tenor discretization \((T_i)_{i\in\{0, 1, ..., n\}}\) and a set of (non-defaultable) zero coupon bonds \((P(t;T_i))_{i\in\{0, 1, ..., n\}}\). Hence we can define the same products and apply the same valuation formulas.\\
+		We extend the model by defining an additional set of zero coupon bonds which are defaultable.
+		\((P^d(t;T_i))_{i\in\{0, ..., n\}}\).\\
+		Note here, that by construction we must still use the riskless bonds for the calculation of the Numeraire, as one can not use a risky asset as numeraire.
+		Furthermore we will - for now - not consider recovery rates, i.e. we assume that a party is either able to pay all or nothing.
+		We will now introduce the concept of default and defaultable zero coupon bonds.
+	\begin{definition}
+		The \emph{default time} is a stopping time \(\tau(\omega)\) on the Filtration \((\mathcal{F}_t)_{t\in \mathbb{R}^+}\).\\
+		The \emph{default indicator} \(J(t)\) is the indicator process over the default time:
+		\[J(t) := \mathbf{1}_{\{\tau < t\}}\]
+	\end{definition}
+	\begin{definition}
+		% TODO: Stimmt das wirklich? ein Default Process ist eher ein sich anbahnendes Ereignis?
+		The \emph{Defaultable Zero Coupon Bond} with price process \[P^d(t; T_i)\] at time \(t \in \left[0, T\right]\) is a traded asset that pays \(1 - J(T_i)\) at maturity  \(T_i \in \{T_0, ..., T_n\}\).\\
+		Hence it pays 1 if the default has not happened until maturity. 
+	\end{definition}
+	It is easy to see, that if default occurs, the price of a defaultable zero coupon bond jumps to zero. This means that the price process can be discontinuous at default events. This gives notion to the definition of a zero coupon bond conditional on pre-default.
+	\begin{definition}
+		The \emph{Defaultable Zero Coupon Bond conditional pre-default} is a continuous Itô-stochastic process \(P^{d,*}(t; T)\) at time \(t \in \left[0, T\right]\) with maturity \(T \in \mathbb{R}\) such that 
+		\[P^{d}(\omega, t; T_i) = P^{d,*}(\omega, t; T_i) \quad \forall\omega \in A_t,\]
+		where \(A_t := \{\omega \in \Omega \; | \; \tau(\omega) > t\}\in \mathcal{F}_t\) is the set of all states where default has not happened at time \(t\) and \(T_i \in \{T_0, ... T_n\}\).
+	\end{definition}
+	\begin{definition}
+		The \emph{simple Defaultable Forward Rate} is the rate gained from \(P^{d,*}(t; T)\) by the same concept as in a non-defaultable model:
+		\[L^{d}_i(t) := L^{d}(t; T_i, T_{i+1}) = \left( \frac{P^{d,*}(t; T_i)}{P^{d,*}(t; T_{i+1})} - 1\right) \left( T_{i+1} - T_i\right),\]
+		where \(T_i \in \{T_0, ... T_n\}\).
+	\end{definition}
+	The simple Defaultable Forward Rate is the rate at which one can lend money to a defaultable party (for the time period \(T_i\) to \(T_{i+1}\)) at the risk of default, if the defaultable party is not in default at the evaluation time \(t\) \color{red}[Add source]\color{black} % TODO: add a source for this statement.
+	.
+	\subsection{Covariance Structures Guaranteeing positive spread}
+	
+	
+	
+	
+	% -------- Pricing of credits with optionalities
+	
+	
+	\pagebreak
+	\section{Credit and Credit Option Pricing}
+	\subsection{General Credit Pricing}
+	\subsection{Pricing Credit Options}
+	
+	
+	
+	% -------- Behavioral Aspects
+	
+	
+	\pagebreak
+	\section{Introducing Behavioral Aspects}
+	\subsection{General Credit Pricing}
+	\subsection{Pricing Credit Options}
+	
+	\pagebreak
+	\begin{thebibliography}{}
+		
+		\bibitem{FriesDLMM}
+		Fries, Christian P..
+		February 22, 2022. 
+		\textit{Defaultable Discrete Forward Rate Model with Covariance Structure guaranteeing Positive Credit Spreads} 
+		Available at SSRN: \texttt{<https://ssrn.com/abstract=3667878>} or \texttt{<http://dx.doi.org/10.2139/ssrn.3667878>}.
+		Last accessed \today.
+		
+		
+	\end{thebibliography}
+	\newpage
+	\thispagestyle{empty}
+	\clearpage
+	
+	\section*{Ehrenwörtliche Erklärung}
+	
+	Ich erkläre hiermit ehrenwörtlich, dass ich die vorliegende Arbeit selbständig angefertigt habe; die aus fremden Quellen direkt oder indirekt übernommenen Gedanken sind als solche kenntlich gemacht.
+	\par \bigskip
+	\noindent Die Arbeit wurde bisher keiner anderen Prüfungsbehörde vorgelegt und auch noch nicht veröffentlicht.
+	
+	\vspace{4cm}
+	
+	\hspace{2cm} Ort, Datum \hfill Unterschrift \hspace{2cm}
+	\pagebreak
+\end{document}
