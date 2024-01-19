@@ -1,0 +1,26 @@
+Model Specs:
+
+analyticDifferentialFactorLoadings: {null}
+freeParamsSeed: {2000}
+liborPeriodLength: {2.0}
+simulationModel: {SPREADS}
+finiteDifferenceDelta: {1.0E-6}
+simulationTimeDelta: {0.01}
+freeParamsRange: {1.5}
+correlationDecayParam: {0.2}
+stateSpace: {NORMAL}
+stateSpaceOfSpread: {LOGNORMAL}
+volatilityParams: {0.2, 0.0, 0.25, 0.15}
+measure: {SPOT}
+numberOfExtraFactors: {2}
+brownianMotionSeed: {7824}
+fixingTimes: {0.5, 1.0, 2.0, 4.0, 8.0, 25.0}
+numericalScheme: {EULER_FUNCTIONAL}
+numberOfLiborPeriods: {5}
+freeParamsGenerator: {info.quantlab.masterthesis.factory.DefaultableLIBORModelFactory$$Lambda/0x000001c954027328@b9b00e0}
+displacement: {1.0E-4}
+numberOfFactors: {5}
+initialRatesDefaultable: {0.04, 0.049, 0.062, 0.049, 0.044, 0.031}
+covarianceModel: {BLENDED}
+numberOfPaths: {10000}
+initialRatesNonDefaultable: {0.035, 0.043, 0.05, 0.041, 0.035, 0.02}
