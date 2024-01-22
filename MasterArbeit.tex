@@ -277,10 +277,15 @@
 	\begin{lemma}
 		Let $T_i$ and $c_i$ be as in the definition above. 
 		The price of a fixed coupon paying bond is:
-		\begin{align*}
-			4
-		\end{align*}
+		\begin{align}\label{eq:pricecouponbond}
+			\Pi(t)=\sum_{i=1}^{M}c_i P(t;T_i) + NP(t;T_M)
+		\end{align}
+		for $t\in [0;T_1[$.
 	\end{lemma}
+	\begin{proof}
+		The coupon bond can be replicated by buying $c_i$ $T_i$-zero-coupon-bonds for each $i=1, ..., M$ and N $T_M$-bonds.\\
+		Such a portfolio of zero coupon bonds has a price as given in \cref{eq:pricecouponbond}. As we are in a complete market, the two products must have the same value.
+	\end{proof}
 	\begin{definition}\label{def:simpleFR}
 		We define the \emph{simple forward rate} $L(t;S,T)$ with fixing time $S$ and payment time $T$ at evaluation time $t$ to be a relation of $S$- and $T$-bonds:
 		\begin{align}
@@ -658,7 +663,7 @@
 		\end{align}
 		The total survival probability  until $T_{i+1}$ w.r.t. $\mathcal{G}_{T_j}$ is 
 		\begin{align}\label{eq:survivalProbTotal}
-			\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i+1} \right\}  \right| \mathcal{G}_{T_i} \right) = \prod_{k=1}^{i+1}q_i(T_k, \omega)
+			\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i+1} \right\}  \right| \mathcal{G}_{T_i} \right) = \prod_{k=1}^{i}q_i(T_k, \omega)
 		\end{align}
 	\end{lemma}
 	\begin{proof}
@@ -702,18 +707,11 @@
 	In this section we take a look at pricing loans and credit options.
 	\subsection{General Loan Pricing}
 	Let us first take a look what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time."\cite{corpFinInst}.\\
-	In this sense a loan is nothing else than a fixed coupon bond, where the nominal $N$ represents the debt and the coupons $c_i$
+	In this sense a loan is nothing else than a fixed coupon bond, where the nominal $N$ represents the debt and the coupons $c_i$ represent the interest.
+	
 	\subsection{Credit Options}
 	
-	
-	
-	% -------- Behavioral Aspects
-	
-	
-	\pagebreak
-	\section{Introducing Behavioral Aspects}
-	\subsection{General Credit Pricing}
-	\subsection{Pricing Credit Options}
+	\subsection{Introducing Behavioral Aspects}
 	
 	
 	
@@ -722,9 +720,46 @@
 	
 	\pagebreak
 	\section{Implementation Details}
+	The implementation of the described concepts are a crucial part of this thesis.\\
+	We use Java, which is a purely object oriented programming language, for having a good  code readability while still performing very well. We assume a basic knowledge in Java.
+	As build system we use Maven.\\
+	Before we can jump into any code, though, we need to describe ways to discretize a stochastic process.
+	
+	\subsection{Numerical Schemes for Stochastic Processes}
+	In this chapter we introduce three ways to approach the simulation of stochastic processes described by SDEs. All of these numerical schemes can also be found in \cite{kloedenSchemes}, which is also the main source of this section.\\
+	Let us start with the well-known Euler Scheme:
+	\begin{definition}
+		Let $X=(X_t)_{t\in [0;\tilde{T}]}$ be a $n$-dimensional stochastic process which satisfies:
+		\begin{align*}
+			dX_t &= \mu(t, X_t)dt + \sigma(t, X_t) \cdot dU_t,\\
+			X_0 &= x,
+		\end{align*}
+		where $U$ is a $d$-dimensional standard Brownian Motion, $\mu: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^n$ and $\sigma: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^{n \times d}$ are functions and $x \in \mathbb{R}^n$.\\
+		Furthermore let $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$.\\
+		Then we call the discrete process $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$
+		\begin{align*}
+			\hat{X}_{t_0} &= x,\\
+			\hat{X}_{t_{i+1}} &= \hat{X}_{t_{i}} + \mu(t_i, \hat{X}_{t_{i}})\Delta t_i + \sigma(t_i, \hat{X}_{t_{i}}) \cdot \Delta U_{t_i} \quad i \in \{0, ..., m-1\}
+		\end{align*}
+		the \emph{Euler scheme} of $X$.
+	\end{definition}	
+	
+	
+	\subsection{The finMath Library}
+	To not start from null, we use the finMath Library of Prof. Christian Fries as starting point for our code basis.\\
+	The finMath library is written in Java and provides interfaces and classes for the use in stochastics and financial mathematics.
+	\subsubsection{The RandomVariable interface}
+	
+	\subsection{Implementation of the Defaultable LIBOR Model}
+	
+	\subsection{Valuation of Financial Products}
 	
 	
 	
+	
+	
+	
+	% ------------ Symbol Reference ----------------
 	\pagebreak
 	\section{List of Symbols}
 	\begin{tabular}{cl}
