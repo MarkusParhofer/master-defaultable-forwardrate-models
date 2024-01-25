@@ -91,7 +91,7 @@
 	\subsection{Motivation}
 	\subsection{Aim of the thesis}
 	\subsection{Preliminaries}
-	The thesis is aimed at an audience that has a deep analytical background and a basic knowledge in stochasticity and financial mathematics.\\
+	The thesis is aimed at an audience that has a deep analytical background and a basic knowledge in probability theory and financial mathematics.\\
 	\color{red}If one has knowledge in the following areas, it is a good start:\color{black}
 	\begin{itemize}
 		\item Brownian-Motions and martingales,
@@ -210,6 +210,23 @@
 		it holds that $Y_t > 0 \quad \forall t \in [0;\tilde{T}]$.
 	\end{remark}
 	
+	\subsection{Financial Mathematics}
+	While the reader should have a deep understanding of what arbitrage is and how to avoid it when pricing financial products, we will formulate some fundamental results as a reminder.
+	\begin{theorem}
+		Following statements are equivalent:
+		\begin{itemize}
+			\item The market is arbitrage free and complete.
+			\item There exists exactly one probability measure $\mathbb{Q}^B$ w.r.t. a numeraire $B$, such that the price process of every traded asset discounted by the numeraire $\frac{X}{B}$ is a martingale w.r.t. the filtration $\mathbb{F}$.
+		\end{itemize}
+	\end{theorem}
+	\begin{proof}
+		See \cite{fima2Lecture}.
+	\end{proof}
+	This directly give us a notation for the price of any product.
+	\begin{lemma}
+		Let $C$ be a European claim  \color{red}Elaborate!!!\color{black}. 
+		%TODO: Elaborate
+	\end{lemma}
 	
 	\subsection{Factor Loadings}\label{sec::FactorLoading}
 	The problem we face in this section is that of correlated Brownian-Motions. \\
@@ -384,7 +401,7 @@
 	\begin{definition}
 		The \emph{default time} is a stopping time \(\tau(\omega)\) on the Filtration \((\mathcal{F}_t)_{t\in \mathbb{R}^+}\).\\
 		The \emph{default indicator} \(J(t)\) is the indicator process over the default time:
-		\[J(t) := \mathbf{1}_{\{\tau(\omega) < t\}}\]
+		\[J(t) := \mathbf{1}_{\{\tau(\omega) \le t\}}\]
 	\end{definition}
 	\begin{definition}
 		% TODO: Stimmt das wirklich? ein Default Process ist eher ein sich anbahnendes Ereignis?
@@ -635,7 +652,10 @@
 	\begin{remark}
 		It is worth to note that all processes that are dependent on $J(t)$ are not $\mathbb{G}$-adapted. This includes $P^d(t;T_i)$ for $i=1, ...,N$ (remember $P(0;T_0) = 1$).
 	\end{remark}
-	
+	As we will work quite a lot with conditional expectation from here on, let us denote for a $\sigma$-algebra $\mathcal{G}$:
+	\begin{align*}
+		\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}}\left[ \; \cdot \; \right]=  \mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{G} \; \right].
+	\end{align*} 
 	\begin{lemma}
 		For $T_i < s < t < T_{i+1}$ it holds that
 		\begin{itemize}
@@ -653,21 +673,27 @@
 		\end{align*}
 		\color{red}Prove the same for $P^{d,*}$!!!\color{black}
 	\end{proof}
+	Before we start to derive the survival probability we need the following assumption:
+	\begin{assumption}\label{as:survivalProbNoChange}
+		Following equality is assumed to hold for all $j > i$:
+		\begin{align*}
+			\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[ \mathbf{1}_{\left\{ \tau > T_{i+1}\right\}} \right] = \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_{j}}}\left[ \mathbf{1}_{\left\{ \tau > T_{i+1}\right\}} \right]
+		\end{align*}
+	\end{assumption}
+	This assumption means that the filtration $\mathbb{G}$ does not gain any more (probability) information about the default state at time $T_{i+1}$ from the time point $T_i$ forward.
 	\begin{lemma}
-		Let $B$ be the numeraire under the spot measure, $i = 0, ..., N$ and $j = i, ..., N$.
-		The one-step survival probability w.r.t. $\mathcal{G}_{T_i}$ (resp. $\mathcal{G}_{T_j}$), given pre-default is
+		Let $B$ be the numeraire under the spot measure, $i = 0, ..., N$.
+		The one-step survival probability w.r.t. $\mathcal{G}_{T_i}$ given pre-default is
 		\begin{align}
-			q_i(T_i, \omega) := \mathbb{Q}^B\left( \left. \left( \left.\left\{\tau(\omega) > T_{i+1} \right\}  \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right) \right| \mathcal{G}_{T_i} \right) = \frac{P^{d,*}(T_i;T_{i+1})}{P(T_i;T_{i+1})} \label{eq:oneStepSProbOne}\\
-			= \mathbb{Q}^B\left( \left. \left( \left.\left\{\tau(\omega) > T_{i+1} \right\}  \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right) \right| \mathcal{G}_{T_j} \right) =: q_j(T_i, \omega).
-			\label{eq:oneStepSProbTwo}
+			q(T_{i}, \omega) := \mathbb{Q}^B\left( \left. \left( \left.\left\{\tau(\omega) > T_{i+1} \right\}  \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right) \right| \mathcal{G}_{T_i} \right) = \frac{P^{d,*}(T_i;T_{i+1})}{P(T_i;T_{i+1})}. \label{eq:oneStepSProbOne}
 		\end{align}
-		The total survival probability  until $T_{i+1}$ w.r.t. $\mathcal{G}_{T_j}$ is 
+		The total survival probability  until $T_{i+1}$ w.r.t. $\mathcal{G}_{T_i}$ is 
 		\begin{align}\label{eq:survivalProbTotal}
-			\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i+1} \right\}  \right| \mathcal{G}_{T_i} \right) = \prod_{k=1}^{i}q_i(T_k, \omega)
+			\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i+1} \right\}  \right| \mathcal{G}_{T_i} \right) = \prod_{k=1}^{i}q(T_{k}, \omega).
 		\end{align}
 	\end{lemma}
 	\begin{proof}
-		Let us start with statement \ref{eq:oneStepSProbOne}. For ease of notation we will use for a $\sigma$-algebra $\mathcal{G}$: $\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}}\left[ \; \cdot \; \right]=  \mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{G} \; \right]$. We get:
+		Let us start with statement \ref{eq:oneStepSProbOne}. We get:
 		\begin{align*}
 			q_i(T_i, \omega) &= \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[ \left.\mathbf{1}_{\left\{ \tau > T_{i+1}\right\}}   \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right]
 			\tag{A}\\
@@ -683,11 +709,17 @@
 			\tag{E}
 		\end{align*}
 		where from (A) to (B) we use the tower property of conditional expectation. From (B) to (C) we use the $\mathcal{G}_{T_{i}}$- and therefore $\mathcal{F}_{T_{i}}$-measurability of $B(T_{i+1})$, which we again use from (C) to (D). From (C) to (D) and from (D) to (E) we use the martingale property of $\frac{P^d(t; T_{i+1})}{B(t)}$ and $\frac{P(t; T_{i+1})}{B(t)}$ respectively.\\
-		\color{red}Prove that $q_j(T_i, \omega)=q_i(T_i, \omega)$!!!\color{black}\\
-		Now we get \Cref{eq:survivalProbTotal} with Bayes-rule and statement (\ref{eq:oneStepSProbTwo}).
+		For \Cref{eq:survivalProbTotal} we use Bayes-Rule and \cref{as:survivalProbNoChange} to get:
+		\begin{align*}
+			\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i+1} \right\}  \right| \mathcal{G}_{T_i} \right) &= q(T_i, \omega) 	\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_i} \right)\\
+			&= q(T_i, \omega) 	\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_{i-1}} \right)\\
+			&= q(T_i, \omega) q(T_{i-1}, \omega)	\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i-1} \right\}  \right| \mathcal{G}_{T_{i-1}}\right)\\
+			&=...\\
+			&= \prod_{k=1}^{i}q(T_k, \omega)
+		\end{align*}
 	\end{proof}
-	Note, that while we calculate a probability here, it is a \emph{pathwise} probability. At first glance this seems counter-intuitive, but consider this: $\mathbb{G}$ does not capture the default state. I.e. while we can calculate $P^{d,*}(t;T_i)$, the default might have already happened, which we would not know, even past $t$ and $T_i$. This is why we can and need to calculate the probability.\\
-	\Cref{fig:survivalprobabilityvisualisation} shows this concept in a very simplified and discretized way.
+	Note, that while we calculate a probability here, it is a \emph{pathwise} probability. At first glance this seems counter-intuitive, but consider this: $\mathbb{G}$ does not capture the default state. I.e. while we can calculate $P^{d,*}(t;T_i)$, the default might have already happened, which we would not know, even past $t$ and $T_i$. This is why we can and need to calculate the survival probability even when given $P^{d,*}(t;T_i)$.\\
+	\Cref{fig:survivalprobabilityvisualisation} illustrates this concept in a very simplified and discretized example.
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\linewidth]{SurvivalProbability}
@@ -704,12 +736,69 @@
 	
 	\pagebreak
 	\section{Loans and Credit Option Pricing}
-	In this section we take a look at pricing loans and credit options.
+	A model is useless without a practical application for it. Therefore, we take a look at how to apply our results to pricing loans and credit options.\\
+	Note here, that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo Methods to approximate the expectation.\\
+	Note that all model primitives are $\mathbb{G}$-adapted, as $\mathbb{G}$ is the filtration over the only simulated stochastic processes (in our case the Brownian-Motion $U$). In this sense the default time/state is therefore not one of the model primitives.
+	
+	\subsection{General Application}
+	In this short subsection, we will derive a general pricing methodology before moving to specific products.\\
+	Assume a $T_i$-claim $X$ that has a payoff that is dependent on survival of the defaultable bonds. We can then use the pricing methodology described in te following lemma.
+	\begin{lemma}
+		Let $X$ be a payoff at $T_i \in \{T_1, ..., T_N\}$, with
+		\begin{align*}
+			X = X^S \mathbf{1}_{\{\tau(\omega) > T_i\}},
+		\end{align*}
+		where $X^S$ is the payoff conditional pre-default. Let $X^S$ be $\mathcal{G}_{T_i}$-measurable.\\
+		Then the price at time $t=0$ is
+		\begin{align*}
+			\Pi^X = \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} \mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_i} \right) \right].
+		\end{align*}
+	\end{lemma}
+	With this lemma and the pathwise survival probability derived in the last section, we can express the claim price in terms of model primitives. The proof for this statement is quite straightforward:
+	\begin{proof} Note that $X$ itself is not $\mathcal{G}_{T_i}$-measurable and $B(T_0) = 1$. We have:
+		\begin{align*}
+			\Pi^X &=  \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X}{B(T_i)}\right]
+			= \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right]\\
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}}\right]\right]\\
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[ 
+			\mathbf{1}_{\{\tau(\omega) > T_i\}} 
+			\right] \right]\\
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} \mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_{i-1}} \right) \right],
+		\end{align*}
+		where we used \cref{as:survivalProbNoChange} for the last equation.
+	\end{proof}
+	
+	This methodology can easily be extended to products where only parts of the payoff are dependent on survival and even where other parts are dependent on default:
+	
+	\begin{lemma}
+		Let $X$ be a payoff at $T_i \in \{T_1, ..., T_N\}$, with
+		\begin{align*}
+			X = X^O + X^S \mathbf{1}_{\{\tau(\omega) > T_i\}} + X^D \mathbf{1}_{\{\tau(\omega) \le T_i\}},
+		\end{align*}
+		where the payoff $X^O$ is unconditional, $X^S$ is conditional pre-default and $X^D$ is conditional past-default and all are  $\mathcal{G}_{T_i}$-measurable.\\
+		Then the price at time $t=0$ is
+		\begin{align*}
+			\Pi^X =& \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^O}{B(T_i)} \right]
+			+\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} \mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_i} \right) \right]\\
+			&+\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^D}{B(T_i)} \left(1 - \mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_i} \right)\right) \right].
+		\end{align*}
+	\end{lemma}
+	\begin{proof}
+		The proof is similar to the proof above.
+	\end{proof}
+	With these formulas we now have an expression for claim prices in terms of an expectation over model primitives. We can therefore move to more specific products now.
+	
 	\subsection{General Loan Pricing}
 	Let us first take a look what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time."\cite{corpFinInst}.\\
 	In this sense a loan is nothing else than a fixed coupon bond, where the nominal $N$ represents the debt and the coupons $c_i$ represent the interest.
 	
 	\subsection{Credit Options}
+	
+	
+	 \color{red}Elaborate!!!\color{black}. 
+	%TODO: Elaborate
+	
+	Let us now look at how to price options when the default time is not modeled:
 	
 	\subsection{Introducing Behavioral Aspects}
 	
@@ -727,28 +816,63 @@
 	
 	\subsection{Numerical Schemes for Stochastic Processes}
 	In this chapter we introduce three ways to approach the simulation of stochastic processes described by SDEs. All of these numerical schemes can also be found in \cite{kloedenSchemes}, which is also the main source of this section.\\
-	Let us start with the well-known Euler Scheme:
+	As basis for all our schemes we have a known SDE for a $n$-dimensional stochastic process $X=(X_t)_{t\in [0;\tilde{T}]}$ that we want to simulate:
+	\begin{align}
+		\begin{aligned}\label{eq:schemeGoalSDE}
+		dX_t = \mu(t, X_t)dt + \sigma(t, X_t) \cdot dU_t,\\
+		X_0 = x,
+		\end{aligned}
+	\end{align}
+	where $U$ is a $d$-dimensional standard Brownian Motion, $\mu: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^n$ and $\sigma: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^{n \times d}$ are functions and $x \in \mathbb{R}^n$.\\
+	Let us start with the well-known Euler or Euler-Maruyama scheme:
 	\begin{definition}
-		Let $X=(X_t)_{t\in [0;\tilde{T}]}$ be a $n$-dimensional stochastic process which satisfies:
-		\begin{align*}
-			dX_t &= \mu(t, X_t)dt + \sigma(t, X_t) \cdot dU_t,\\
-			X_0 &= x,
-		\end{align*}
-		where $U$ is a $d$-dimensional standard Brownian Motion, $\mu: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^n$ and $\sigma: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^{n \times d}$ are functions and $x \in \mathbb{R}^n$.\\
+		Let $X=(X_t)_{t\in [0;\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}).\\
 		Furthermore let $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$.\\
-		Then we call the discrete process $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$
+		Then we call the discrete process $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$, given by
 		\begin{align*}
 			\hat{X}_{t_0} &= x,\\
-			\hat{X}_{t_{i+1}} &= \hat{X}_{t_{i}} + \mu(t_i, \hat{X}_{t_{i}})\Delta t_i + \sigma(t_i, \hat{X}_{t_{i}}) \cdot \Delta U_{t_i} \quad i \in \{0, ..., m-1\}
+			\hat{X}_{t_{i+1}} &= \hat{X}_{t_{i}} + \mu(t_i, \hat{X}_{t_{i}})\Delta t_i + \sigma(t_i, \hat{X}_{t_{i}}) \cdot \Delta U_{t_i},
 		\end{align*}
-		the \emph{Euler scheme} of $X$.
-	\end{definition}	
+		where $i \in \{0, ..., m-1\}$, an \emph{Euler-Maruyama scheme of $X$}.
+	\end{definition}
 	
+	The Euler-Maruyama scheme takes the concept of approaching deterministic integrals and applies it on stochastic integrals. While this works quite well for constant and deterministic factor loadings $\sigma(t_i, x) = \sigma(t_i)$ \color{red}[Add source]\color{black} %TODO: Add source
+	, it has a weakness for stochastic factor loadings.\\
+	An improvement is the Milstein scheme:
+	\begin{definition}
+		Let again $X=(X_t)_{t\in [0;\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}) and $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$.\\
+		Then we call the discrete process $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$, given by
+		\begin{align*}
+			\hat{X}_{t_0} = x,\\
+			\hat{X}^l_{t_{i+1}} =& \hat{X}^l_{t_{i}} + \mu(t_i, \hat{X}_{t_{i}})\Delta t_i + \sigma(t_i, \hat{X}_{t_{i}}) \cdot \Delta U_{t_i}\\
+			&+ \frac{1}{2}\sum_{k=1}^{d}\sigma_k(t_i, \hat{X}_{t_i})(\partial_{x^l}\sigma_k)(t_i, \hat{X}_{t_i})((\Delta U^k_{t_i})^2 - \Delta t_i),
+		\end{align*}
+		where $i \in \{0, ..., m-1\}$ and $l \in \{1, ..., n\}$, a \emph{Milstein scheme of $X$}.
+	\end{definition}
+	This gives an improvement due to the correction term at the end. We can also easily see, that if $\sigma$ is independent of $X_t$ the Milstein is equal to the Euler-Maruyama scheme.\\
+	Another numerical scheme for the approximation of stochastic processes is the functional Euler Scheme:
+	\begin{definition}
+		Let $X=(X_t)_{t\in [0;\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}).\\
+		Let $Y=(Y_t)_{t\in [0;\tilde{T}]}$ have the property $Y_t = f(t, X_t) \quad \forall t\in [0;\tilde{T}]$ for a $2$-times differentiable function $f: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^k$ and $k \in \mathbb{N}$.\\
+		Let $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$. Let  $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$ be an Euler-Maruyama scheme of $X$.\\
+		Then we call the discrete process $\hat{Y} = (\hat{Y}_{t_i})_{i \in \{0, ..., m\}}$, given by
+		\begin{align*}
+			\hat{Y}_{t_i} &= f(t,\hat{X}_{t_i}),
+		\end{align*}
+		where $i \in \{0, ..., m\}$, a \emph{functional Euler scheme of $Y$}.
+	\end{definition}
+	This scheme performs well in situations, where the factor loadings of $X$ are less dependent on $X$, than the factor loadings of $Y$ are on $Y$.\\
+	It is also very useful, if $f$ preserves a property of $Y$ which otherwise might be lost through the numerical error of the other schemes (such as staying in a certain domain).\\
+	Considering this, the functional Euler scheme is great for the approximation of log-normal processes, as it cancels a part of the numerical error due to the dependency of the factor loadings on the approximated process and at the same time it preserves its' positivity.\\
+	\color{red}Elaborate (i.e. error estimates and reference for proofs that these work)!!!\color{black}. 
+	%TODO: Elaborate
 	
 	\subsection{The finMath Library}
-	To not start from null, we use the finMath Library of Prof. Christian Fries as starting point for our code basis.\\
-	The finMath library is written in Java and provides interfaces and classes for the use in stochastics and financial mathematics.
-	\subsubsection{The RandomVariable interface}
+	We can now start to look at the actual implementation.\\
+	As a starting point for the code base we use the finMath Library of Prof. Christian Fries.\\
+	The finMath library is written in Java and provides interfaces and classes for the use in stochastics and financial mathematics.\\
+	In this section we take a look at the ones that are most frequently used by our code. For a more thorough description one can use the website of the finMath library \cite{finmathWebsite}, which will also be our main source for this section.
+	\subsubsection{The RandomVariable Interface}
 	
 	\subsection{Implementation of the Defaultable LIBOR Model}
 	
@@ -770,6 +894,10 @@
 		w.r.t. & with respect to \\
 		$\mathbb{Q}^B$ & martingale measure w.r.t. the numeraire $B(t)$\\
 		$m(t)$ & For a tenor $T_0 < ... < T_N$, $m(t):= \max\{i \in \{0, ..., N-1\} \; | \; T_i \le t \}$\\
+		$(\partial_{x}f)(x)$ & Same as $\frac{\partial}{\partial x}f(x)$.\\
+		$(\partial_{x y}f)(x, y)$ & Same as $\frac{\partial^2}{\partial x \partial y}f(x, y)$.\\
+		$\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}}\left[ \; \cdot \; \right]$ & Same as
+		$\mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{G} \; \right].$ for a $\sigma$-algebra $\mathcal{G}$\\
 		
 	\end{tabular}
 	\pagebreak
