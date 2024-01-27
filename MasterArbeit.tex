@@ -21,11 +21,21 @@
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 
 \definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mydarkgreen}{RGB}{28,132,0} 
 \definecolor{mylilas}{RGB}{170,55,241}
 \definecolor{mygrey}{RGB}{123,123,123}
+\definecolor{myorange}{RGB}{230,80,80}
+\definecolor{codebackground}{RGB}{230,230,230}
 
 
 \newcommand{\mbeq}{\overset{!}{=}}
+
+% Paths to java files. Note these might give errors when working on a different computer
+\newcommand{\codepath}{C:/Users/marku/IdeaProjects/master-thesis-default-forward-rate-models/src}
+\newcommand{\codepathmodels}{\codepath/main/java/info/quantlab/masterthesis}
+\newcommand{\codedlmm}[1]{\codepathmodels/defaultablelibormodels/#1}
+\newcommand{\codecovdlmm}[1]{\codepathmodels/defaultablecovariancemodels/#1}
+\newcommand{\codeprocess}[1]{\codepathmodels/process/#1}
 
 \newcommand{\einsch}{\,\rule[-5pt]{0.4pt}{15pt}\,{}}
 \parindent 0ex
@@ -39,6 +49,29 @@
 \renewcommand{\labelenumi}{\em{(\roman{enumi})}}
 \renewcommand{\labelenumii}{\em{(\alph{enumii})}}
 \captionsetup[figure]{skip=0pt}
+
+
+\lstset{language=Java,%
+	basicstyle=\ttfamily\scriptsize,
+	backgroundcolor=\color{codebackground},
+	breaklines=true,%
+	breakatwhitespace,
+	captionpos=b,
+	columns=fullflexible,
+	postbreak=\mbox{ \space},
+	morekeywords={java2tikz},
+	keywordstyle=\color{orange},%
+	morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+	identifierstyle=\color{black},%
+	stringstyle=\color{mygreen},
+	commentstyle=\color{mydarkgreen},%
+	showstringspaces=false,%without this there will be a symbol in the places where there is a space
+	numbers=left,%
+	numberstyle={\tiny \color{black}},% size of the numbers
+	numbersep=9pt, % this defines how far the numbers are from the text
+	%emph=[1]{for,end,break},emphstyle=[1]\color{orange}, %some words to emphasise
+	%emph=[2]{word1,word2}, emphstyle=[2]{style},    
+}
 
 
 \begin{document}
@@ -112,9 +145,9 @@
 	\section{Fundamentals}
 	In this section we provide some fundamentals for the thesis. Many of the results mentioned here can also be found in different versions in other scientific papers. We will stick to source 
 	\color{red}[Add source] \color{black} %TODO: Add source
-	for more application-oriented and source 
+	for more theoretical and source 
 	\color{red}[Add source] \color{black} %TODO: Add source
-	for more theoretical results.
+	for more application-oriented results.
 	
 	\subsection{Probability Theory}
 	In our whole thesis we will assume a filtered probability space
@@ -222,11 +255,19 @@
 	\begin{proof}
 		See \cite{fima2Lecture}.
 	\end{proof}
-	This directly give us a notation for the price of any product.
+	This directly give us a notation for the price of any product in an arbitrage free and complete market.
 	\begin{lemma}
-		Let $C$ be a European claim  \color{red}Elaborate!!!\color{black}. 
-		%TODO: Elaborate
+		Let $X$ be the payoff of a $T$-claim. Then the arbitrage-free price of the claim at any time $t\in \left[0, T\right]$ is
+		\begin{align*}
+			\Pi^X_t = B(t)\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X}{B(T)} \right| \mathcal{F}_t\right].
+		\end{align*}
 	\end{lemma}
+	\begin{proof}
+		See \cite{fima2Lecture}.
+	\end{proof}
+	 \color{red}Elaborate!!!\color{black}. 
+	%TODO: Elaborate
+	
 	
 	\subsection{Factor Loadings}\label{sec::FactorLoading}
 	The problem we face in this section is that of correlated Brownian-Motions. \\
@@ -243,22 +284,83 @@
 	\begin{align*}
 		d\left\langle W^{\mathbb{Q}, 1}, W^{\mathbb{Q}, 2} \right\rangle_t = \rho_t dt.
 	\end{align*}
-	However implementation-wise we need to simulate SDEs using only independent Brownian-Motions. For this purpose we will take advantage of the properties of a Brownian-Motion. Recall following Lemmatas:
+	However implementation-wise we need to simulate SDEs using only independent Brownian-Motions.\\
+	For our computations we will stick to a constant instantaneous correlation $\rho = \rho_t \in \mathbb{R}$, so lets formulate this assumption first:
+	\begin{assumption}
+		For all $1$-dim.Brownian-Motions under the martingale measure $\mathbb{Q}^B$ the instantaneous correlation is assumed to be constant. That is for any $\mathbb{Q}^B$-Brownian-Motions $W^1$ and $W^2$ the following holds for some $\rho \in \mathbb{R}$:
+		\begin{align*}
+			d\left\langle W^{1}, W^{2} \right\rangle_t = \rho dt
+		\end{align*}
+	\end{assumption}
+	Let us now look at how to simulate correlated Brownian-Motions using only independent ones by taking advantage of its properties.\\
+	Recall following Lemmatas:
 	\begin{lemma}
 		$W = (W^i)_{i\in\{1, ..., d\}}$ is a $d$-dimensional Brownian-Motion if and only if $W^1, ..., W^d$ are independent 1-dimensional Brownian-Motions
 	\end{lemma}
 	\begin{proof}
 		See \cite{fima2Lecture}.
 	\end{proof}
-	\begin{lemma}
-		For any $d$-dimensional Brownian-Motion $W = (W^i)_{i\in\{1, ..., d\}}$ and weights $(a_i)_{i\in\{1,...d\}}$ with $a_1 + ... + a_d = 1$ it holds, that $U$ given by:
+	\begin{lemma}\label{lm:linearcombiofbmisbm}
+		For any $d$-dimensional standard Brownian-Motion $U = (U^i)_{i\in\{1, ..., d\}}$ and weights $(a_i)_{i\in\{1,...d\}}$ with $a^2_1 + ... + a^2_d = 1$ it holds, that the process $W$ given by:
 		\begin{align*}
-			U_t = \sum_{i=1}^{d}a_iW^i_t
+			W_t = \sum_{i=1}^{d}a_iU^i_t
 		\end{align*}
-		is also a Brownian-Motion.
+		is a $1$-dimensional standard Brownian-Motion.
 	\end{lemma} 
-	\color{red}Elaborate!!!\color{black}. 
-	%TODO: Elaborate
+	\begin{proof}
+		We proof that $W$ fulfills the properties of a Brownian-Motion:\\
+		\emph{Property $W_0=0$ a.s.}:
+		\begin{align*}
+			W_0 = \sum_{i=1}^{d}a_iU^i_0 = 0 \text{ a.s.}
+		\end{align*}
+		\emph{Property $(W_t-W_s) \sim \mathcal{N}(0, t-s)$ for $s < t$}:
+		\begin{align*}
+			W_t - W_s = \sum_{i=1}^{d}a_iU^i_t - \sum_{i=1}^{d}a_iU^i_s &\sim \mathcal{N}\left(0, \sum_{i=1}^{d}a^2_i(t-s)\right)\\
+			&\sim \mathcal{N}\left(0, (t-s)\sum_{i=1}^{d}a^2_i\right)\\
+			&\sim \mathcal{N}\left(0, (t-s)\right)
+		\end{align*}
+		\emph{Property $W$ has stationary independent increments}:  \color{red}Elaborate!!!\color{black}. 
+		%TODO: Elaborate
+		\\
+		\emph{Property $W$ has continuous sample paths a.s.}:\\
+		Let $U^i(\omega)$ be continuous for $\omega \in A_i\subset\Omega$ where $A_i^c$ is a null set. Then $W(\omega) = \sum_{i=1}^{d}a_iU^i(\omega)$ is continuous for $\omega \in \bigcap_{i=1}^dA_i$. Because $\left(\bigcap_{i=1}^dA_i\right)^c = \bigcup_{i=1}^dA^c_i$ is still a null set, we have that also $W$ has continuous sample paths almost surely.
+	\end{proof}
+	
+	We can now create different linear combinations of the same $d$-dimensional Brownian-Motion $U$ and look at their correlation:
+	\begin{lemma}
+		Let $U = (U^i)_{i\in\{1, ..., d\}}$ be a $d$-dimensional Brownian-Motion, let $(a_i)_{i\in\{1,...d\}}$ and $(b_i)_{i\in\{1,...d\}}$ be weights with $\sum_{i=1}^{d}a^2_i = 1$, $\sum_{i=1}^{d}b^2_i = 1$ respectively.\\
+		Then $W^1$ and $W^2$ given by 
+		\begin{align*}
+			W^1_t = \sum_{i=1}^{d}a_iU^i\\
+			W^2_t = \sum_{i=1}^{d}b_iU^i
+		\end{align*}
+		are 1-dimensional Brownian-Motions with:
+		\begin{align}\label{eq:quadraticcovoflinearcombis}
+			d\left\langle W^{1}, W^{2} \right\rangle_t = \left(\sum_{i=1}^{d}a_ib_i \right)dt
+		\end{align}
+	\end{lemma}
+	\begin{proof}
+		By \Cref{lm:linearcombiofbmisbm} we have that $W^1$ and $W^2$ are Brownian-Motions. Taking the quadratic covariation directly yields \cref{eq:quadraticcovoflinearcombis}.
+	\end{proof}
+	With this lemma we now have a way to construct correlated Brownian-Motions $W^1, ... W^d$. We still need to find the linear combinations, given a certain correlation matrix $R = (\rho_{i,j})_{i,j\in\{1,...,d\}}$, however. A way to do that is to use principal component analysis (PCA). It is beyond the scope of this thesis to give a detailed description of PCA, but the key idea is to take the eigenvectors of $R$ and use them as linear combination. PCA also gives a way to reduce the number of factors, by only considering the Eigenvectors with the highest Eigenvalues \cite{FriesBook}. Let us summarize this procedure in a lemma:
+	\begin{lemma}
+		Let $U=(U^i)_{i\in\{1, ... d\}}$ be a $d$-dim. Brownian-Motion, let $R=(\rho_{i,j})_{i,j\in\{1,...,d\}}$ be a $\mathbb{R}^{d\times d}$ correlation matrix (positive-definite, symmetric, entries in $\left[-1;1\right]$ and $1$ on the diagonal). Let $(\lambda^{i,j})_{i,j\in\{1,...,d\}}$ be a matrix constructed by PCA from $R$.\\
+		For $i=1,...d$ let $W^i$ be the 1-dim. Brownian-Motion given by:
+		\begin{align*}
+			W^i_t = \sum_{j=1}^{d}\lambda^{i,j}U^j_t.
+		\end{align*}
+		Then $\forall i, k \in \{1, ..., d\}$ 
+		\begin{align*}
+			\sum_{j=1}^{d}\lambda^{i,j}\lambda^{k,j} = \rho_{i,k}\\
+			d\left\langle W^{i}, W^{k} \right\rangle_t = \rho_{i,k}dt
+		\end{align*}
+	\end{lemma}
+	\begin{proof}
+		This is a direct implication from the previous results together with the definition of PCA and the proof that it works in \color{red}[Add source]\color{black}. %TODO: Add source
+	\end{proof}
+	We now have a way of constructing correlated Brownian Motions. As mentioned we can perform a factor reduction with PCA, meaning we can construct $d$ correlated Brownian-Motions with $m < d$. This comes at the cost of "losing" a bit of the independence of some factors. But because in most cases the advantages of a factor reduction (less computational cost) outweigh the disadvantages, we will from here on assume, that the correlation- and factor loading matrix are not of the same size.
+	
+	
 	
 	
 	\pagebreak
@@ -792,13 +894,11 @@
 	Let us first take a look what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time."\cite{corpFinInst}.\\
 	In this sense a loan is nothing else than a fixed coupon bond, where the nominal $N$ represents the debt and the coupons $c_i$ represent the interest.
 	
+	\color{red}Elaborate!!!\color{black}. 
+	%TODO: Elaborate
 	\subsection{Credit Options}
 	
 	
-	 \color{red}Elaborate!!!\color{black}. 
-	%TODO: Elaborate
-	
-	Let us now look at how to price options when the default time is not modeled:
 	
 	\subsection{Introducing Behavioral Aspects}
 	
@@ -872,9 +972,30 @@
 	As a starting point for the code base we use the finMath Library of Prof. Christian Fries.\\
 	The finMath library is written in Java and provides interfaces and classes for the use in stochastics and financial mathematics.\\
 	In this section we take a look at the ones that are most frequently used by our code. For a more thorough description one can use the website of the finMath library \cite{finmathWebsite}, which will also be our main source for this section.
-	\subsubsection{The RandomVariable Interface}
+	\subsubsection*{RandomVariable}
+	%TODO: Write Section
+	\subsubsection*{ProcessModel}
+	The \texttt{ProcessModel} interface is the finMath equivalent of an SDE. It specifies that any implementation has methods for getting the drift and the factor loadings, which can then be used in other implementations e.g. for simulating the specified model.
+	\subsubsection*{LIBORCovarianceModel}
+	%TODO: Write Section
+	\subsubsection*{MonteCarloProcess}
+	%TODO: Write Section
 	
 	\subsection{Implementation of the Defaultable LIBOR Model}
+	
+	To use the full flexibility of the finMath Library, the implementation of our models is structured in the same way: we have an Interface for the defaultable LIBOR market model which extends the \texttt{ProcessModel}:	
+	\lstinputlisting[caption={Declaration of \texttt{DefaultableLIBORMarketModel}}, label={lst:javaCode}, firstnumber=12, linerange={12} ]{\codedlmm{DefaultableLIBORMarketModel.java}}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\linewidth]{ClassDiagramDefaultableLIBORMarketModel}
+		\caption{Using \texttt{DefaultableLIBORMarketModel} as Plug-In for \texttt{MonteCarloProcess}}
+		\label{fig:classdiagramdlmm}
+	\end{figure}
+	\Cref{fig:classdiagramdlmm}  shows how we can use classes implementing this interface:
+	The \texttt{DefaultableLIBORMarketModel} can be used as a plug in for a class implementing the \texttt{MonteCarloProcess} interface, which calls SDE-methods of the \texttt{ProcessModel} to pre-calculate the process. Calls to \texttt{getFactorLoading(...)} should be delegated to the \texttt{DefaultableLIBORCovarianceModel}, as we can then reuse the code of \texttt{DefaultableLIBORMarketModel}, even though creating different kinds of covariance (factor-loading-) models. When needed the process values are accessed by the \texttt{DefaultableLIBORMarketModel} through an input parameter. We therefore have a clean seperation of model specifications and simulation.
+	
+	
+	
 	
 	\subsection{Valuation of Financial Products}
 	
