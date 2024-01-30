@@ -316,11 +316,10 @@
 		\emph{Property $(W_t-W_s) \sim \mathcal{N}(0, t-s)$ for $s < t$}:
 		\begin{align*}
 			W_t - W_s = \sum_{i=1}^{d}a_iU^i_t - \sum_{i=1}^{d}a_iU^i_s &\sim \mathcal{N}\left(0, \sum_{i=1}^{d}a^2_i(t-s)\right)\\
-			&\sim \mathcal{N}\left(0, (t-s)\sum_{i=1}^{d}a^2_i\right)\\
 			&\sim \mathcal{N}\left(0, (t-s)\right)
 		\end{align*}
-		\emph{Property $W$ has stationary independent increments}:  \color{red}Elaborate!!!\color{black}. 
-		%TODO: Elaborate
+		\emph{Property $W$ has stationary independent increments}:\\
+		Stationarity is given by the last property. Let $0 \le t_0 < t_1 <...<t_k \le \tilde{T}$. Then the stacked vector of the increments of $U$: $\mathcal{U} = (U^1_{t_1} -U^1_{t_0}, ...,U^d_{t_1} -U^d_{t_0}, ..., U^1_{t_k} -U^1_{t_{k-1}}, ..., U^d_{t_k} -U^d_{t_{k-1}})^T$ is a $dk$-dim. Gaussian vector, with the identity matrix $\mathcal{I}^{dk}$ as correlation (because of the independence). We can define a $k \times dk$-dim. matrix $A$, such that $A\mathcal{U} = (W_{t_1}-W_{t_0}, ..., W_{t_k-W_{t_k-1}})^T$ which is a linear transformation of $\mathcal{U}$ and therefore still a multivariate Gaussian vector with $\mathcal{I}^{k}$ as correlation matrix. A multivariate Gaussian vector, with identity matrix as correlation is independent, hence $W$ has independent increments.
 		\\
 		\emph{Property $W$ has continuous sample paths a.s.}:\\
 		Let $U^i(\omega)$ be continuous for $\omega \in A_i\subset\Omega$ where $A_i^c$ is a null set. Then $W(\omega) = \sum_{i=1}^{d}a_iU^i(\omega)$ is continuous for $\omega \in \bigcap_{i=1}^dA_i$. Because $\left(\bigcap_{i=1}^dA_i\right)^c = \bigcup_{i=1}^dA^c_i$ is still a null set, we have that also $W$ has continuous sample paths almost surely.
@@ -828,8 +827,26 @@
 		\caption{Paths of $P^d$}
 		\label{fig:survivalprobabilityvisualisation}
 	\end{figure}
-	\\In this example $\mathbb{G}$ captures only the path of $P^{d,*}(t; 4.0)$, which is equal for $\omega = \omega_1, \omega_2$ and $\omega_3$, while $P^d(t; 4.0)(\omega_1) \ne P^d(t; 4.0)(\omega_2) \ne P^d(t; 4.0)(\omega_3)$ for $t = 4.0$.\\
-	With this pathwise probability we will now be able to numerically price credits and credit derivatives.
+	\\In this example $\mathbb{G}$ captures only the path of $P^{d,*}(t; 4.0)$, which is equal for $\omega = \omega_1, \omega_2$ and $\omega_3$, while $P^d(t; 4.0)(\omega_1) \ne P^d(t; 4.0)(\omega_2) \ne P^d(t; 4.0)(\omega_3)$ for $t = 4.0$.
+	\begin{remark}
+		Note that 
+		\begin{align*}
+			q(T_i, \omega) = \dfrac{1 + \Delta  T_i L_i(T_i)(\omega)}{1 + \Delta  T_i L^d_i(T_i)(\omega)}.
+		\end{align*}
+		Furthermore, with the definition of $q(T_i, \omega)$ one can write the total survival probability in terms of the numeraire $B(T_i)$ (corresponding to the Spot measure):
+		\begin{align*}
+			\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i+1} \right\}  \right| \mathcal{G}_{T_i} \right) = \dfrac{B(T_i)}{\prod_{k=0}^{i}(1 + \Delta T_k L^d_k(T_k)(\omega))} = \dfrac{B(T_i)}{B^d(T_i)}.
+		\end{align*}
+		The denominator in this equation can be seen as a "defaultable numeraire".
+	\end{remark}
+	\begin{definition}
+		We call $B^d$ given by:
+		\begin{align*}
+			B^d(t) = P^{d,*}(t;T_{m(t)+1}) \prod_{k=1}^{m(t)}\frac{1}{P^{d,*}(T_k;T_{k+1})} = P^{d,*}(t;T_{m(t)+1}) \prod_{k=1}^{m(t)}(1+\Delta T_k L^d_k(T_k))
+		\end{align*}
+		the \emph{defaultable numeraire}. 
+	\end{definition}
+	Note that due to $B^d$ not being a traded product, it is not a real numeraire. Hence there is not an equivalent martingale measure w.r.t. $B^d$ that we can use to price other products. And yet, we will see that the pricing formula for defaultable products is similar to a change of numeraires with $B^d$. Therefore, let us look at pricing in more detail.
 	
 	
 	
@@ -892,8 +909,30 @@
 	
 	\subsection{General Loan Pricing}
 	Let us first take a look what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time."\cite{corpFinInst}.\\
-	In this sense a loan is nothing else than a fixed coupon bond, where the nominal $N$ represents the debt and the coupons $c_i$ represent the interest.
-	
+	Hence a loan is nothing else than a fixed coupon bond, where the nominal $\mathcal{N}$ represents the debt and the coupons $c_i$ represent the interest.
+	In the case of a non defaultable buyer and a non defaultable seller, "pricing" the loan is therefore nothing else than setting the coupons such that (we assume the same tenor as ):
+	\begin{align}\label{eq:pricingnondefaultableloans}
+		\mathcal{N} \mbeq \sum_{i=1}^{N}c_i P(0;T_i) + \mathcal{N}P(0;T_N)
+	\end{align}
+	\begin{remark}
+		Setting 
+		\begin{align*}
+			c_i = \mathcal{N}\Delta T_iL_i(0)
+		\end{align*}
+		satisfies \cref{eq:pricingnondefaultableloans} and therefore yields a valid loan.
+	\end{remark}
+	\begin{proof}
+		We have 
+		\begin{align*}
+			\Delta T_iL_{i-1}(0) = \frac{P(0;T_{i-1})}{P(0;T_{i})} - 1
+		\end{align*}
+		Inserting in \cref{eq:pricingnondefaultableloans} yields (note $P(0;T_0) = 1$):
+		\begin{align*}
+			\sum_{i=1}^{N}\mathcal{N}\Delta T_iL_i(0) P(0;T_i) + \mathcal{N}P(0;T_N) \\
+			=\sum_{i=1}^{N}\mathcal{N}(\frac{P(0;T_{i-1})}{P(0;T_{i})} - 1) P(0;T_i) + \mathcal{N}P(0;T_N)\\
+			= \sum_{i=1}^{N}\mathcal{N}(P(0;T_{i-1}) - P(0;T_{i})) + \mathcal{N}P(0;T_N) = \mathcal{N}
+		\end{align*}
+	\end{proof}
 	\color{red}Elaborate!!!\color{black}. 
 	%TODO: Elaborate
 	\subsection{Credit Options}
