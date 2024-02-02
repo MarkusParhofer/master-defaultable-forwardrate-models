@@ -736,6 +736,70 @@
 	
 	It is important to note here, that for pricing we are only interested in the behavior of the rates under the martingale measure $\mathbb{Q}^B$ and so we will also only focus on the survival probability under this measure. This means the probability we will derive, is not to be confused with the real world probability of survival.\\
 	
+	As we will work quite a lot with conditional probability and expectation from here on, we will denote for a $\sigma$-algebra $\mathcal{G}$:
+	\begin{align*}
+		\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}}\left[ \; \cdot \; \right] &=  \mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{G} \; \right]\\
+		\mathbb{Q}^B_{\mathcal{G}}\left(\;\cdot \; \right) &= \mathbb{Q}^B\left( \left. \;\cdot \; \right| \mathcal{G} \right).
+	\end{align*} 
+	With the assumption that the short period bond is deterministic w.r.t. the previous LIBOR time, we can derive the price of a zero-coupon bond that only lives inside a LIBOR period:
+	\begin{lemma}
+		For $T_i \le s < t \le T_{i+1}$ it holds that
+		\begin{itemize}
+			\item $P(s;T_{i+1}) = P(s;t)P(t;T_{i+1})$ or 
+			$P(s;t) = \frac{P(s;T_{i+1})}{P(t;T_{i+1})}$ and
+			\item $P^{d,*}(s;T_{i+1}) = P^{d,*}(s;t)P^{d,*}(t;T_{i+1})$ or 
+			$P^{d,*}(s;t) = \frac{P^{d,*}(s;T_{i+1})}{P^{d,*}(t;T_{i+1})}$ for $\tau > s$.
+		\end{itemize}
+	\end{lemma}
+	\begin{proof}
+		Let $T_i \le s < t \le T_{i+1}$. With \Cref{as:LMMShortPeriodBond} we have: 
+		\begin{align*}
+			P(s;T_{i+1}) &= B(s) \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_s}\left[\frac{P(t;T_{i+1})}{B(t)} \right] = P(t;T_{i+1})B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_s}\left[\frac{P(t;t)}{B(t)}\right]\\
+			&=P(t;T_{i+1})P(s;t)
+		\end{align*}
+		We can do a very similar derivation for $P^{d,*}(s;t)$ with \Cref{as:DLMMShortPeriodBond}:
+		\begin{align*}
+			P^{d,*}(s;T_{i+1}) \mathbf{1}_{\{\tau > s\}} &= B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{P^d(t;T_{i+1})}{B(t)} \right]\\
+			&= P^{d,*}(t;T_{i+1}) B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{\mathbf{1}_{\{\tau > t\}}}{B(t)} \right]\\
+			&= P^{d,*}(t;T_{i+1}) B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{P^d(t;t)}{B(t)} \right] \\
+			&= P^{d,*}(t;T_{i+1})P^{d,*}(s;t)\mathbf{1}_{\{\tau > s\}}
+		\end{align*}
+	\end{proof}
+	With this property we can express the probability for the survival inside a LIBOR period w.r.t. the spot measure:
+	\begin{lemma}
+		Let $\mathbb{Q}^B$ be the spot measure. For $T_i \le s < t \le T_{i+1}$ it holds that:
+		\begin{align*}
+			\mathbb{Q}^B_{\mathcal{F}_s}\left(\left  \{\tau > t\} \right| \{\tau > s\}\right) = \dfrac{P^{d,*}(s;t)}{P(s;t)}
+		\end{align*}
+	\end{lemma}
+	\begin{proof}
+		Let $T_i \le s < t \le T_{i+1}$. From the martingale property of $\frac{P^{d}(s;t)}{B(s)}$ we have:
+		\begin{align*}
+				\dfrac{P^{d,*}(s;t)}{P(s;t)} = \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{B(s)}{B(t)}\right]^{-1} B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\left.\frac{\mathbf{1}_{\{\tau > t\}}}{B(t)} \right| \{\tau> s\}\right]\\
+				= \left(\frac{B(s)}{B(t)}\right)^{-1} \frac{B(s)}{B(t)} \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[ \left. \mathbf{1}_{\{\tau > t\}} \right| \{\tau> s\} \right]\\
+				= \mathbb{Q}^B_{\mathcal{F}_s}\left(\left  \{\tau > t\} \right| \{\tau > s\}\right)
+		\end{align*}
+	\end{proof}
+	Setting $s=T_i$ and $t=T_{i+1}$ gives us the one step survival probability:
+	\begin{lemma}
+		Let $B$ be the numeraire under the spot measure, $i = 0, ..., N$.
+		The one-step survival probability until $T_{i+1}$ w.r.t. $\mathcal{F}_{T_i}$ given pre-default is
+		\begin{align}
+			q(T_{i+1}, \omega) := \mathbb{Q}^B_{\mathcal{F}_{T_i}}\left( \left.\left\{\tau(\omega) > T_{i+1} \right\}  \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right) = \frac{P^{d,*}(T_i;T_{i+1})}{P(T_i;T_{i+1})}. \label{eq:oneStepSProbwrtF}
+		\end{align}
+	\end{lemma}
+	\begin{proof}
+		Can directly be derived from the lemma above with $s=T_i$ and $t=T_{i+1}$.
+	\end{proof}
+	
+	
+	
+	
+	
+	
+	\begin{comment}
+	% Old version --------------------------------
+	
 	Let us start by stating an assumption that is important for the derivation:
 	\begin{assumption}
 		The default time $\tau(\omega)$ has a stochastic driver, that is not fully dependent on the Brownian-Motion $U$. \\
@@ -819,7 +883,12 @@
 			&= \prod_{k=1}^{i}q(T_k, \omega)
 		\end{align*}
 	\end{proof}
-	Note, that while we calculate a probability here, it is a \emph{pathwise} probability. At first glance this seems counter-intuitive, but consider this: $\mathbb{G}$ does not capture the default state. I.e. while we can calculate $P^{d,*}(t;T_i)$, the default might have already happened, which we would not know, even past $t$ and $T_i$. This is why we can and need to calculate the survival probability even when given $P^{d,*}(t;T_i)$.\\
+	\end{comment}
+	
+	Note, that while we calculate a probability here, it is a \emph{pathwise} probability: at each start of a LIBOR period $T_i$ - if default has not happened yet - we can evaluate how probable it is that $P^d$ survives the coming period.
+	\begin{comment}
+	Note, that while we calculate a probability here, it is a \emph{pathwise} probability.
+	At first glance this seems counter-intuitive, but consider this: $\mathbb{G}$ does not capture the default state. I.e. while we can calculate $P^{d,*}(t;T_i)$, the default might have already happened, which we would not know, even past $t$ and $T_i$. This is why we can and need to calculate the survival probability even when given $P^{d,*}(t;T_i)$.\\
 	\Cref{fig:survivalprobabilityvisualisation} illustrates this concept in a very simplified and discretized example.
 	\begin{figure}[h]
 		\centering
@@ -828,17 +897,32 @@
 		\label{fig:survivalprobabilityvisualisation}
 	\end{figure}
 	\\In this example $\mathbb{G}$ captures only the path of $P^{d,*}(t; 4.0)$, which is equal for $\omega = \omega_1, \omega_2$ and $\omega_3$, while $P^d(t; 4.0)(\omega_1) \ne P^d(t; 4.0)(\omega_2) \ne P^d(t; 4.0)(\omega_3)$ for $t = 4.0$.
+	\end{comment}
+	\\Let us define a new value:
+	\begin{definition}
+		Let $i \in \{1, ..., N\}$. We define the random variable $Q$ as
+		\begin{align*}
+			Q(T_i, \omega) = \prod_{j=1}^{i}q(T_j, \omega)
+		\end{align*}
+	\end{definition}
+	While $Q$ in theory has no stochastic meaning, yet, we can view it as the pathwise survival probability until $T_i$, if we have no information regarding the actual default state even at time $T_i$. Note that this is an \emph{interpretation} and the actual proof for this statement needs extra assumptions \color{red}[Attach proof for this?]\color{black}.\\
+	What we actually will proof in the next chapter is that the total survival probability until $T_i$ is given by the expectation of $Q$:
+	\begin{align*}
+		\mathbb{Q}^B\left(\{\tau > T_i\}\right) = \mathbb{E}^{\mathbb{Q}^B} \left[Q(T_i;\omega)\right]
+	\end{align*}
+	Let us rewrite the before derived/defined values in terms of $L$ and $L^d$:
 	\begin{remark}
 		Note that 
 		\begin{align*}
-			q(T_i, \omega) = \dfrac{1 + \Delta  T_i L_i(T_i)(\omega)}{1 + \Delta  T_i L^d_i(T_i)(\omega)}.
+			q(T_{i+1}, \omega) = \dfrac{1 + \Delta  T_i L_i(T_i)(\omega)}{1 + \Delta  T_i L^d_i(T_i)(\omega)}.
 		\end{align*}
-		Furthermore, with the definition of $q(T_i, \omega)$ one can write the total survival probability in terms of the numeraire $B(T_i)$ (corresponding to the Spot measure):
+		Furthermore, with the definition of $q(T_i, \omega)$ one can rewrite $Q$ in terms of the numeraire $B(T_i)$ (corresponding to the Spot measure):
 		\begin{align*}
-			\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i+1} \right\}  \right| \mathcal{G}_{T_i} \right) = \dfrac{B(T_i)}{\prod_{k=0}^{i}(1 + \Delta T_k L^d_k(T_k)(\omega))} = \dfrac{B(T_i)}{B^d(T_i)}.
+			Q\left( T_{i+1}, \omega \right) = \dfrac{B(T_i)}{\prod_{k=0}^{i}(1 + \Delta T_k L^d_k(T_k)(\omega))} =: \dfrac{B(T_i)}{B^d(T_i)}.
 		\end{align*}
-		The denominator in this equation can be seen as a "defaultable numeraire".
+		Note that $Q(T_i, \omega)$ is $\mathcal{F}_{T_{i-1}}$-measurable.
 	\end{remark}
+	The denominator in this equation can be seen as a "defaultable numeraire", which we define next:
 	\begin{definition}
 		We call $B^d$ given by:
 		\begin{align*}
@@ -846,7 +930,7 @@
 		\end{align*}
 		the \emph{defaultable numeraire}. 
 	\end{definition}
-	Note that due to $B^d$ not being a traded product, it is not a real numeraire. Hence there is not an equivalent martingale measure w.r.t. $B^d$ that we can use to price other products. And yet, we will see that the pricing formula for defaultable products is similar to a change of numeraires with $B^d$. Therefore, let us look at pricing in more detail.
+	Due to $B^d$ not being a traded product, it is not a real numeraire. Hence there is not an equivalent martingale measure w.r.t. $B^d$ that we can use to price other products. And yet, we will see that the pricing formula for defaultable products is similar to a change of numeraires with $B^d$. Therefore, let us look at pricing in more detail.
 	
 	
 	
@@ -855,13 +939,33 @@
 	
 	\pagebreak
 	\section{Loans and Credit Option Pricing}
-	A model is useless without a practical application for it. Therefore, we take a look at how to apply our results to pricing loans and credit options.\\
+	A model is useless without a practical application for it. Hence we take a look at how to apply our results to pricing loans and credit options.\\
 	Note here, that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo Methods to approximate the expectation.\\
-	Note that all model primitives are $\mathbb{G}$-adapted, as $\mathbb{G}$ is the filtration over the only simulated stochastic processes (in our case the Brownian-Motion $U$). In this sense the default time/state is therefore not one of the model primitives.
+	For a start let us define our simulation filtration:
+	\begin{definition}
+		The filtration $\mathbb{G} := (\mathcal{G}_t)_{t\in\left[0;\tilde{T}\right]}$ is given by
+		\begin{align*}
+			\mathcal{G}_t := \sigma(U^k_t | k = 1, ..., m^d) \subset \mathcal{F}_t \quad \forall t \in  [0;\tilde{T}].
+		\end{align*}
+	\end{definition}
+	Note that all model primitives are $\mathbb{G}$-adapted, as $\mathbb{G}$ is the filtration over the only simulated stochastic processes (in our case the Brownian-Motion $U$). As mentioned before we are interested in pricing without simulating the default time $\tau$, which might be driven by other stochastic values. This means that $\tau$ is not necessarily a stopping time w.r.t. $\mathbb{G}$.
 	
 	\subsection{General Application}
-	In this short subsection, we will derive a general pricing methodology before moving to specific products.\\
-	Assume a $T_i$-claim $X$ that has a payoff that is dependent on survival of the defaultable bonds. We can then use the pricing methodology described in te following lemma.
+	In this subsection, we will derive a general pricing methodology before moving to specific products.\\
+	A problem is, that our model does not capture default. This is illustrated in \cref{fig:survivalprobabilityvisualisation}.
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\linewidth]{SurvivalProbability}
+		\caption{Paths of $P^d$}
+		\label{fig:survivalprobabilityvisualisation}
+	\end{figure}
+	\\While the model simulates only paths of $P^{d,*}(t; T_i)$ (in the figure $P^{d,*}(t; 4.0)$), there are indefinitely many paths of $P^d(t;T_i)$ (in the figure $P^d(t; 4.0)(\omega_j)$ for $j=1,2,3$) which satisfy
+	\begin{align*}
+		P^d(t;T_i) = P^{d,*}(t;T_i)(1 - J(t)),
+	\end{align*} 
+	but are not equal.\\
+	We will therefore use a trick and replace the default state $1-J(t)$ in all our pricing formulas with the random variable $Q$ that we defined in the previous chapter. \\
+	To proof this works, assume a $T_i$-claim $X$ that has a payoff that is dependent on survival of the defaultable bonds. We can then use the pricing methodology described in te following lemma.
 	\begin{lemma}
 		Let $X$ be a payoff at $T_i \in \{T_1, ..., T_N\}$, with
 		\begin{align*}
@@ -870,23 +974,32 @@
 		where $X^S$ is the payoff conditional pre-default. Let $X^S$ be $\mathcal{G}_{T_i}$-measurable.\\
 		Then the price at time $t=0$ is
 		\begin{align*}
-			\Pi^X = \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} \mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_i} \right) \right].
+			\Pi^X = \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} Q\left(T_i,\omega\right) \right].
 		\end{align*}
 	\end{lemma}
-	With this lemma and the pathwise survival probability derived in the last section, we can express the claim price in terms of model primitives. The proof for this statement is quite straightforward:
-	\begin{proof} Note that $X$ itself is not $\mathcal{G}_{T_i}$-measurable and $B(T_0) = 1$. We have:
+	Note that by construction $Q(T_i, \omega)$ is $\mathcal{G}_{T_i}$-measurable, which means, we have a price in terms of model primitives. Let us now proof this statement.
+	\begin{proof} 
+		For our proof we will use following property of the conditional expectation extensively:
 		\begin{align*}
-			\Pi^X &=  \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X}{B(T_i)}\right]
-			= \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right]\\
-			&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}}\right]\right]\\
-			&= \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[ 
-			\mathbf{1}_{\{\tau(\omega) > T_i\}} 
-			\right] \right]\\
-			&= \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} \mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_{i-1}} \right) \right],
+			\mathbb{E}^{\mathbb{Q}^B}\left[Y\right] = \mathbb{E}^{\mathbb{Q}^B}\left[Y | A\right]\mathbb{Q}^B(A) + \mathbb{E}^{\mathbb{Q}^B}\left[Y | A^c\right]\mathbb{Q}^B(A^c) \tag{A}
 		\end{align*}
-		where we used \cref{as:survivalProbNoChange} for the last equation.
+		for any set $A \in \mathcal{F}$.\\
+		For ease of notation we write $q(T_i):= q(T_i, \omega)$ and $Q(T_i):= Q(T_i, \omega)$ Note $B(T_0) = 1$. We have:
+		\begin{align*}
+			\Pi^X &=  \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right]\tag{B}\\
+			&=
+			\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_1\} \right]q(T_1) \tag{C}\\
+			&=
+			\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_1}}\left[\left.q(T_1)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_1\}\right] \right]\tag{D}\\
+			&=
+			\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_1}}\left[\left.q(T_1)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] q(T_2)\right]\tag{E}\\
+			&=\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_2}}\left[\left.Q(T_2)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] \right]\tag{F}\\
+			&=...\\
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_i}}\left[\left.Q(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_i\}\right] \right] \tag{G}\\
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[Q(T_i)\frac{X^S}{B(T_i)}\right],
+		\end{align*}
+		where we used (A) from eq. (B) to (C), then the tower property and the fact that $q(T_1)$ is a constant from (C) to (D). Then we repeat these steps until eq. (G) always keeping in mind $q(T_j)$ is $\mathcal{F}_{T_i}$-measurable for all $j \le i$.
 	\end{proof}
-	
 	This methodology can easily be extended to products where only parts of the payoff are dependent on survival and even where other parts are dependent on default:
 	
 	\begin{lemma}
@@ -898,23 +1011,46 @@
 		Then the price at time $t=0$ is
 		\begin{align*}
 			\Pi^X =& \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^O}{B(T_i)} \right]
-			+\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} \mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_i} \right) \right]\\
-			&+\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^D}{B(T_i)} \left(1 - \mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_i} \right)\right) \right].
+			+\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} Q(T_i) \right] + \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^D}{B(T_i)} \left(1 - Q(T_i)\right) \right].
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
-		The proof is similar to the proof above.
+		For the parts $X^O$ and $X^S$ the statement clear. For $X^D$ we have:
+		\begin{align*}
+			\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^D}{B(T_i)} J(T_i) \right]
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^D}{B(T_i)}\right] - \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^D}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right]\\
+			&=\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^D}{B(T_i)} \left(1 - Q(T_i)\right) \right]
+		\end{align*}
+		with the same arguments as in the lemma before.
 	\end{proof}
+	Lets re-evaluate the above equation with our expression for the $Q$. One might notice that pricing defaultable products is similar to a change of numeraire with the defaultable numeraire: 
+	\begin{align}\label{eq:defaultableclaimvaluation}
+		\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} Q(T_i) \right] =
+		\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B^d(T_i)} \right].
+	\end{align}
+	While this cannot hold up as a proof, it can be used as an intuitive explanation: we exchange the theoretical time value of future money with one that also accounts for default possibilities.\\
+	With this expression it is also easy to derive an alternative numerical price for the defaultable zero-coupon bonds, by setting $X^S=1$:
+	\begin{align*}
+		P^d(0;T_i) = P^{d,*}(0;T_i) = \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{1}{B^d(T_i)} \right]
+	\end{align*}
+	While we normally have the analytic value of $P^d(0, T_i)$ as an input value to our model (or at least calibrated from other input values), the numerical price can act as an error measurement for the model we create. Furthermore, we can later use it as a control variate in pricing.\\
+	We can also get a numerical expression for the total survival probability, because setting
+	$X^S = B(T_i)$ and pricing the claim yields:
+	\begin{align*}
+		\Pi^X &= \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}}\right] = \mathbb{E}^{\mathbb{Q}^B}\left[ \mathbf{1}_{\{\tau(\omega) > T_i\}}\right]
+		= \mathbb{Q}^B(\{\tau > T_i\})\\
+		&= \mathbb{E}^{\mathbb{Q}^B}\left[ Q(T_i)\right]
+	\end{align*}
 	With these formulas we now have an expression for claim prices in terms of an expectation over model primitives. We can therefore move to more specific products now.
 	
 	\subsection{General Loan Pricing}
 	Let us first take a look what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time."\cite{corpFinInst}.\\
 	Hence a loan is nothing else than a fixed coupon bond, where the nominal $\mathcal{N}$ represents the debt and the coupons $c_i$ represent the interest.
-	In the case of a non defaultable buyer and a non defaultable seller, "pricing" the loan is therefore nothing else than setting the coupons such that (we assume the same tenor as ):
+	In the non defaultable case, "pricing" the loan is therefore nothing else than setting the coupons such that (we assume the same coupon tenor as LIBOR tenor):
 	\begin{align}\label{eq:pricingnondefaultableloans}
 		\mathcal{N} \mbeq \sum_{i=1}^{N}c_i P(0;T_i) + \mathcal{N}P(0;T_N)
 	\end{align}
-	\begin{remark}
+	\begin{remark}\label{rem:nativecouponsforloans}
 		Setting 
 		\begin{align*}
 			c_i = \mathcal{N}\Delta T_iL_i(0)
@@ -933,6 +1069,40 @@
 			= \sum_{i=1}^{N}\mathcal{N}(P(0;T_{i-1}) - P(0;T_{i})) + \mathcal{N}P(0;T_N) = \mathcal{N}
 		\end{align*}
 	\end{proof}
+	Let us look at the defaultable case:
+	\begin{lemma}
+		The price of a coupon paying bond which has defaultable cashflows is:
+		\begin{align*}
+			\mathcal{N} = \sum_{i=1}^{N}c_i P^{d,*}(0;T_i) + \mathcal{N}P^{d,*}(0;T_N)
+		\end{align*}
+	\end{lemma}
+	\begin{proof}
+		Let $c\in \mathbb{R}$ be constant. Then for $i \in \{1, ..., N\}$:
+		\begin{align*}
+			\mathbb{E}^{\mathbb{Q}^B}\left[\frac{c\;\mathbf{1}_{\left\{\tau(\omega) > T_{i} \right\}}}{B(T_i)}\right]\\
+			= c \; \mathbb{E}^{\mathbb{Q}^B}\left[ 
+			\frac{P^d(T_i;T_i)}{B(T_i)} \right]\\
+			= c \; P^d(0;T_i) = c \; P^{d,*}(0;T_i).
+		\end{align*}
+		Replacing $c$ with $c_i$, $\mathcal{N}$ repectively, and taking the sum yields the statement.
+	\end{proof}
+	A loan, where the debtor is defaultable hence must satisfy:
+	\begin{align*}
+		\mathcal{N} \mbeq \sum_{i=1}^{N}c_i P^{d,*}(0;T_i) + \mathcal{N}P^{d,*}(0;T_N)
+	\end{align*}
+	We again have a natural solution to this equation. With the same arguments as for \Cref{rem:nativecouponsforloans} we find that setting
+	\begin{align*}
+		c_i = \mathcal{N}\Delta T_iL^d_i(0)
+	\end{align*}
+	yields a valid loan.\\
+	Note that for a simple loan it does not matter if the creditor is defaultable, because they have no debt w.r.t. the loan after $t=0$ and in case of their default the pending claim would still be collected.\\
+	Let us take a look at a future on defaultable loans, or rather a future on a defaultable coupon paying bond. 
+	Remember that in contrast to an option a future brings the obligation to enter into an agreement.
+	Hence from the debtors point of view we have a payoff function
+	\begin{align*}
+		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau > T_s\}}
+	\end{align*}
+	where $T_s$ is the start time of our b
 	\color{red}Elaborate!!!\color{black}. 
 	%TODO: Elaborate
 	\subsection{Credit Options}
