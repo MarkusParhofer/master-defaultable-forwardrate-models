@@ -31,6 +31,8 @@
 \newcommand{\mbeq}{\overset{!}{=}}
 
 % Paths to java files. Note these might give errors when working on a different computer
+\newcommand{\finmathlib}{C:/Users/marku/IdeaProjects/finmath-lib/src/main/java/net/finmath}
+\newcommand{\libMC}{\finmathlib/montecarlo}
 \newcommand{\codepath}{C:/Users/marku/IdeaProjects/master-thesis-default-forward-rate-models/src}
 \newcommand{\codepathmodels}{\codepath/main/java/info/quantlab/masterthesis}
 \newcommand{\codedlmm}[1]{\codepathmodels/defaultablelibormodels/#1}
@@ -51,24 +53,24 @@
 \captionsetup[figure]{skip=0pt}
 
 
-\lstset{language=Java,%
-	basicstyle=\ttfamily\scriptsize,
-	backgroundcolor=\color{codebackground},
-	breaklines=true,%
-	breakatwhitespace,
-	captionpos=b,
-	columns=fullflexible,
-	postbreak=\mbox{ \space},
-	morekeywords={java2tikz},
-	keywordstyle=\color{orange},%
-	morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
-	identifierstyle=\color{black},%
-	stringstyle=\color{mygreen},
-	commentstyle=\color{mydarkgreen},%
-	showstringspaces=false,%without this there will be a symbol in the places where there is a space
-	numbers=left,%
-	numberstyle={\tiny \color{black}},% size of the numbers
-	numbersep=9pt, % this defines how far the numbers are from the text
+\lstset{
+	language			=Java,%
+	basicstyle			=\ttfamily\scriptsize,
+	backgroundcolor		=\color{codebackground},
+	breaklines			=true,%
+	breakatwhitespace	=true,
+	postbreak			=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+	captionpos			=b,
+	morekeywords		={java2tikz},
+	keywordstyle		=\color{orange},%
+	morekeywords		=[2]{1}, keywordstyle=[2]{\color{black}},
+	identifierstyle		=\color{black},%
+	stringstyle			=\color{mygreen},
+	commentstyle		=\color{mydarkgreen},%
+	showstringspaces	=false,%without this there will be a symbol in the places where there is a space
+	numbers				=left,%
+	numberstyle			=\tiny\color{black},% size of the numbers
+	numbersep			=9pt, % this defines how far the numbers are from the text
 	%emph=[1]{for,end,break},emphstyle=[1]\color{orange}, %some words to emphasise
 	%emph=[2]{word1,word2}, emphstyle=[2]{style},    
 }
@@ -490,6 +492,7 @@
 	
 	\pagebreak
 	\section{Defaultable LIBOR Market Models}
+	
 	In this section we will introduce defaultable LIBOR market models that we can use to value credits and credit options.\\
 	Our main source for this section is the article "Defaultable Discrete Forward Rate Model with Covariance Structure guaranteeing Positive Credit Spreads" authored by Christian Fries \cite{FriesDLMM}.
 
@@ -1102,7 +1105,12 @@
 	\begin{align*}
 		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau > T_s\}}
 	\end{align*}
-	where $T_s$ is the start time of our b
+	where $T_s$ is the start time of the bond and for ease of notation the terminal coupon $c_N$ includes the terminal payment of the nominal $\mathcal{N}$.\\
+	This payoff function gives us a direct approach to price the product:
+	\begin{align*}
+		\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)}{B(T_s)}Q(T_s)\right]\\
+		&= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)}{B^d(T_s)}\right]
+	\end{align*}
 	\color{red}Elaborate!!!\color{black}. 
 	%TODO: Elaborate
 	\subsection{Credit Options}
@@ -1184,7 +1192,11 @@
 	\subsubsection*{RandomVariable}
 	%TODO: Write Section
 	\subsubsection*{ProcessModel}
-	The \texttt{ProcessModel} interface is the finMath equivalent of an SDE. It specifies that any implementation has methods for getting the drift and the factor loadings, which can then be used in other implementations e.g. for simulating the specified model.
+	The \texttt{ProcessModel} interface is the finMath equivalent of an SDE. It specifies that any implementation has methods for getting the initial state, the drift and the factor loadings.
+	
+	\lstinputlisting[caption={The  \texttt{ProcessModel} interface}, label={lst:javaCode}, firstnumber=1, linerange={47, 63, 75, 99, 110, 129, 152, 174}, breaklines=true, breakatwhitespace=true ]{\libMC/model/ProcessModel.java}
+	
+	We can use a \texttt{ProcessModel} as a plug in to numerical schemes simulating an SDE such as \texttt{EulerSchemeFromProcessModel}.
 	\subsubsection*{LIBORCovarianceModel}
 	%TODO: Write Section
 	\subsubsection*{MonteCarloProcess}
@@ -1194,14 +1206,20 @@
 	
 	To use the full flexibility of the finMath Library, the implementation of our models is structured in the same way: we have an Interface for the defaultable LIBOR market model which extends the \texttt{ProcessModel}:	
 	\lstinputlisting[caption={Declaration of \texttt{DefaultableLIBORMarketModel}}, label={lst:javaCode}, firstnumber=12, linerange={12} ]{\codedlmm{DefaultableLIBORMarketModel.java}}
+	
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\linewidth]{ClassDiagramDefaultableLIBORMarketModel}
 		\caption{Using \texttt{DefaultableLIBORMarketModel} as Plug-In for \texttt{MonteCarloProcess}}
 		\label{fig:classdiagramdlmm}
 	\end{figure}
-	\Cref{fig:classdiagramdlmm}  shows how we can use classes implementing this interface:
-	The \texttt{DefaultableLIBORMarketModel} can be used as a plug in for a class implementing the \texttt{MonteCarloProcess} interface, which calls SDE-methods of the \texttt{ProcessModel} to pre-calculate the process. Calls to \texttt{getFactorLoading(...)} should be delegated to the \texttt{DefaultableLIBORCovarianceModel}, as we can then reuse the code of \texttt{DefaultableLIBORMarketModel}, even though creating different kinds of covariance (factor-loading-) models. When needed the process values are accessed by the \texttt{DefaultableLIBORMarketModel} through an input parameter. We therefore have a clean seperation of model specifications and simulation.
+	
+	Let us take a look at the cooperation between our model and the numerical scheme simulating the Process in \Cref{fig:classdiagramdlmm}.\\
+	The \texttt{DefaultableLIBORMarketModel} can be used as a plug in for a class implementing the \texttt{MonteCarloProcess} interface, which calls SDE-methods of the \texttt{ProcessModel} to pre-calculate the process. Calls to \texttt{getFactorLoading(...)} should be delegated to the \texttt{DefaultableLIBORCovarianceModel}, as we can then reuse the code of \texttt{DefaultableLIBORMarketModel}, even though creating different kinds of covariance (factor-loading-) models. 
+	
+	Note here, that we also extend the \texttt{LIBORMarketModel}. This however does not necessarily mean, that the SDE specified by the \texttt{ProcessModel} simulates the LIBOR rates. 
+	In fact the process values approximating the SDE are accessed by our model through input parameters and can be processed further. We therefore have a clean separation of model specifications and simulation.\\
+	A way to 
 	
 	
 	
