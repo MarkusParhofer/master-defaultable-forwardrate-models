@@ -152,14 +152,14 @@
 	
 	\pagebreak
 	\section{Fundamentals}
-	In this section we provide some fundamentals for the thesis. Many of the results mentioned here can also be found in different versions in other scientific papers. We will stick to source 
+	In this section we provide some fundamentals for the thesis. Many of the results mentioned here can also be found in different versions in other scientific papers. We stick to source 
 	\color{red}[Add source] \color{black} %TODO: Add source
 	for more theoretical and source 
 	\color{red}[Add source] \color{black} %TODO: Add source
 	for more application-oriented results.
 	
 	\subsection{Probability Theory}
-	In our whole thesis we will assume a filtered probability space
+	In our whole thesis we assume a filtered probability space
 	\begin{align*}
 		(\Omega, \mathcal{F}, \mathbb{F}, \mathbb{Q})
 	\end{align*}
@@ -198,7 +198,7 @@
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
-		See \cite{fima2Lecture}.
+		See \cite{fima2Lecture}. %TODO: Add line where this is done.
 	\end{proof}
 	\begin{theorem}
 		Let $X$ be an Itô stochastic process, $f: \mathbb{R}^n \times [0;\tilde{T}] \rightarrow \mathbb{R}, \; (x,t) \rightarrowtail f(x, t)$ be two times differentiable in $x$ and differentiable in $t$. Then
@@ -209,7 +209,7 @@
 		
 	\end{theorem}
 	\begin{proof}
-		See \cite{fima2Lecture}.
+		See \cite{fima2Lecture}. %TODO: Add line where this is done.
 	\end{proof}
 	
 	Through Itô's formula we can prove the following statement.
@@ -217,17 +217,16 @@
 		Let $W=(W^i)_{i\in \{1, ..., d\}}$ be a d-dimensional Brownian Motion, $\mu$ be a 1- dimensional and $\sigma = (\sigma^i)_{i\in \{1, ..., d\}}$ a $d$-dimensional stochastic process. Let following stochastic differential equation (SDE) be given:
 		\begin{align}\label{eq:lognormalSDE}
 			\begin{aligned}
-				dY_t = Y_t \mu_t dt + Y_t \sigma_t \cdot dW_t,\\
-				Y_0 = y,
+				dY_t &= Y_t \mu_t dt + Y_t \sigma_t \cdot dW_t,\\
+				Y_0 &= y,
 			\end{aligned}
 		\end{align}
 		where $y > 0$.\\
-		Then solving \cref{eq:lognormalSDE} is equivalent to solving
-		\begin{align}\label{eq:lognormalSDENormalized}
+		Then the solution of \cref{eq:lognormalSDE} is \begin{align}\label{eq:lognormalSDENormalized}
 			\begin{aligned}
-				Y_t = \exp(X_t),\\
-				dX_t = (\mu_t - \frac{1}{2}\sum_{i=1}^{d}(\sigma^i_t)^2)dt + \sigma_t \cdot dW_t,\\
-				X_0 = \log(y).
+				Y_t &= \exp(X_t),\\
+				X_t &= X_0 + \int_{0}^{t}\mu_s - \frac{1}{2}\sum_{i=1}^{d}(\sigma^i_s)^2ds + \int_{0}^{t}\sigma_s \cdot dW_s,\\
+				X_0 &= \log(y).
 			\end{aligned}
 		\end{align}
 	\end{lemma}
@@ -245,7 +244,7 @@
 		which yields \cref{eq:lognormalSDE}.
 	\end{proof}
 	\begin{remark}
-		It is easy to see, that because of the relation 
+		It is easy to see that because of the relation 
 		\begin{align*}
 			Y_t = \exp(X_t),
 		\end{align*}
@@ -253,7 +252,7 @@
 	\end{remark}
 	
 	\subsection{Financial Mathematics}
-	While the reader should have a deep understanding of what arbitrage is and how to avoid it when pricing financial products, we will formulate some fundamental results as a reminder.
+	While the reader should have a deep understanding of what arbitrage is and how to avoid it when pricing financial products, we formulate some fundamental results as a reminder.
 	\begin{theorem}
 		Following statements are equivalent:
 		\begin{itemize}
@@ -262,7 +261,7 @@
 		\end{itemize}
 	\end{theorem}
 	\begin{proof}
-		See \cite{fima2Lecture}.
+		See \cite{fima2Lecture}. %TODO: Add line where this is done.
 	\end{proof}
 	This directly give us a notation for the price of any product in an arbitrage free and complete market.
 	\begin{lemma}
@@ -272,7 +271,7 @@
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
-		See \cite{fima2Lecture}.
+		See \cite{fima2Lecture}. %TODO: Add line where this is done.
 	\end{proof}
 	 \color{red}Elaborate!!!\color{black}. 
 	%TODO: Elaborate
@@ -294,7 +293,7 @@
 		d\left\langle W^{\mathbb{Q}, 1}, W^{\mathbb{Q}, 2} \right\rangle_t = \rho_t dt.
 	\end{align*}
 	However implementation-wise we need to simulate SDEs using only independent Brownian-Motions.\\
-	For our computations we will stick to a constant instantaneous correlation $\rho = \rho_t \in \mathbb{R}$, so lets formulate this assumption first:
+	For our computations we stick to a constant instantaneous correlation ($\rho_t \equiv \rho\in \mathbb{R} \quad \forall t \in \left[0;\tilde{T}\right]$), so lets formulate this assumption first:
 	\begin{assumption}
 		For all $1$-dim.Brownian-Motions under the martingale measure $\mathbb{Q}^B$ the instantaneous correlation is assumed to be constant. That is for any $\mathbb{Q}^B$-Brownian-Motions $W^1$ and $W^2$ the following holds for some $\rho \in \mathbb{R}$:
 		\begin{align*}
@@ -302,15 +301,15 @@
 		\end{align*}
 	\end{assumption}
 	Let us now look at how to simulate correlated Brownian-Motions using only independent ones by taking advantage of its properties.\\
-	Recall following Lemmatas:
+	Recall following Lemmata:
 	\begin{lemma}
 		$W = (W^i)_{i\in\{1, ..., d\}}$ is a $d$-dimensional Brownian-Motion if and only if $W^1, ..., W^d$ are independent 1-dimensional Brownian-Motions
 	\end{lemma}
 	\begin{proof}
-		See \cite{fima2Lecture}.
+		See \cite{fima2Lecture}. %TODO: Add line where this is done.
 	\end{proof}
 	\begin{lemma}\label{lm:linearcombiofbmisbm}
-		For any $d$-dimensional standard Brownian-Motion $U = (U^i)_{i\in\{1, ..., d\}}$ and weights $(a_i)_{i\in\{1,...d\}}$ with $a^2_1 + ... + a^2_d = 1$ it holds, that the process $W$ given by:
+		For any $d$-dimensional standard Brownian-Motion $U = (U^i)_{i\in\{1, ..., d\}}$ and weights $(a_i)_{i\in\{1,...d\}}$ with $a^2_1 + ... + a^2_d = 1$ it holds that the process $W$ given by:
 		\begin{align*}
 			W_t = \sum_{i=1}^{d}a_iU^i_t
 		\end{align*}
@@ -328,7 +327,7 @@
 			&\sim \mathcal{N}\left(0, (t-s)\right)
 		\end{align*}
 		\emph{Property $W$ has stationary independent increments}:\\
-		Stationarity is given by the last property. Let $0 \le t_0 < t_1 <...<t_k \le \tilde{T}$. Then the stacked vector of the increments of $U$: $\mathcal{U} = (U^1_{t_1} -U^1_{t_0}, ...,U^d_{t_1} -U^d_{t_0}, ..., U^1_{t_k} -U^1_{t_{k-1}}, ..., U^d_{t_k} -U^d_{t_{k-1}})^T$ is a $dk$-dim. Gaussian vector, with the identity matrix $\mathcal{I}^{dk}$ as correlation (because of the independence). We can define a $k \times dk$-dim. matrix $A$, such that $A\mathcal{U} = (W_{t_1}-W_{t_0}, ..., W_{t_k-W_{t_k-1}})^T$ which is a linear transformation of $\mathcal{U}$ and therefore still a multivariate Gaussian vector with $\mathcal{I}^{k}$ as correlation matrix. A multivariate Gaussian vector, with identity matrix as correlation is independent, hence $W$ has independent increments.
+		Stationarity is given by the last property. Let $0 \le t_0 < t_1 <...<t_k \le \tilde{T}$. Then the stacked vector of the increments of $U$: $\mathcal{U} = (U^1_{t_1} -U^1_{t_0}, ...,U^d_{t_1} -U^d_{t_0}, ..., U^1_{t_k} -U^1_{t_{k-1}}, ..., U^d_{t_k} -U^d_{t_{k-1}})^T$ is a $dk$-dim. Gaussian vector, with the identity matrix $\mathcal{I}^{dk}$ as correlation (because of the independence). We can define a $k \times dk$-dim. matrix $A$, such that $A\mathcal{U} = (W_{t_1}-W_{t_0}, ..., W_{t_k}-W_{t_k-1})^T$ which is a linear transformation of $\mathcal{U}$ and therefore still a multivariate Gaussian vector with $\mathcal{I}^{k}$ as correlation matrix. A multivariate Gaussian vector, with identity matrix as correlation is independent, hence $W$ has independent increments.
 		\\
 		\emph{Property $W$ has continuous sample paths a.s.}:\\
 		Let $U^i(\omega)$ be continuous for $\omega \in A_i\subset\Omega$ where $A_i^c$ is a null set. Then $W(\omega) = \sum_{i=1}^{d}a_iU^i(\omega)$ is continuous for $\omega \in \bigcap_{i=1}^dA_i$. Because $\left(\bigcap_{i=1}^dA_i\right)^c = \bigcup_{i=1}^dA^c_i$ is still a null set, we have that also $W$ has continuous sample paths almost surely.
@@ -366,7 +365,7 @@
 	\begin{proof}
 		This is a direct implication from the previous results together with the definition of PCA and the proof that it works in \color{red}[Add source]\color{black}. %TODO: Add source
 	\end{proof}
-	We now have a way of constructing correlated Brownian Motions. As mentioned we can perform a factor reduction with PCA, meaning we can construct $d$ correlated Brownian-Motions with $m < d$. This comes at the cost of "losing" a bit of the independence of some factors. But because in most cases the advantages of a factor reduction (less computational cost) outweigh the disadvantages, we will from here on assume, that the correlation- and factor loading matrix are not of the same size.
+	We now have a way of constructing correlated Brownian Motions. As mentioned we can perform a factor reduction with PCA, meaning we can construct $d$ correlated Brownian-Motions with $m < d$. This comes at the cost of "losing" a bit of the independence of some factors. But because in most cases the advantages of a factor reduction (less computational cost) outweigh the disadvantages, we from here on assume that the correlation- and factor loading matrix are not of the same size.
 	
 	
 	
@@ -545,15 +544,15 @@
 	\pagebreak
 	\section{Defaultable LIBOR Market Models}
 	
-	In this section we will introduce defaultable LIBOR market models that we can use to value credits and credit options.\\
+	In this section we introduce defaultable LIBOR market models that we can use to value credits and credit options.\\
 	Our main source for this section is the article "Defaultable Discrete Forward Rate Model with Covariance Structure guaranteeing Positive Credit Spreads" authored by Christian Fries \cite{FriesDLMM}.
 
 	\subsection{The Defaultable Forward Rate}
 		We remain in the same setting as in the non-defaultable model, where we have a LIBOR tenor discretization \((T_i)_{i\in\{0, 1, ..., N\}}\) and a set of (non-defaultable) zero coupon bonds \((P(t;T_i))_{i\in\{0, 1, ..., N\}}\). Hence we can define the same products and apply the same valuation formulas.\\
 		We extend the model by defining an additional set of zero coupon bonds which are defaultable: \((P^d(t;T_i))_{i\in\{0, ..., N\}}\).\\
-		Note here, that by construction we must still use the riskless bonds for the calculation of the Numeraire, as one can not use a risky asset as numeraire.
-		Furthermore we will \color{red}- for now - \color{black} not consider recovery rates, i.e. we assume that a party is either able to pay all or nothing.
-		We will now introduce the concept of default and defaultable zero coupon bonds.
+		Note here that by construction we must still use the riskless bonds for the calculation of the Numeraire, as one can not use a risky asset as numeraire.
+		Furthermore we do not consider recovery rates, i.e. we assume that a party is either able to pay all or nothing.
+		We now introduce the concept of default and defaultable zero coupon bonds.
 	\begin{definition}
 		The \emph{default time} is a stopping time \(\tau(\omega)\) on the Filtration \((\mathcal{F}_t)_{t\in \mathbb{R}^+}\).\\
 		The \emph{default indicator} \(J(t)\) is the indicator process over the default time:
@@ -564,7 +563,7 @@
 		The \emph{Defaultable Zero Coupon Bond} with price process \[P^d(t; T_i)\] at time \(t \in \left[0, T\right]\) is a traded asset that pays \(1 - J(T_i)\) at maturity  \(T_i \in \{T_0, ..., T_N\}\).\\
 		Hence it pays 1 if the default has not happened until maturity. 
 	\end{definition}
-	It is easy to see, that if default occurs, the price of a defaultable zero coupon bond jumps to zero. This means that the price process can be discontinuous at default events. This gives notion to the definition of a zero coupon bond conditional on pre-default.
+	It is easy to see that if default occurs, the price of a defaultable zero coupon bond jumps to zero. This means that the price process can be discontinuous at default events. This gives notion to the definition of a zero coupon bond conditional on pre-default.
 	\begin{definition}
 		The \emph{Defaultable Zero Coupon Bond conditional pre-default} is a continuous Itô-stochastic process \(P^{d,*}(t; T_i)\) at time \(t \in \left[0, T_i\right]\) with maturity $T_i$ ($i \in \{0, ..., N\}$) such that
 		\begin{align*}
@@ -584,7 +583,7 @@
 	\begin{assumption}
 		\label{as:DLMMShortPeriodBond}
 		%TODO: Assumption must also be noted in the non defaultable version.
-		As in the non defaultable model we assume, that the defaultable short period bond conditional pre-default
+		As in the non defaultable model we assume that the defaultable short period bond conditional pre-default
 		\begin{align*}
 			P^{d,*}(t;T_{m(t)+1})
 		\end{align*}
@@ -694,7 +693,7 @@
 	\begin{proof}
 		Follows directly from \Cref{sec::FactorLoading}. %TODO: Add right lemma etc.
 	\end{proof}
-	Hence from here on we will use this computation friendly version:
+	Hence from here on we use this computation friendly version:
 	\begin{align}\label{eq:defLMMSDE}
 			dL^d_i(t) = \mu^{i, d}_t dt + \lambda^{i,d}_t\cdot dU_t.
 	\end{align}
@@ -767,23 +766,23 @@
 		By \Cref{rem:defLMMDrift} we have:
 		\begin{align*}
 			%\begin{split}
-			dS_i &= dL^d_i - dL_i\\
-			&= \sum_{k=1}^{m^d}\lambda^{i k,d}_t \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k,d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} dt + \sum_{k=1}^{m^d}\lambda^{i k,d}_tdU^k_t 
-			\tag{A}\\
+			dS_i =&\; dL^d_i - dL_i\\
+			=&\; \sum_{k=1}^{m^d}\lambda^{i k,d}_t \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k,d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} dt + \sum_{k=1}^{m^d}\lambda^{i k,d}_tdU^k_t 
+			\\
 			&- \sum_{k=1}^{m}\lambda^{i k}_t \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} dt - \sum_{k=1}^{m}\lambda^{i k}_t dU^k_t\\
-			&= \sum_{k=1}^{m}\left(\lambda^{i k,d}_t - \lambda^{i k}_t\right)\left( \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} dt + dU^k_t\right)
-			\tag{B}\\
+			=&\; \sum_{k=1}^{m}\left(\lambda^{i k,d}_t - \lambda^{i k}_t\right)\left( \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} dt + dU^k_t\right)
+			\tag{A}\\
 			&+ \left(L^d_i(t) - L_i(t)\right)\left(\sum_{k=m + 1}^{m^d}f^{i k}_t \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k, d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} dt + dU^k_t\right)\\
-			&= S_i\sum_{k=1}^{m}\frac{\lambda^{i k}_t \Delta T_i}{1 + L_i(t)\Delta T_i}\left( \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} dt + dU^k_t\right)
-			\tag{C}\\
+			=&\; S_i\sum_{k=1}^{m}\frac{\lambda^{i k}_t \Delta T_i}{1 + L_i(t)\Delta T_i}\left( \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} dt + dU^k_t\right)
+			\tag{B}\\
 			&+ S_i\left(\sum_{k=m + 1}^{m^d}f^{i k}_t \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k, d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} dt + dU^k_t\right)
 		\end{align*}
 		
-		where (A) to (B) used the relation:
+		where (A) comes from the relation:
 		\begin{align*}
 			\frac{\lambda^{j k, d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} = \frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} \quad \text{for } k = 1, ..., m
 		\end{align*}
-		and (B) to (C) used:
+		and (B) comes from
 		\begin{align*}
 			\lambda^{i k,d}_t - \lambda^{i k}_t = \left(\frac{1 + L^d_i(t) \Delta T_i}{1 + L_i(t)\Delta T_i} - \frac{1 + L_i(t) \Delta T_i}{1 + L_i(t)\Delta T_i}\right)\lambda^{i k}_t = S_i \frac{\lambda^{i k}_t \Delta T_i}{1 + L_i(t) \Delta T_i}
 		\end{align*}
@@ -795,11 +794,11 @@
 	
 	
 	\subsection{The Survival Probability}
-	Until now we assumed every stochastic process to be adapted to the filtration $\mathbb{F}$. This is what is commonly done in mathematical finance to find theoretical prices and it simulates the availability of  information at each time $t$. This includes the indicator over the default time $J(t)$. However the products we are interested in, are rarely dependent on the (future) default state, but rather its' probability, as we will see in the next chapter. So it is more efficient (and less dependent on extra assumptions) to calculate the survival probability instead of simulating the default time.\\
+	Until now we assumed every stochastic process to be adapted to the filtration $\mathbb{F}$. This is what is commonly done in mathematical finance to find theoretical prices and it simulates the availability of  information at each time $t$. This includes the indicator over the default time $J(t)$. However the products we are interested in, are rarely dependent on the (future) default state, but rather its' probability, as we see in the next chapter. So it is more efficient (and less dependent on extra assumptions) to calculate the survival probability instead of simulating the default time.\\
 	
-	It is important to note here, that for pricing we are only interested in the behavior of the rates under the martingale measure $\mathbb{Q}^B$ and so we will also only focus on the survival probability under this measure. This means the probability we will derive, is not to be confused with the real world probability of survival.\\
+	It is important to note here that for pricing we are only interested in the behavior of the rates under the martingale measure $\mathbb{Q}^B$ and so we also only focus on the survival probability under this measure. This means the probability we derive, is not to be confused with the real world probability of survival.\\
 	
-	As we will work quite a lot with conditional probability and expectation from here on, we will denote for a $\sigma$-algebra $\mathcal{G}$:
+	As we work quite a lot with conditional probability and expectation we denote for a $\sigma$-algebra $\mathcal{G}$:
 	\begin{align*}
 		\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}}\left[ \; \cdot \; \right] &=  \mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{G} \; \right]\\
 		\mathbb{Q}^B_{\mathcal{G}}\left(\;\cdot \; \right) &= \mathbb{Q}^B\left( \left. \;\cdot \; \right| \mathcal{G} \right).
@@ -865,7 +864,7 @@
 	
 	Let us start by stating an assumption that is important for the derivation:
 	\begin{assumption}
-		The default time $\tau(\omega)$ has a stochastic driver, that is not fully dependent on the Brownian-Motion $U$. \\
+		The default time $\tau(\omega)$ has a stochastic driver that is not fully dependent on the Brownian-Motion $U$. \\
 		Furthermore $\{\tau(\omega) > 0\} = \Omega$.
 	\end{assumption}
 	This statement seems to be a bit vague, but this is only a requirement to find $\sigma$-Algebras $\mathcal{G}_t$ such that $L^d_i(t)$ and $L_i(t)$ are $\mathcal{G}_t$-measurable but $J(t) = \mathbf{1}_{\{\tau < t\}}$ is not $\forall t \in [0;\tilde{T}]$.\\
@@ -880,7 +879,7 @@
 	\begin{remark}
 		It is worth to note that all processes that are dependent on $J(t)$ are not $\mathbb{G}$-adapted. This includes $P^d(t;T_i)$ for $i=1, ...,N$ (remember $P(0;T_0) = 1$).
 	\end{remark}
-	As we will work quite a lot with conditional expectation from here on, let us denote for a $\sigma$-algebra $\mathcal{G}$:
+	As we work quite a lot with conditional expectation from here on, let us denote for a $\sigma$-algebra $\mathcal{G}$:
 	\begin{align*}
 		\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}}\left[ \; \cdot \; \right]=  \mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{G} \; \right].
 	\end{align*} 
@@ -948,9 +947,9 @@
 	\end{proof}
 	\end{comment}
 	
-	Note, that while we calculate a probability here, it is a \emph{pathwise} probability: at each start of a LIBOR period $T_i$ - if default has not happened yet - we can evaluate how probable it is that $P^d$ survives the coming period.
+	Note that while we calculate a probability here, it is a \emph{pathwise} probability: at each start of a LIBOR period $T_i$ - if default has not happened yet - we can evaluate how probable it is that $P^d$ survives the coming period.
 	\begin{comment}
-	Note, that while we calculate a probability here, it is a \emph{pathwise} probability.
+	Note that while we calculate a probability here, it is a \emph{pathwise} probability.
 	At first glance this seems counter-intuitive, but consider this: $\mathbb{G}$ does not capture the default state. I.e. while we can calculate $P^{d,*}(t;T_i)$, the default might have already happened, which we would not know, even past $t$ and $T_i$. This is why we can and need to calculate the survival probability even when given $P^{d,*}(t;T_i)$.\\
 	\Cref{fig:survivalprobabilityvisualisation} illustrates this concept in a very simplified and discretized example.
 	\begin{figure}[h]
@@ -968,8 +967,8 @@
 			Q(T_i, \omega) = \prod_{j=1}^{i}q(T_j, \omega)
 		\end{align*}
 	\end{definition}
-	While $Q$ in theory has no stochastic meaning, yet, we can view it as the pathwise survival probability until $T_i$, if we have no information regarding the actual default state even at time $T_i$. Note that this is an \emph{interpretation} and the actual proof for this statement needs extra assumptions \color{red}[Attach proof for this?]\color{black}.\\
-	What we actually will proof in the next chapter is that the total survival probability until $T_i$ is given by the expectation of $Q$:
+	While $Q$ in theory is not a probability, we can view it as the pathwise survival probability until $T_i$, if we have no information regarding the actual default state even at time $T_i$. Note that this is an \emph{interpretation} and the actual proof for this statement needs extra assumptions \color{red}[Attach proof for this?]\color{black}.\\
+	What we actually proof in the next chapter is that the total survival probability until $T_i$ is given by the expectation of $Q$:
 	\begin{align*}
 		\mathbb{Q}^B\left(\{\tau > T_i\}\right) = \mathbb{E}^{\mathbb{Q}^B} \left[Q(T_i;\omega)\right]
 	\end{align*}
@@ -1003,7 +1002,7 @@
 	\pagebreak
 	\section{Loans and Credit Option Pricing}
 	A model is useless without a practical application for it. Hence we take a look at how to apply our results to pricing loans and credit options.\\
-	Note here, that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo Methods to approximate the expectation.\\
+	Note here that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo Methods to approximate the expectation.\\
 	For a start let us define our simulation filtration:
 	\begin{definition}
 		The filtration $\mathbb{G} := (\mathcal{G}_t)_{t\in\left[0;\tilde{T}\right]}$ is given by
@@ -1014,8 +1013,8 @@
 	Note that all model primitives are $\mathbb{G}$-adapted, as $\mathbb{G}$ is the filtration over the only simulated stochastic processes (in our case the Brownian-Motion $U$). As mentioned before we are interested in pricing without simulating the default time $\tau$, which might be driven by other stochastic values. This means that $\tau$ is not necessarily a stopping time w.r.t. $\mathbb{G}$.
 	
 	\subsection{General Application}
-	In this subsection, we will derive a general pricing methodology before moving to specific products.\\
-	A problem is, that our model does not capture default. This is illustrated in \cref{fig:survivalprobabilityvisualisation}.
+	In this subsection, we derive a general pricing methodology before moving to specific products.\\
+	A problem is that our model does not capture default. This is illustrated in \cref{fig:survivalprobabilityvisualisation}.
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\linewidth]{SurvivalProbability}
@@ -1027,7 +1026,7 @@
 		P^d(t;T_i) = P^{d,*}(t;T_i)(1 - J(t)),
 	\end{align*} 
 	but are not equal.\\
-	We will therefore use a trick and replace the default state $1-J(t)$ in all our pricing formulas with the random variable $Q$ that we defined in the previous chapter. \\
+	We therefore use a trick and replace the default state $1-J(t)$ in all our pricing formulas with the random variable $Q$ that we defined in the previous chapter. \\
 	To proof this works, assume a $T_i$-claim $X$ that has a payoff that is dependent on survival of the defaultable bonds. We can then use the pricing methodology described in te following lemma.
 	\begin{lemma}\label{lm:pricingdefaultableclaims}
 		Let $X$ be a payoff at $T_i \in \{T_1, ..., T_N\}$, with
@@ -1042,26 +1041,26 @@
 	\end{lemma}
 	Note that by construction $Q(T_i, \omega)$ is $\mathcal{G}_{T_i}$-measurable, which means, we have a price in terms of model primitives. Let us now proof this statement.
 	\begin{proof} 
-		For our proof we will use following property of the conditional expectation extensively:
+		For our proof we use following property of the conditional expectation extensively:
 		\begin{align*}
 			\mathbb{E}^{\mathbb{Q}^B}\left[Y\right] = \mathbb{E}^{\mathbb{Q}^B}\left[Y | A\right]\mathbb{Q}^B(A) + \mathbb{E}^{\mathbb{Q}^B}\left[Y | A^c\right]\mathbb{Q}^B(A^c) \tag{A}
 		\end{align*}
 		for any set $A \in \mathcal{F}$.\\
 		For ease of notation we write $q(T_i):= q(T_i, \omega)$ and $Q(T_i):= Q(T_i, \omega)$. Note $B(T_0) = 1$. We have:
 		\begin{align*}
-			\Pi^X &=  \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right]\tag{B}\\
+			\Pi^X &=  \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right]\\
 			&=
-			\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_1\} \right]q(T_1) \tag{C}\\
+			\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_1\} \right]q(T_1) \tag{B}\\
 			&=
-			\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_1}}\left[\left.q(T_1)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_1\}\right] \right]\tag{D}\\
+			\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_1}}\left[\left.q(T_1)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_1\}\right] \right]\tag{C}\\
 			&=
-			\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_1}}\left[\left.q(T_1)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] q(T_2)\right]\tag{E}\\
-			&=\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_2}}\left[\left.Q(T_2)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] \right]\tag{F}\\
+			\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_1}}\left[\left.q(T_1)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] q(T_2)\right]\\
+			&=\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_2}}\left[\left.Q(T_2)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] \right]\\
 			&=...\\
-			&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_i}}\left[\left.Q(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_i\}\right] \right] \tag{G}\\
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_i}}\left[\left.Q(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_i\}\right] \right] \tag{D}\\
 			&= \mathbb{E}^{\mathbb{Q}^B}\left[Q(T_i)\frac{X^S}{B(T_i)}\right],
 		\end{align*}
-		where we used (A) from eq. (B) to (C), then the tower property and the fact that $q(T_1)$ is a constant from (C) to (D). Then we repeat these steps until eq. (G) always keeping in mind $q(T_j)$ is $\mathcal{F}_{T_i}$-measurable for all $j \le i$.
+		where (B) comes from (A) and (C) comes from the tower property and the fact that $q(T_1)$ is a constant. Then we repeat these steps until eq. (D) always keeping in mind $q(T_j)$ is $\mathcal{F}_{T_i}$-measurable for all $j \le i$.
 	\end{proof}
 	This methodology can easily be extended to products where only parts of the payoff are dependent on survival and even where other parts are dependent on default:
 	
@@ -1234,8 +1233,8 @@
 	As basis for all our schemes we have a known SDE for a $n$-dimensional stochastic process $X=(X_t)_{t\in [0;\tilde{T}]}$ that we want to simulate:
 	\begin{align}
 		\begin{aligned}\label{eq:schemeGoalSDE}
-		dX_t = \mu(t, X_t)dt + \sigma(t, X_t) \cdot dU_t,\\
-		X_0 = x,
+		dX_t &= \mu(t, X_t)dt + \sigma(t, X_t) \cdot dU_t,\\
+		X_0 &= x,
 		\end{aligned}
 	\end{align}
 	where $U$ is a $d$-dimensional standard Brownian Motion, $\mu: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^n$ and $\sigma: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^{n \times d}$ are functions and $x \in \mathbb{R}^n$.\\
@@ -1258,17 +1257,17 @@
 		Let again $X=(X_t)_{t\in [0;\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}) and $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$.\\
 		Then we call the discrete process $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$, given by
 		\begin{align*}
-			\hat{X}_{t_0} = x,\\
-			\hat{X}^l_{t_{i+1}} =& \hat{X}^l_{t_{i}} + \mu(t_i, \hat{X}_{t_{i}})\Delta t_i + \sigma(t_i, \hat{X}_{t_{i}}) \cdot \Delta U_{t_i}\\
+			\hat{X}_{t_0} =&\; x,\\
+			\hat{X}^l_{t_{i+1}} =&\; \hat{X}^l_{t_{i}} + \mu(t_i, \hat{X}_{t_{i}})\Delta t_i + \sigma(t_i, \hat{X}_{t_{i}}) \cdot \Delta U_{t_i}\\
 			&+ \frac{1}{2}\sum_{k=1}^{d}\sigma_k(t_i, \hat{X}_{t_i})(\partial_{x^l}\sigma_k)(t_i, \hat{X}_{t_i})((\Delta U^k_{t_i})^2 - \Delta t_i),
 		\end{align*}
 		where $i \in \{0, ..., m-1\}$ and $l \in \{1, ..., n\}$, a \emph{Milstein scheme of $X$}.
 	\end{definition}
-	This gives an improvement due to the correction term at the end. We can also easily see, that if $\sigma$ is independent of $X_t$ the Milstein is equal to the Euler-Maruyama scheme.\\
+	This gives an improvement due to the correction term at the end. We can also easily see that if $\sigma$ is independent of $X_t$ the Milstein is equal to the Euler-Maruyama scheme.\\
 	Another numerical scheme for the approximation of stochastic processes is the functional Euler Scheme:
 	\begin{definition}
 		Let $X=(X_t)_{t\in [0;\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}).\\
-		Let $Y=(Y_t)_{t\in [0;\tilde{T}]}$ have the property $Y_t = f(t, X_t) \quad \forall t\in [0;\tilde{T}]$ for a $2$-times differentiable function $f: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^k$ and $k \in \mathbb{N}$.\\
+		Let $Y=(Y_t)_{t\in [0;\tilde{T}]}$ be defined as $Y_t = f(t, X_t) \quad \forall t\in [0;\tilde{T}]$ for a $2$-times differentiable function $f: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^k$ and $k \in \mathbb{N}$.\\
 		Let $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$. Let  $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$ be an Euler-Maruyama scheme of $X$.\\
 		Then we call the discrete process $\hat{Y} = (\hat{Y}_{t_i})_{i \in \{0, ..., m\}}$, given by
 		\begin{align*}
@@ -1286,7 +1285,7 @@
 	We can now start to look at the actual implementation.\\
 	As a starting point for the code base we use the finMath Library of Prof. Christian Fries.\\
 	The finMath library is written in Java and provides interfaces and classes for the use in stochastics and financial mathematics.\\
-	In this section we take a look at the ones that are most frequently used by our code. For a more thorough description one can use the website of the finMath library \cite{finmathWebsite}, which will also be our main source for this section.
+	In this section we take a look at the ones that are most frequently used by our code. For a more thorough description one can use the website of the finMath library \cite{finmathWebsite}, which is also our main source for this section.
 	\subsubsection*{RandomVariable}
 	%TODO: Write Section
 	\subsubsection*{ProcessModel}
@@ -1315,7 +1314,7 @@
 	Let us take a look at the cooperation between our model and the numerical scheme simulating the Process in \Cref{fig:classdiagramdlmm}.\\
 	The \texttt{DefaultableLIBORMarketModel} can be used as a plug in for a class implementing the \texttt{MonteCarloProcess} interface, which calls SDE-methods of the \texttt{ProcessModel} to pre-calculate the process. Calls to \texttt{getFactorLoading(...)} should be delegated to the \texttt{DefaultableLIBORCovarianceModel}, as we can then reuse the code of \texttt{DefaultableLIBORMarketModel}, even though creating different kinds of covariance (factor-loading-) models. 
 	
-	Note here, that we also extend the \texttt{LIBORMarketModel}. This however does not necessarily mean, that the SDE specified by the \texttt{ProcessModel} simulates the LIBOR rates. 
+	Note here that we also extend the \texttt{LIBORMarketModel}. This however does not necessarily mean that the SDE specified by the \texttt{ProcessModel} simulates the LIBOR rates. 
 	In fact the process values approximating the SDE are accessed by our model through input parameters and can be processed further. We therefore have a clean separation of model specifications and simulation.\\
 	A way to 
 	
