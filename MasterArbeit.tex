@@ -1,7 +1,10 @@
 \documentclass[12pt]{article}
 \usepackage[a4paper, width=6.3in, left=1.3in, right=1.3in, height=9.2in, top=1.1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
 \usepackage{amsfonts,amsmath,amssymb,amsthm}
-\usepackage[none]{hyphenat}
+\usepackage[htt]{hyphenat}
 \usepackage{fancyhdr}
 \usepackage[nottoc,notlot,notlof]{tocbibind}
 \usepackage{verbatim}
@@ -10,13 +13,13 @@
 \usepackage{caption}
 \usepackage[table]{xcolor}
 \fancyfoot[R]{\thepage}
-\usepackage{listings}
 \usepackage{ctable}
 \usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
 \usepackage[title, titletoc]{appendix}
 \usepackage{array}
 \usepackage{hyperref}
 \usepackage{cleveref}
+\usepackage{listings}
 
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 
@@ -26,6 +29,7 @@
 \definecolor{mygrey}{RGB}{123,123,123}
 \definecolor{myorange}{RGB}{230,80,80}
 \definecolor{codebackground}{RGB}{230,230,230}
+\definecolor{mydarkblue}{RGB}{0,102,153}
 
 
 \newcommand{\mbeq}{\overset{!}{=}}
@@ -54,25 +58,28 @@
 
 
 \lstset{
-	language			=Java,%
+	inputencoding		=utf8,
+	postbreak			=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+	language			=Java,
 	basicstyle			=\ttfamily\scriptsize,
 	backgroundcolor		=\color{codebackground},
-	breaklines			=true,%
-	breakatwhitespace	=true,
-	postbreak			=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
 	captionpos			=b,
 	morekeywords		={java2tikz},
-	keywordstyle		=\color{orange},%
-	morekeywords		=[2]{1}, keywordstyle=[2]{\color{black}},
-	identifierstyle		=\color{black},%
+	keywordstyle		=\color{orange},
+	morekeywords		=[2]{1},
+	keywordstyle		=[2]{\color{black}},
+	identifierstyle		=\color{black},
 	stringstyle			=\color{mygreen},
-	commentstyle		=\color{mydarkgreen},%
-	showstringspaces	=false,%without this there will be a symbol in the places where there is a space
-	numbers				=left,%
-	numberstyle			=\tiny\color{black},% size of the numbers
-	numbersep			=9pt, % this defines how far the numbers are from the text
-	%emph=[1]{for,end,break},emphstyle=[1]\color{orange}, %some words to emphasise
-	%emph=[2]{word1,word2}, emphstyle=[2]{style},    
+	commentstyle		=\color{mydarkgreen},
+	showstringspaces	=false,
+	showspaces			=false,
+	numbers				=left,
+	numberstyle			=\tiny\color{black},
+	numbersep			=5pt,
+	breaklines,
+	breakatwhitespace,
+	emph=[1]{RandomVariable,ProcessModel,MonteCarloProcess,LIBORMarketModel,DefaultableLIBORMarketModel},emphstyle=[1]\color{mydarkblue}, %some words to emphasise
+	emph=[2]{CalculationException}, emphstyle=[2]\color{mydarkblue},    
 }
 
 
@@ -455,10 +462,10 @@
 		\end{align*}
 		where $L(t;S, T)$ is defined as in \cref{def:simpleFR},
 		follows an Itô stochastic process satisfying
-		\begin{align*}
-			dL_i = \mu^i_t dt + \sigma^i_t dW^{\mathbb{Q}^B, L_i}_t,\\
+		\begin{align}
+			dL_i = \mu^i_t dt + \sigma^i_t dW^{\mathbb{Q}^B, L_i}_t,\label{eq:LMMSDE}\\
 			L_i(0)(T_{i+1} - T_i) = \frac{P(0;T_i)}{P(0;T_{i+1})} - 1,
-		\end{align*}
+		\end{align}
 		where $(W^{\mathbb{Q}^B, L_i})_{i\in \{0, ..., N\}}$ are possibly instantaneously correlated Brownian-Motions.
 	\end{assumption}
 	In the LIBOR model, all other variables are then derived from these interest rates, most importantly the $T_i$-Bond prices. The attentive reader will have noticed, however, that there is a hole in this derivation: the so-called short-period Bond $P(t;T_{m(t)+1})$ cannot be calculated by $(L_i(t))_{i\in\{0, ..., N\}}$ alone, which is why we need the following assumption:
@@ -473,18 +480,63 @@
 			P(t;T_{m(t)+1}) = (1 + L_{m(t)}(t)(T_{m(t)+1} - t))^{-1}
 		\end{align*}
 	\end{assumption}
+	Let us fix the spot measure as our valuation measure $\mathbb{Q}^B$.
 	Given a variance-structure for the rates $(\sigma^i)_{i\in\{0,...,N\}}$, a correlation-structure $(\rho^{i,j})_{i,j \in \{0,...,N\}}$ for the Brownian-Motions and 
 	we can specify a drift for the SDEs of the LIBORs:
-	\begin{lemma}
-		Let $L_i$ satisfy \cref{as:LIBORisItoProcess}. Let $(\sigma^i)_{i\in\{0,...,N\}}$ and $(\rho^{i,j})_{i,j \in \{0,...,N\}}$ be given, where
+	\begin{lemma}\label{lem:LMMDriftSpec}
+		Let $\mathbb{Q}^B$ be the spot measure.
+		Let $L_i$ satisfy \cref{as:LIBORisItoProcess} and \ref{as:LMMShortPeriodBond}. Let $(\sigma^i)_{i\in\{0,...,N\}}$ and $(\rho^{i,j})_{i,j \in \{0,...,N\}}$ be given, where
 		\begin{align*}
 			d\left\langle W^{\mathbb{Q}^B, L_i}, W^{\mathbb{Q}^B, L_j} \right\rangle_t = \rho^{i,j}_t dt.
 		\end{align*}
-		Then  \color{red}Elaborate!!!\color{black}. 
-		%TODO: Elaborate
-		
+		Then for each $i \in \{1, ..., N\}$:
+		\begin{align*}
+			\mu^{i}_t = \sigma^{i}_t\sum_{j=m(t)+1}^{i}\frac{\rho^{i j}_t \sigma^{j}_t\Delta T_j}{1 + \Delta T_j L_j(t)},
+		\end{align*}
 	\end{lemma}
-	
+	\begin{proof}
+		The proof is beyond the scope of this thesis, but can be found in a variety of literature. We reference \cite{FriesBook} and \cite{fima3Lecture}. One can also take a look at the next section at the proof of \Cref{theo:defDriftTheo}, which is very similar  and carries its' idea and outline.
+	\end{proof}
+	Note that in its original form, the LIBOR model is a log-normal model (see \cite{FriesBook}), hence the original model assumed $\sigma^i_t = L_i(t)\tilde{\sigma}_t$. However all proofs also work on a non log-normal model as well. The only restriction we need to apply is
+	\begin{align*}
+		L_i(t) > -1 \quad \forall i \in \{0,...,N\}
+	\end{align*}
+	to prevent negative or no zero coupon bond prices.\\
+	As mentioned in the previous chapter, having a model in terms of correlated Brownian-Motions is not ideal for numerical replication. We therefore move to another notation, which uses factor loadings instead:
+	\begin{lemma}\label{lem:LMMFactorVersion}
+		There exist $m$-dimensional stochastic processes $\lambda^{i} = (\lambda^{i k})_{k \in \{1, ... m\}}$ and a $m$-dimensional $\mathbb{Q}^B$-Brownian-Motion $U=(U^k)_{k \in \{1,...,m\}}$ such that
+		\begin{align*}
+			dL_i(t) = \mu^{i}_t dt + \sigma^{i}_t dW^{\mathbb{Q}^B, L_i}_t \iff 
+			dL_i(t) = \mu^{i}_t dt + \lambda^{i}_t\cdot dU_t
+		\end{align*}
+		Furthermore
+		\begin{align*}
+			\sum_{k=1}^{m}\lambda^{i k}_t \lambda^{i k}_t = (\sigma^i_t)^2
+		\end{align*}
+		as well as
+		\begin{align*}
+			\sum_{k=1}^{m}\lambda^{i k}_t \lambda^{j k}_t = \sigma^i_t \sigma^j_t \rho^{i,j}_t
+		\end{align*}
+	\end{lemma}
+	\begin{proof}
+		Follows directly from \cref{sec::FactorLoading}.
+	\end{proof}
+	With this notation we can also rewrite our drift term of the LIBOR rates:
+	\begin{remark}\label{rem:LMMDriftFactorLoadings}
+		For the spot measure the drifts $\mu^{i}$ in \cref{eq:LMMSDE} can be rewritten in terms of $\lambda$:
+		\begin{align*}
+			\mu^{i}_t = \sum_{k=1}^{m}\lambda^{i k}_t \sum_{j=m(t)}^{i}\frac{\lambda^{j k}_t\Delta T_j}{1 + L_j(t)\Delta T_j}
+		\end{align*}
+	\end{remark}
+	\begin{proof}
+		By \Cref{lem:LMMDriftSpec} and \ref{lem:LMMFactorVersion} we have:
+		\begin{align*}
+			\mu^{i}_t &= \sigma^{i}_t\sum_{j=m(t)+1}^{i}\frac{\rho^{i j}_t \sigma^{j}_t\Delta T_j}{1 + \Delta T_j L_j(t)} = \sum_{j=m(t)+1}^{i}\frac{\rho^{i j, d}_t \sigma^{j, d}_t \sigma^{i}_t\Delta T_j}{1 + \Delta T_j L_j(t)}\\
+			&= \sum_{j=m(t)+1}^{i}\frac{\left(\sum_{k=1}^{m}\lambda^{i k}_t\lambda^{j k}_t\right)\Delta T_j}{1 + \Delta T_j L_j(t)}
+			=\sum_{k=1}^{m^d}\sum_{j=m(t)+1}^{i}\frac{\lambda^{i k}_t\lambda^{j k}_t\Delta T_j}{1 + \Delta T_j L_j(t)}\\
+			&= \sum_{k=1}^{m}\lambda^{i k}_t\sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t\Delta T_j}{1 + \Delta T_j L_j(t)}
+		\end{align*}
+	\end{proof}
 	
 	% ------ Defaultable LMM ------
 	
@@ -544,7 +596,7 @@
 	\end{assumption}
 	
 	% TODO: Proof that L^d is an Ito Process
-	\begin{theorem}
+	\begin{theorem}\label{theo:defDriftTheo}
 		Let $L^d_i$ be defined as in \cref{defLIBOR}. Let $B(t)$ be the numeraire under the spot measure (i.e. $B(t)$ is given by \cref{eq:spotNumeraire}) and $W^{\mathbb{Q}^B}$ a Brownian Motion w.r.t. the spot measure.
 		Let $\sigma^{i, d}_t:=\sigma^{i, d}(t, \omega)$ be a progressive stochastic process. Let 
 		\begin{align}
@@ -615,20 +667,28 @@
 	\end{proof}
 	
 	%TODO: Insert Terminal measure drift
-	We now move from the "covariance" process model to a "factor loading" model as described in \Cref{sec::FactorLoading}.\\
+	Just as we did in the last section, we now move from the "covariance" process model to a "factor loading" model as described in \Cref{sec::FactorLoading}. Note that we also need to include the non defaultable covariance structure for our new model.\\
 	\begin{lemma}\label{lem:defLMMFactorVersion}
-		There exist $m^d$-dimensional stochastic processes $\lambda^{i,d} = (\lambda^{i k, d})_{k \in \{1, ... m^d\}}$ and a $m^d 1$-dimensional $\mathbb{Q}^B$-Brownian-Motion $U=(U^k)_{k \in \{1,...,m^d\}}$ such that
+		There exist $m^d$-dimensional stochastic processes $\lambda^{i,d} = (\lambda^{i k, d})_{k \in \{1, ..., m^d\}}$, $\lambda^{i}$ $= ((\lambda^{i k})_{k \in \{1, ... m\}}, (0)_{k \in \{m+1, ... m^d\}})$ and a $m^d $-dimensional $\mathbb{Q}^B$-Brownian-Motion $U=(U^k)_{k \in \{1,...,m^d\}}$ such that
 		\begin{align*}
-			dL^d_i(t) = \mu^{i, d}_t dt + \sigma^{i, d}_t dW^{\mathbb{Q}^B, L^d_i}_t \iff 
-			dL^d_i(t) = \mu^{i, d}_t dt + \lambda^{i,d}_t\cdot dU_t
+			\left.
+			\begin{aligned}
+				dL_i(t) &= \mu^{i}_t dt + \sigma^{i}_t dW^{\mathbb{Q}^B, L_i}_t\\
+				dL^d_i(t) &= \mu^{i, d}_t dt + \sigma^{i, d}_t dW^{\mathbb{Q}^B, L^d_i}_t
+			\end{aligned}
+			\right\}
+			 \iff 
+			 \left\{
+			 \begin{aligned}
+			 	dL_i(t) &= \mu^{i}_t dt + \lambda^{i}_t\cdot dU_t\\
+			 	dL^d_i(t) &= \mu^{i, d}_t dt + \lambda^{i,d}_t\cdot dU_t
+			 \end{aligned}
+			 \right.
 		\end{align*}
 		Furthermore
 		\begin{align*}
-			\sum_{k=1}^{m^d}\lambda^{i k, d}_t \lambda^{i k, d}_t = (\sigma^i_t)^2
-		\end{align*}
-		as well as
-		\begin{align*}
-			\sum_{k=1}^{m^d}\lambda^{i k, d}_t \lambda^{j k, d}_t = \sigma^i_t \sigma^j_t \rho^{i,j}_t
+			&\sum_{k=1}^{m^d}\lambda^{i k, d}_t \lambda^{i k, d}_t = (\sigma^i_t)^2 \quad\text{and}\\
+			&\sum_{k=1}^{m^d}\lambda^{i k, d}_t \lambda^{j k, d}_t = \sigma^i_t \sigma^j_t \rho^{i,j}_t.
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
@@ -969,7 +1029,7 @@
 	but are not equal.\\
 	We will therefore use a trick and replace the default state $1-J(t)$ in all our pricing formulas with the random variable $Q$ that we defined in the previous chapter. \\
 	To proof this works, assume a $T_i$-claim $X$ that has a payoff that is dependent on survival of the defaultable bonds. We can then use the pricing methodology described in te following lemma.
-	\begin{lemma}
+	\begin{lemma}\label{lm:pricingdefaultableclaims}
 		Let $X$ be a payoff at $T_i \in \{T_1, ..., T_N\}$, with
 		\begin{align*}
 			X = X^S \mathbf{1}_{\{\tau(\omega) > T_i\}},
@@ -987,7 +1047,7 @@
 			\mathbb{E}^{\mathbb{Q}^B}\left[Y\right] = \mathbb{E}^{\mathbb{Q}^B}\left[Y | A\right]\mathbb{Q}^B(A) + \mathbb{E}^{\mathbb{Q}^B}\left[Y | A^c\right]\mathbb{Q}^B(A^c) \tag{A}
 		\end{align*}
 		for any set $A \in \mathcal{F}$.\\
-		For ease of notation we write $q(T_i):= q(T_i, \omega)$ and $Q(T_i):= Q(T_i, \omega)$ Note $B(T_0) = 1$. We have:
+		For ease of notation we write $q(T_i):= q(T_i, \omega)$ and $Q(T_i):= Q(T_i, \omega)$. Note $B(T_0) = 1$. We have:
 		\begin{align*}
 			\Pi^X &=  \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right]\tag{B}\\
 			&=
@@ -1036,7 +1096,7 @@
 	\begin{align*}
 		P^d(0;T_i) = P^{d,*}(0;T_i) = \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{1}{B^d(T_i)} \right]
 	\end{align*}
-	While we normally have the analytic value of $P^d(0, T_i)$ as an input value to our model (or at least calibrated from other input values), the numerical price can act as an error measurement for the model we create. Furthermore, we can later use it as a control variate in pricing.\\
+	While we normally have the analytic value of $P^d(0, T_i)$ as an input value to our model (or at least calibrated from other input values), the numerical price can act as an error measurement for the model we create. Furthermore, we can later use it as a control variate in pricing, as it is done for the non defaultable model (see \cite{FriesBook}), which is beyond the scope of this thesis.\\
 	We can also get a numerical expression for the total survival probability, because setting
 	$X^S = B(T_i)$ and pricing the claim yields:
 	\begin{align*}
@@ -1082,10 +1142,9 @@
 	\begin{proof}
 		Let $c\in \mathbb{R}$ be constant. Then for $i \in \{1, ..., N\}$:
 		\begin{align*}
-			\mathbb{E}^{\mathbb{Q}^B}\left[\frac{c\;\mathbf{1}_{\left\{\tau(\omega) > T_{i} \right\}}}{B(T_i)}\right]\\
-			= c \; \mathbb{E}^{\mathbb{Q}^B}\left[ 
+			&\mathbb{E}^{\mathbb{Q}^B}\left[\frac{c\;\mathbf{1}_{\left\{\tau(\omega) > T_{i} \right\}}}{B(T_i)}\right] = c \; \mathbb{E}^{\mathbb{Q}^B}\left[ 
 			\frac{P^d(T_i;T_i)}{B(T_i)} \right]\\
-			= c \; P^d(0;T_i) = c \; P^{d,*}(0;T_i).
+			&= c \; P^d(0;T_i) = c \; P^{d,*}(0;T_i).
 		\end{align*}
 		Replacing $c$ with $c_i$, $\mathcal{N}$ repectively, and taking the sum yields the statement.
 	\end{proof}
@@ -1102,19 +1161,58 @@
 	Let us take a look at a future on defaultable loans, or rather a future on a defaultable coupon paying bond. 
 	Remember that in contrast to an option a future brings the obligation to enter into an agreement.
 	Hence from the debtors point of view we have a payoff function
-	\begin{align*}
+	\begin{align}\label{eq:loanForward}
 		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau > T_s\}}
-	\end{align*}
+	\end{align}
 	where $T_s$ is the start time of the bond and for ease of notation the terminal coupon $c_N$ includes the terminal payment of the nominal $\mathcal{N}$.\\
 	This payoff function gives us a direct approach to price the product:
+	\begin{lemma}
+		A $T_s$ claim with a payoff function as in \cref{eq:loanForward} has the price
+		\begin{align*}
+			\Pi^\Psi &= \mathcal{N}P^d(0;T_s) - \sum_{i=s+1}^{N}c_iP^{d}(0; T_i)\\
+			&= \mathcal{N}P^{d,*}(0;T_s) - \sum_{i=s+1}^{N}c_iP^{d,*}(0; T_i)
+		\end{align*}
+		at $t=0$.
+	\end{lemma}
+	\begin{proof}
+		We have:
+		\begin{align*}
+			\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau > T_s\}}}{B(T_s)}\right]\\
+			&=\mathcal{N}\mathbb{E}^{\mathbb{Q}}\left[\dfrac{P^d(T_s;T_s)}{B(T_s)}\right] - \sum_{i=s+1}^{N} c_i \mathbb{E}^{\mathbb{Q}}\left[\dfrac{P^d(T_s;T_i)}{B(T_s)}\right]\\
+			&= \mathcal{N}P^d(0;T_s) - \sum_{i=s+1}^{N} c_i P^d(0;T_i)
+		\end{align*}
+	\end{proof}
+	To gain an initial price of zero one can set the coupons as done before:
 	\begin{align*}
-		\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)}{B(T_s)}Q(T_s)\right]\\
-		&= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)}{B^d(T_s)}\right]
+		c_i = \mathcal{N}\Delta T_iL^d_i(0)
 	\end{align*}
-	\color{red}Elaborate!!!\color{black}. 
+	In the past example default of the creditor did not matter, but in this case actually the future coupon bond could not be bought. Hence creditor default possibility does indeed change the payoff and hence the price of the product:
+	\begin{align}\label{eq:loanForwardCreditorDefaultable}
+		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^1,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau^1 > T_s\}}\mathbf{1}_{\{\tau^2 > T_s\}}
+	\end{align}
+	where 
+	\color{red}Elaborate i.e. on default of the issuer!!!\color{black}. 
 	%TODO: Elaborate
-	\subsection{Credit Options}
 	
+	
+	\subsection{Credit Options}
+	In the last subsection we considered pricing loans and loan forwards. Essentially cash flow that is set in stone (with the exception of default). 
+	Now let us consider more intriguing products which bring an optionality with them:
+	We start with a simple put option on a coupon bond (note that we work a lot with coupon bonds as to their equivalence with a loan). 
+	\begin{remark}
+		A put option on a coupon paying bond, with maturity $T_s$ and strike price $\mathcal{N}$ where the debtor/payer is defaultable has the payoff function
+		\begin{align}\label{eq:couponputoption}
+			\Psi(T_s) =\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)^+\mathbf{1}_{\{\tau > T_s\}}
+		\end{align}
+		where $\left(\cdot\right)^+ := \max(0, \cdot)$.
+	\end{remark}
+	We can numerically compute the price by:
+	\begin{lemma}
+		The price of a claim with a payoff function as in \cref{eq:couponputoption} has the price:
+		\begin{align*}
+			\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)^+}{B^d(T_s)}\right]
+		\end{align*}
+	\end{lemma}
 	
 	
 	\subsection{Introducing Behavioral Aspects}
@@ -1194,7 +1292,7 @@
 	\subsubsection*{ProcessModel}
 	The \texttt{ProcessModel} interface is the finMath equivalent of an SDE. It specifies that any implementation has methods for getting the initial state, the drift and the factor loadings.
 	
-	\lstinputlisting[caption={The  \texttt{ProcessModel} interface}, label={lst:javaCode}, firstnumber=1, linerange={47, 63, 75, 99, 110, 129, 152, 174}, breaklines=true, breakatwhitespace=true ]{\libMC/model/ProcessModel.java}
+	\lstinputlisting[caption={The  \texttt{ProcessModel} interface}, label={lst:javaCode1}, firstnumber=1, linerange={47, 63, 75, 99, 110, 129, 152, 174} ]{JavaCode/ProcessModel.txt}
 	
 	We can use a \texttt{ProcessModel} as a plug in to numerical schemes simulating an SDE such as \texttt{EulerSchemeFromProcessModel}.
 	\subsubsection*{LIBORCovarianceModel}
@@ -1205,7 +1303,7 @@
 	\subsection{Implementation of the Defaultable LIBOR Model}
 	
 	To use the full flexibility of the finMath Library, the implementation of our models is structured in the same way: we have an Interface for the defaultable LIBOR market model which extends the \texttt{ProcessModel}:	
-	\lstinputlisting[caption={Declaration of \texttt{DefaultableLIBORMarketModel}}, label={lst:javaCode}, firstnumber=12, linerange={12} ]{\codedlmm{DefaultableLIBORMarketModel.java}}
+	\lstinputlisting[caption={Declaration of \texttt{DefaultableLIBORMarketModel}}, label={lst:javaCode2}, firstnumber=1, linerange={12} ]{\codedlmm{DefaultableLIBORMarketModel.java}}
 	
 	\begin{figure}[h]
 		\centering
@@ -1220,7 +1318,6 @@
 	Note here, that we also extend the \texttt{LIBORMarketModel}. This however does not necessarily mean, that the SDE specified by the \texttt{ProcessModel} simulates the LIBOR rates. 
 	In fact the process values approximating the SDE are accessed by our model through input parameters and can be processed further. We therefore have a clean separation of model specifications and simulation.\\
 	A way to 
-	
 	
 	
 	
