@@ -434,7 +434,7 @@
 	\end{definition}
 	A more complex example is the spot measure.
 	\begin{definition}
-		Let $0 = T_0 < T_1 < ... < T_N = \tilde{T}$ be a tenor on the time set $[0;\tilde{T}]$.\\
+		Let $0 = T_0 < T_1 < ... < T_N = \tilde{T}$ be a tenor on the time set $[0,\tilde{T}]$.\\
 		The \emph{spot measure} is the martingale measure $\mathbb{Q}^B$ gained by using the numeraire:
 		\begin{align}\label{eq:spotNumeraire}
 			B(t) = P(t;T_{m(t)+1})\prod_{i=0}^{m(t)}\frac{1}{P(T_{i};T_{i+1})},
@@ -455,7 +455,7 @@
 	
 	\subsection{Model specification}\label{sec:libModel}
 	Through the LIBOR model we construct the stochastic differential equations of simple forward rates for a consecutive set of time periods.\\
-	We start with a fixed time tenor of $N+1$ ($N \in \mathbb{N}$) points, that splits our time horizon $[0;\tilde{T}]$:
+	We start with a fixed time tenor of $N+1$ ($N \in \mathbb{N}$) points, that splits our time horizon $[0,\tilde{T}]$:
 	\begin{align*}
 		0 = T_0 < T_1 < ... < T_N = \tilde{T}.
 	\end{align*}
@@ -463,7 +463,7 @@
 	\begin{assumption}\label{as:LIBORisItoProcess}
 		The one step simple forward rate (called LIBOR rate)
 		\begin{align*}
-			L_i(t) := L(t;T_i, T_{i+1}) \quad \forall i \in \{0, ..., N\}\text{, } t\in[0;T_i],
+			L_i(t) := L(t;T_i, T_{i+1}) \quad \forall i \in \{0, ..., N\}\text{, } t\in[0,T_i],
 		\end{align*}
 		where $L(t;S, T)$ is defined as in \cref{def:simpleFR},
 		follows an Itô stochastic process satisfying
@@ -1011,9 +1011,9 @@
 	Note here that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo Methods to approximate the expectation.\\
 	For a start let us define our simulation filtration:
 	\begin{definition}
-		The filtration $\mathbb{G} := (\mathcal{G}_t)_{t\in\left[0;\tilde{T}\right]}$ is given by
+		The filtration $\mathbb{G} := (\mathcal{G}_t)_{t\in\left[0,\tilde{T}\right]}$ is given by
 		\begin{align*}
-			\mathcal{G}_t := \sigma(U^k_t | k = 1, ..., m^d) \subset \mathcal{F}_t \quad \forall t \in  [0;\tilde{T}].
+			\mathcal{G}_t := \sigma(U^k_t | k = 1, ..., m^d) \subset \mathcal{F}_t \quad \forall t \in  [0,\tilde{T}].
 		\end{align*}
 	\end{definition}
 	Note that all model primitives are $\mathbb{G}$-adapted, as $\mathbb{G}$ is the filtration over the only simulated stochastic processes (in our case the Brownian Motion $U$). As mentioned before we are interested in pricing without simulating the default time $\tau$, which might be driven by other stochastic values. This means that $\tau$ is not necessarily a stopping time w.r.t. $\mathbb{G}$.
@@ -1259,17 +1259,17 @@
 	
 	\subsection{Numerical Schemes for Stochastic Processes}
 	In this chapter we introduce three ways to approach the simulation of stochastic processes described by SDEs. All of these numerical schemes can also be found in \cite{kloedenSchemes}, which is also the main source of this section.\\
-	As basis for all our schemes we have a known SDE for a $n$-dimensional stochastic process $X=(X_t)_{t\in [0;\tilde{T}]}$ that we want to simulate:
+	As basis for all our schemes we have a known SDE for a $n$-dimensional stochastic process $X=(X_t)_{t\in [0,\tilde{T}]}$ that we want to simulate:
 	\begin{align}
 		\begin{aligned}\label{eq:schemeGoalSDE}
 		dX_t &= \mu(t, X_t)dt + \sigma(t, X_t) \cdot dU_t,\\
 		X_0 &= x,
 		\end{aligned}
 	\end{align}
-	where $U$ is a $d$-dimensional standard Brownian Motion, $\mu: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^n$ and $\sigma: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^{n \times d}$ are functions and $x \in \mathbb{R}^n$.\\
+	where $U$ is a $d$-dimensional standard Brownian Motion, $\mu: [0,\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^n$ and $\sigma: [0,\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^{n \times d}$ are functions and $x \in \mathbb{R}^n$.\\
 	Let us start with the well-known Euler or Euler-Maruyama scheme:
 	\begin{definition}
-		Let $X=(X_t)_{t\in [0;\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}).\\
+		Let $X=(X_t)_{t\in [0,\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}).\\
 		Furthermore let $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$.\\
 		Then we call the discrete process $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$, given by
 		\begin{align*}
@@ -1283,7 +1283,7 @@
 	, it has a weakness for stochastic factor loadings.\\
 	An improvement is the Milstein scheme:
 	\begin{definition}
-		Let again $X=(X_t)_{t\in [0;\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}) and $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$.\\
+		Let again $X=(X_t)_{t\in [0,\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}) and $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$.\\
 		Then we call the discrete process $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$, given by
 		\begin{align*}
 			\hat{X}_{t_0} =&\; x,\\
@@ -1295,8 +1295,8 @@
 	This gives an improvement due to the correction term at the end. We can also easily see that if $\sigma$ is independent of $X_t$ the Milstein is equal to the Euler-Maruyama scheme.\\
 	Another numerical scheme for the approximation of stochastic processes is the functional Euler Scheme:
 	\begin{definition}
-		Let $X=(X_t)_{t\in [0;\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}).\\
-		Let $Y=(Y_t)_{t\in [0;\tilde{T}]}$ be defined as $Y_t = f(t, X_t) \quad \forall t\in [0;\tilde{T}]$ for a $2$-times differentiable function $f: [0;\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^k$ and $k \in \mathbb{N}$.\\
+		Let $X=(X_t)_{t\in [0,\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}).\\
+		Let $Y=(Y_t)_{t\in [0,\tilde{T}]}$ be defined as $Y_t = f(t, X_t) \quad \forall t\in [0,\tilde{T}]$ for a $2$-times differentiable function $f: [0,\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^k$ and $k \in \mathbb{N}$.\\
 		Let $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$. Let  $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$ be an Euler-Maruyama scheme of $X$.\\
 		Then we call the discrete process $\hat{Y} = (\hat{Y}_{t_i})_{i \in \{0, ..., m\}}$, given by
 		\begin{align*}
