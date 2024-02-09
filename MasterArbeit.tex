@@ -18,8 +18,8 @@
 \usepackage[title, titletoc]{appendix}
 \usepackage{array}
 \usepackage{hyperref}
-\usepackage{cleveref}
 \usepackage{listings}
+\usepackage[noabbrev]{cleveref}
 
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 
@@ -52,6 +52,12 @@
 \newtheorem{notation}[theorem]{Notation}
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{definition}[theorem]{Definition}
+
+\crefname{assumption}{assumption}{assumptions}
+\crefname{notation}{notation}{notations}
+\crefname{remark}{remark}{remarks}
+
+
 \renewcommand{\labelenumi}{\em{(\roman{enumi})}}
 \renewcommand{\labelenumii}{\em{(\alph{enumii})}}
 \captionsetup[figure]{skip=0pt}
@@ -136,7 +142,7 @@
 	The thesis is aimed at an audience that has a deep analytical background and a basic knowledge in probability theory and financial mathematics.\\
 	\color{red}If one has knowledge in the following areas, it is a good start:\color{black}
 	\begin{itemize}
-		\item Brownian-Motions and martingales,
+		\item Brownian Motions and martingales,
 		\item stochastic integration,
 		\item Itô stochastic processes,
 		\item definition of and theorems on arbitrage freeness.
@@ -167,12 +173,12 @@
 	\begin{itemize}
 		\item $\Omega$ is the set of all states,
 		\item $\mathcal{F}$ is a $\sigma$-algebra,
-		\item $\mathbb{F} = (\mathcal{F}_t)_{t \in \left[0;\tilde{T}\right]}$ is a filtration with $\mathcal{F}_t \subset \mathcal{F} \quad \forall t \in [0;\tilde{T}]$, $\mathcal{F}_0 = \{\Omega, \emptyset \}$ and
+		\item $\mathbb{F} = (\mathcal{F}_t)_{t \in \left[0,\tilde{T}\right]}$ is a filtration with $\mathcal{F}_t \subset \mathcal{F} \quad \forall t \in [0,\tilde{T}]$, $\mathcal{F}_0 = \{\Omega, \emptyset \}$ and
 		\item $\mathbb{Q}$ is a probability measure on $\mathcal{F}$.
 	\end{itemize}
 	Let us cover some notations.
 	\begin{notation}
-		Let $X$ and $Y$ be Itô stochatic processes and $W$ be a Brownian-Motion with:
+		Let $X=(X_t)_{t\in \left[0,\tilde{T}\right]}$ and $Y=(Y_t)_{t\in \left[0,\tilde{T}\right]}$ be Itô stochatic processes and $W$ be a Brownian Motion with:
 		\begin{align*}
 			X_t &= X_0 + \int_{0}^{t}\mu^X_s ds + \int_{0}^{t}\phi_s dW_s, \\
 			Y_t &= Y_0 + \int_{0}^{t}\mu^Y_s ds + \int_{0}^{t}\psi_s dW_s.
@@ -185,23 +191,23 @@
 		\begin{align*}
 			\left\langle X, Y \right\rangle_t = \int_{0}^{t}\phi_s \psi_s ds.
 		\end{align*}
-		For a $n$-dimensional Brownian-Motion $W = (W^i)_{i\in\{1,...,n\}}$ and therefore $n$-dimensional diffusion processes $\phi=(\phi^i)_{i \in \{1,..., n\}}$, $\psi=(\psi^i)_{i \in \{1,..., n\}}$ the quadratic covariation is
+		For a $n$-dimensional Brownian Motion $W = (W^i)_{i\in\{1,...,n\}}$ and therefore $n$-dimensional diffusion processes $\phi=(\phi^i)_{i \in \{1,..., n\}}$, $\psi=(\psi^i)_{i \in \{1,..., n\}}$ the quadratic covariation is
 		\begin{align*}
 			\left\langle X, Y \right\rangle_t = \sum_{i=1}^{n} \int_{0}^{t} \phi^i_s \psi^i_s ds
 		\end{align*}
 	\end{notation}
-	For convenience we state a formula for stochastic integration by parts and a extended version of Itô's theorem:
+	For convenience we state a formula for stochastic integration by parts and an extended version of Itô's theorem:
 	\begin{lemma}
 		Let $X$ and $Y$ be two Itô stochastic processes. Then
 		\begin{align*}
-			X_t Y_t = X_0 Y_0 + \int_{0}^{t}X_sdY_s + \int_{0}^{t}Y_sdX_s + \left\langle X, Y\right\rangle_t
+			X_t Y_t = X_0 Y_0 + \int_{0}^{t}X_sdY_s + \int_{0}^{t}Y_sdX_s + \left\langle X, Y\right\rangle_t \quad \text{for }t \in \left[0,\tilde{T}\right]
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
-		See \cite{fima2Lecture}. %TODO: Add line where this is done.
+		See \cite{fima2Lecture}, page 51. %TODO: Add line where this is done.
 	\end{proof}
 	\begin{theorem}
-		Let $X$ be an Itô stochastic process, $f: \mathbb{R}^n \times [0;\tilde{T}] \rightarrow \mathbb{R}, \; (x,t) \rightarrowtail f(x, t)$ be two times differentiable in $x$ and differentiable in $t$. Then
+		Let $X$ be an Itô stochastic process, $f: \mathbb{R}^n \times [0,\tilde{T}] \rightarrow \mathbb{R}, \; (x,t) \rightarrowtail f(x, t)$ be two times differentiable in $x$ and differentiable in $t$. Then
 		\begin{align*}
 			f(X_t, t) = \;&f(X_0, 0) + \int_{0}^{t}(\partial_{t}f)(X_s, s)ds + \sum_{i=1}^{n}\int_{0}^{t}(\partial_{x^i}f)(X_s, s)dX^i_s \\
 			&+ \frac{1}{2} \sum_{i,j=1}^{n}\int_{0}^{t}(\partial^2_{x^ix^j}f)(X_s, s)d\left\langle X^i, X^j\right\rangle_s
@@ -209,12 +215,12 @@
 		
 	\end{theorem}
 	\begin{proof}
-		See \cite{fima2Lecture}. %TODO: Add line where this is done.
+		See \cite{fima2Lecture}, page 52. %TODO: Add line where this is done.
 	\end{proof}
 	
 	Through Itô's formula we can prove the following statement.
 	\begin{lemma}\label{lm:logNormalDyn}
-		Let $W=(W^i)_{i\in \{1, ..., d\}}$ be a d-dimensional Brownian Motion, $\mu$ be a 1- dimensional and $\sigma = (\sigma^i)_{i\in \{1, ..., d\}}$ a $d$-dimensional stochastic process. Let following stochastic differential equation (SDE) be given:
+		Let $W=(W^i)_{i\in \{1, ..., d\}}$ be a d-dimensional Brownian Motion, $\mu$ be a 1-dimensional and $\sigma = (\sigma^i)_{i\in \{1, ..., d\}}$ a $d$-dimensional stochastic process. Let following stochastic differential equation (SDE) be given:
 		\begin{align}\label{eq:lognormalSDE}
 			\begin{aligned}
 				dY_t &= Y_t \mu_t dt + Y_t \sigma_t \cdot dW_t,\\
@@ -238,7 +244,7 @@
 		We get (in SDE format):
 		\begin{align*}
 			dY_t &= d\exp(X_t) = \exp(X_t)dX_t + \frac{1}{2}\exp(X_t)d\left\langle X \right\rangle_t\\
-			&=	Y_t((\mu_t -\frac{1}{2}\sum_{i=1}^{d}(\sigma^i_t)^2)dt + \sigma_t \cdot dW_t) + \frac{1}{2}Y_t \sum_{i=1}^{d}(\sigma^i_t)^2 dt\\
+			&=	Y_t\left(\left(\mu_t -\frac{1}{2}\sum_{i=1}^{d}(\sigma^i_t)^2\right)dt + \sigma_t \cdot dW_t\right) + \frac{1}{2}Y_t \sum_{i=1}^{d}(\sigma^i_t)^2 dt\\
 			&= Y_t \mu_t dt + Y_t \sigma_t \cdot dW_t,
 		\end{align*}
 		which yields \cref{eq:lognormalSDE}.
@@ -248,7 +254,7 @@
 		\begin{align*}
 			Y_t = \exp(X_t),
 		\end{align*}
-		it holds that $Y_t > 0 \quad \forall t \in [0;\tilde{T}]$.
+		it holds that $Y_t > 0$ for all $t \in [0,\tilde{T}]$.
 	\end{remark}
 	
 	\subsection{Financial Mathematics}
@@ -256,14 +262,14 @@
 	\begin{theorem}
 		Following statements are equivalent:
 		\begin{itemize}
-			\item The market is arbitrage free and complete.
+			\item The market is arbitrage-free and complete.
 			\item There exists exactly one probability measure $\mathbb{Q}^B$ w.r.t. a numeraire $B$, such that the price process of every traded asset discounted by the numeraire $\frac{X}{B}$ is a martingale w.r.t. the filtration $\mathbb{F}$.
 		\end{itemize}
 	\end{theorem}
 	\begin{proof}
-		See \cite{fima2Lecture}. %TODO: Add line where this is done.
+		See \cite{fima2Lecture}, page 92 and 93. %TODO: Add line where this is done.
 	\end{proof}
-	This directly give us a notation for the price of any product in an arbitrage free and complete market.
+	This directly gives us a notation for the price of any product in an arbitrage-free and complete market.
 	\begin{lemma}
 		Let $X$ be the payoff of a $T$-claim. Then the arbitrage-free price of the claim at any time $t\in \left[0, T\right]$ is
 		\begin{align*}
@@ -271,20 +277,20 @@
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
-		See \cite{fima2Lecture}. %TODO: Add line where this is done.
+		See \cite{fima2Lecture}, page 89, 90. %TODO: Add line where this is done.
 	\end{proof}
 	 \color{red}Elaborate!!!\color{black}. 
 	%TODO: Elaborate
 	
 	
 	\subsection{Factor Loadings}\label{sec::FactorLoading}
-	The problem we face in this section is that of correlated Brownian-Motions. \\
+	The problem we face in this section is that of correlated Brownian Motions. \\
 	Assume we have two SDEs for stochastic processes $X$ and $Y$:	
 	\begin{align*}
 		dX_t = \mu^X_t dt + \sigma^X_t dW^{\mathbb{Q}, 1}_t,\\
 		dY_t = \mu^Y_t dt + \sigma^Y_t dW^{\mathbb{Q}, 2}_t,
 	\end{align*}
-	where $W^{\mathbb{Q}, 1}$ and $W^{\mathbb{Q}, 2}$ are instantaneously correlated Brownian-Motions under the same measure $\mathbb{Q}$. This correlation $\rho$ is expressed by a quadratic covariation of the Brownian-Motions \cite{FriesBook}:
+	where $W^{\mathbb{Q}, 1}$ and $W^{\mathbb{Q}, 2}$ are instantaneously correlated Brownian Motions under the same measure $\mathbb{Q}$. This correlation $\rho$ is expressed by a quadratic covariation of the Brownian Motions \cite{FriesBook}:
 	\begin{align*}
 		\left\langle W^{\mathbb{Q}, 1}, W^{\mathbb{Q}, 2} \right\rangle_t = \int_{0}^{t}\rho_s ds
 	\end{align*}
@@ -292,31 +298,31 @@
 	\begin{align*}
 		d\left\langle W^{\mathbb{Q}, 1}, W^{\mathbb{Q}, 2} \right\rangle_t = \rho_t dt.
 	\end{align*}
-	However implementation-wise we need to simulate SDEs using only independent Brownian-Motions.\\
-	For our computations we stick to a constant instantaneous correlation ($\rho_t \equiv \rho\in \mathbb{R} \quad \forall t \in \left[0;\tilde{T}\right]$), so lets formulate this assumption first:
+	However, implementation-wise we need to simulate SDEs using only independent Brownian Motions.\\
+	For our computations we stick to a constant instantaneous correlation ($\rho_t \equiv \rho\in \mathbb{R}$ for all $t \in \left[0,\tilde{T}\right]$), so lets formulate this assumption first:
 	\begin{assumption}
-		For all $1$-dim.Brownian-Motions under the martingale measure $\mathbb{Q}^B$ the instantaneous correlation is assumed to be constant. That is for any $\mathbb{Q}^B$-Brownian-Motions $W^1$ and $W^2$ the following holds for some $\rho \in \mathbb{R}$:
+		For all $1$-dim. Brownian Motions under the martingale measure $\mathbb{Q}^B$ the instantaneous correlation is assumed to be constant. That is for any $\mathbb{Q}^B$-Brownian Motions $W^1$ and $W^2$ the following holds for some $\rho \in \mathbb{R}$:
 		\begin{align*}
 			d\left\langle W^{1}, W^{2} \right\rangle_t = \rho dt
 		\end{align*}
 	\end{assumption}
-	Let us now look at how to simulate correlated Brownian-Motions using only independent ones by taking advantage of its properties.\\
-	Recall following Lemmata:
+	Let us now look at how to simulate correlated Brownian Motions using only independent ones by taking advantage of its properties.\\
+	Recall following lemmas:
 	\begin{lemma}
-		$W = (W^i)_{i\in\{1, ..., d\}}$ is a $d$-dimensional Brownian-Motion if and only if $W^1, ..., W^d$ are independent 1-dimensional Brownian-Motions
+		$W = (W^i)_{i\in\{1, ..., d\}}$ is a $d$-dimensional Brownian Motion if and only if $W^1, ..., W^d$ are independent 1-dimensional Brownian Motions
 	\end{lemma}
 	\begin{proof}
-		See \cite{fima2Lecture}. %TODO: Add line where this is done.
+		See \cite{fima2Lecture}, page 6. %TODO: Add line where this is done.
 	\end{proof}
 	\begin{lemma}\label{lm:linearcombiofbmisbm}
-		For any $d$-dimensional standard Brownian-Motion $U = (U^i)_{i\in\{1, ..., d\}}$ and weights $(a_i)_{i\in\{1,...d\}}$ with $a^2_1 + ... + a^2_d = 1$ it holds that the process $W$ given by:
+		For any $d$-dimensional standard Brownian Motion $U = (U^i)_{i\in\{1, ..., d\}}$ and weights $(a_i)_{i\in\{1,...d\}}$ with $a^2_1 + ... + a^2_d = 1$ it holds that the process $W$ given by:
 		\begin{align*}
 			W_t = \sum_{i=1}^{d}a_iU^i_t
 		\end{align*}
-		is a $1$-dimensional standard Brownian-Motion.
+		is a $1$-dimensional standard Brownian Motion.
 	\end{lemma} 
 	\begin{proof}
-		We proof that $W$ fulfills the properties of a Brownian-Motion:\\
+		We proof that $W$ fulfills the properties of a Brownian Motion:\\
 		\emph{Property $W_0=0$ a.s.}:
 		\begin{align*}
 			W_0 = \sum_{i=1}^{d}a_iU^i_0 = 0 \text{ a.s.}
@@ -327,36 +333,36 @@
 			&\sim \mathcal{N}\left(0, (t-s)\right)
 		\end{align*}
 		\emph{Property $W$ has stationary independent increments}:\\
-		Stationarity is given by the last property. Let $0 \le t_0 < t_1 <...<t_k \le \tilde{T}$. Then the stacked vector of the increments of $U$: $\mathcal{U} = (U^1_{t_1} -U^1_{t_0}, ...,U^d_{t_1} -U^d_{t_0}, ..., U^1_{t_k} -U^1_{t_{k-1}}, ..., U^d_{t_k} -U^d_{t_{k-1}})^T$ is a $dk$-dim. Gaussian vector, with the identity matrix $\mathcal{I}^{dk}$ as correlation (because of the independence). We can define a $k \times dk$-dim. matrix $A$, such that $A\mathcal{U} = (W_{t_1}-W_{t_0}, ..., W_{t_k}-W_{t_k-1})^T$ which is a linear transformation of $\mathcal{U}$ and therefore still a multivariate Gaussian vector with $\mathcal{I}^{k}$ as correlation matrix. A multivariate Gaussian vector, with identity matrix as correlation is independent, hence $W$ has independent increments.
+		Stationarity is given by the last property. Let $0 \le t_0 < t_1 <...<t_k \le \tilde{T}$. Then the stacked vector of the increments of $U$: $\mathcal{U} = (U^1_{t_1} -U^1_{t_0}, ...,U^d_{t_1} -U^d_{t_0}, ..., U^1_{t_k} -U^1_{t_{k-1}}, ..., U^d_{t_k} -U^d_{t_{k-1}})^T$ is a $dk$-dim.\;Gaussian vector, with the identity matrix $\mathcal{I}^{dk}$ as correlation (because of the independence). We can define a $k \times dk$-dim. matrix $A$, such that $A\,\mathcal{U} = (W_{t_1}-W_{t_0}, ..., W_{t_k}-W_{t_k-1})^T$ which is a linear transformation of $\mathcal{U}$ and therefore still a multivariate Gaussian vector with $\mathcal{I}^{k}$ as correlation matrix. A multivariate Gaussian vector, with identity matrix as correlation is independent, hence $W$ has independent increments.
 		\\
 		\emph{Property $W$ has continuous sample paths a.s.}:\\
 		Let $U^i(\omega)$ be continuous for $\omega \in A_i\subset\Omega$ where $A_i^c$ is a null set. Then $W(\omega) = \sum_{i=1}^{d}a_iU^i(\omega)$ is continuous for $\omega \in \bigcap_{i=1}^dA_i$. Because $\left(\bigcap_{i=1}^dA_i\right)^c = \bigcup_{i=1}^dA^c_i$ is still a null set, we have that also $W$ has continuous sample paths almost surely.
 	\end{proof}
 	
-	We can now create different linear combinations of the same $d$-dimensional Brownian-Motion $U$ and look at their correlation:
+	We can now create different linear combinations of the same $d$-dimensional Brownian Motion $U$ and look at their correlation:
 	\begin{lemma}
-		Let $U = (U^i)_{i\in\{1, ..., d\}}$ be a $d$-dimensional Brownian-Motion, let $(a_i)_{i\in\{1,...d\}}$ and $(b_i)_{i\in\{1,...d\}}$ be weights with $\sum_{i=1}^{d}a^2_i = 1$, $\sum_{i=1}^{d}b^2_i = 1$ respectively.\\
+		Let $U = (U^i)_{i\in\{1, ..., d\}}$ be a $d$-dimensional Brownian Motion, let $(a_i)_{i\in\{1,...d\}}$ and $(b_i)_{i\in\{1,...d\}}$ be weights with $\sum_{i=1}^{d}a^2_i = 1$, $\sum_{i=1}^{d}b^2_i = 1$, respectively.\\
 		Then $W^1$ and $W^2$ given by 
 		\begin{align*}
 			W^1_t = \sum_{i=1}^{d}a_iU^i\\
 			W^2_t = \sum_{i=1}^{d}b_iU^i
 		\end{align*}
-		are 1-dimensional Brownian-Motions with:
+		are 1-dimensional Brownian Motions with:
 		\begin{align}\label{eq:quadraticcovoflinearcombis}
 			d\left\langle W^{1}, W^{2} \right\rangle_t = \left(\sum_{i=1}^{d}a_ib_i \right)dt
 		\end{align}
 	\end{lemma}
 	\begin{proof}
-		By \Cref{lm:linearcombiofbmisbm} we have that $W^1$ and $W^2$ are Brownian-Motions. Taking the quadratic covariation directly yields \cref{eq:quadraticcovoflinearcombis}.
+		By \cref{lm:linearcombiofbmisbm} we have that $W^1$ and $W^2$ are Brownian Motions. Taking the quadratic covariation directly yields \cref{eq:quadraticcovoflinearcombis}.
 	\end{proof}
-	With this lemma we now have a way to construct correlated Brownian-Motions $W^1, ... W^d$. We still need to find the linear combinations, given a certain correlation matrix $R = (\rho_{i,j})_{i,j\in\{1,...,d\}}$, however. A way to do that is to use principal component analysis (PCA). It is beyond the scope of this thesis to give a detailed description of PCA, but the key idea is to take the eigenvectors of $R$ and use them as linear combination. PCA also gives a way to reduce the number of factors, by only considering the Eigenvectors with the highest Eigenvalues \cite{FriesBook}. Let us summarize this procedure in a lemma:
+	With this lemma we now have a way to construct correlated Brownian Motions $W^1, ..., W^d$. We still need to find the linear combinations, given a certain correlation matrix $R = (\rho_{i,j})_{i,j\in\{1,...,d\}}$, however. A way to do that is to use principal component analysis (PCA). It is beyond the scope of this thesis to give a detailed description of PCA, but the key idea is to take the eigenvectors of $R$ and use them as linear combination. PCA also gives a way to reduce the number of factors, by only considering the Eigenvectors with the highest Eigenvalues \cite{FriesBook}. Let us summarize this procedure in a lemma:
 	\begin{lemma}
-		Let $U=(U^i)_{i\in\{1, ... d\}}$ be a $d$-dim. Brownian-Motion, let $R=(\rho_{i,j})_{i,j\in\{1,...,d\}}$ be a $\mathbb{R}^{d\times d}$ correlation matrix (positive-definite, symmetric, entries in $\left[-1;1\right]$ and $1$ on the diagonal). Let $(\lambda^{i,j})_{i,j\in\{1,...,d\}}$ be a matrix constructed by PCA from $R$.\\
-		For $i=1,...d$ let $W^i$ be the 1-dim. Brownian-Motion given by:
+		Let $U=(U^i)_{i\in\{1, ... d\}}$ be a $d$-dim. Brownian Motion, let $R=(\rho_{i,j})_{i,j\in\{1,...,d\}}$ be a $\mathbb{R}^{d\times d}$ correlation matrix (positive-definite, symmetric, entries in $\left[-1,1\right]$ and $1$ on the diagonal). Let $(\lambda^{i,j})_{i,j\in\{1,...,d\}}$ be a matrix constructed by PCA from $R$.\\
+		For $i=1,..., d$ let $W^i$ be the 1-dim. Brownian Motion given by:
 		\begin{align*}
 			W^i_t = \sum_{j=1}^{d}\lambda^{i,j}U^j_t.
 		\end{align*}
-		Then $\forall i, k \in \{1, ..., d\}$ 
+		Then for all $i, k \in \{1, ..., d\}$ 
 		\begin{align*}
 			\sum_{j=1}^{d}\lambda^{i,j}\lambda^{k,j} = \rho_{i,k}\\
 			d\left\langle W^{i}, W^{k} \right\rangle_t = \rho_{i,k}dt
@@ -365,7 +371,7 @@
 	\begin{proof}
 		This is a direct implication from the previous results together with the definition of PCA and the proof that it works in \color{red}[Add source]\color{black}. %TODO: Add source
 	\end{proof}
-	We now have a way of constructing correlated Brownian Motions. As mentioned we can perform a factor reduction with PCA, meaning we can construct $d$ correlated Brownian-Motions with $m < d$. This comes at the cost of "losing" a bit of the independence of some factors. But because in most cases the advantages of a factor reduction (less computational cost) outweigh the disadvantages, we from here on assume that the correlation- and factor loading matrix are not of the same size.
+	We now have a way of constructing correlated Brownian Motions. As mentioned we can perform a factor reduction with PCA, meaning we can construct $d$ correlated Brownian Motions with a $m$-dim. Brownian Motion, where $m < d$. This comes at the cost of "losing" a bit of the independence of some factors. But because in most cases the advantages of a factor reduction (less computational cost) outweigh the disadvantages, we from here on assume that the correlation- and factor loading matrix are not of the same size.
 	
 	
 	
@@ -375,7 +381,7 @@
 	
 	While the actual LIBOR, short for "London Inter-Bank Offered Rate" \color{red}[Add source] \color{black} %TODO: Add source
 	lost most of its influence after the banking crash of 2008 \color{red}[Add source] \color{black} %TODO: Add source
-	the LIBOR market model - or discrete forward rate model - is still a very popular mathematical model for simulation and valuation of financial products on fixed income markets.\\
+	the LIBOR market model -- or discrete forward rate model -- is still a very popular mathematical model for simulation and valuation of financial products on fixed income markets.\\
 	The idea of the model  \color{red}Elaborate!!!\color{black}. 
 	%TODO: Elaborate
 	\\
@@ -384,32 +390,32 @@
 	\subsection{Fixed Income Markets Terminology}
 	We start with the definition of some fixed income market terms:
 	\begin{definition}
-		A \emph{zero coupon bond} with maturity $T \in [0;\tilde{T}]$ (short: $T$-bond) is a product that pays $1$ at maturity. It's price process is denoted:
+		A \emph{zero coupon bond} with maturity $T \in [0,\tilde{T}]$ (short: $T$-bond) is a product that pays $1$ at maturity. Its price process is denoted:
 		\begin{align*}
 			P(t;T) := P(\omega,t;T)
 		\end{align*}
 	\end{definition}
 	Note: by construction $P(T;T) = 1$ and $P(\cdot, T)$ discounted with the numeraire must be a martingale under the corresponding martingale-measure $\mathbb{Q}^B$.\\
-	While the zero coupon bond does not yield any payoff (or coupons) between buying- and maturity time - hence the name - one can also find coupon paying bonds:
-	\begin{definition}
-		Let $T_1 < ... < T_M$ be a tenor with $T_1, T_M \in [0;\tilde{T}]$.\\
-		A \emph{(fixed) coupon bond} with nominal $N \in \mathbb{R}$ and  coupons $c_i \in \mathbb{R}$ for $i=1, ...,M$ on the given tenor is a product that pays $c_i$ at each time point $T_i$ and additionally the nominal $N$ at maturity $T_M$.
+	While the zero coupon bond does not yield any payoff (or coupons) between buying- and maturity time -- hence the name -- one can also find coupon paying bonds:
+	\begin{definition}\label{def:couponbond}
+		Let $T_1 < ... < T_N$ be a tenor with $T_i \in [0,\tilde{T}]$ for all $i\in \{1, ...,N\}$.\\
+		A \emph{(fixed) coupon bond} with nominal $\mathcal{N} \in \mathbb{R}$ and  coupons $c_i \in \mathbb{R}$ for $i\in \{1, ...,N\}$ on the given tenor is a product that pays $c_i$ at each time point $T_i$ and additionally the nominal $\mathcal{N}$ at maturity $T_N$.
 	\end{definition}
 	\begin{remark}
-		A variation of this definition is that $c_i$ are defined as coupon rates and the actual coupon payment is then $c_i N$ at each time step $T_i$. Another popular definition includes the terminal payment of the nominal $N$ in the last coupon $c_M$. \\
+		A variation of this definition is that $c_i$ are defined as coupon rates and the actual coupon payment is then $c_i\, \mathcal{N}$ at each time step $T_i$. Another popular definition includes the terminal payment of the nominal $\mathcal{N}$ in the last coupon $c_N$. \\
 		Additionally to this "normal" coupon bond one can also find \emph{amortizing} coupon bonds in the market that distribute the nominal $N$ in the coupons over all periods instead of paying it all at once at the maturity time.
 	\end{remark}
 	%TODO: Write and prove the price of a coupon bond
 	\begin{lemma}
-		Let $T_i$ and $c_i$ be as in the definition above. 
+		Let $T_i$ and $c_i$ be as in \cref{def:couponbond}. 
 		The price of a fixed coupon paying bond is:
 		\begin{align}\label{eq:pricecouponbond}
-			\Pi(t)=\sum_{i=1}^{M}c_i P(t;T_i) + NP(t;T_M)
+			\Pi(t)=\sum_{i=1}^{N}c_i P(t;T_i) + \mathcal{N}\,P(t;T_N)
 		\end{align}
-		for $t\in [0;T_1[$.
+		for $t\in [0,T_1[$.
 	\end{lemma}
 	\begin{proof}
-		The coupon bond can be replicated by buying $c_i$ $T_i$-zero-coupon-bonds for each $i=1, ..., M$ and N $T_M$-bonds.\\
+		The coupon bond can be replicated by buying $c_i$ $T_i$-zero-coupon-bonds for each $i\in \{1, ...,N\}$ and $\mathcal{N}$  $T_N$-bonds.\\
 		Such a portfolio of zero coupon bonds has a price as given in \cref{eq:pricecouponbond}. As we are in a complete market, the two products must have the same value.
 	\end{proof}
 	\begin{definition}\label{def:simpleFR}
@@ -421,7 +427,7 @@
 	We can define different products that are strictly positive as numeraires as alternatives to the money market account. We then use a change of measure which gives us a different martingale measure corresponding to the numeraire, i.e. under this new measure all price processes of traded assets discounted with the numeraire are martingales as well.\\
 	A simple example is the terminal measure:
 	\begin{definition}
-		The \emph{terminal measure} is the martingale measure $\mathbb{Q}^B$ gained by using the terminal Bond as numeraire, i.e. 
+		The \emph{terminal measure} is the martingale measure $\mathbb{Q}^B$ gained by using the terminal bond as numeraire, i.e. 
 		\begin{align}\label{eq:terminalNumeraire}
 			B(t) = P(t;\tilde{T})
 		\end{align}
@@ -436,9 +442,9 @@
 		where $m(t) = \max\{i \in \{0, ..., N-1\} \; | \; T_i \le t \}$.
 	\end{definition}
 	\begin{remark}
-		\Cref{eq:spotNumeraire} can be rewritten to:
+		Note that \cref{eq:spotNumeraire} can be rewritten to:
 		\begin{align}\label{eq:spotNumeraireAlt}
-			B(t) = P(t;T_{m(t)+1})\prod_{i=0}^{m(t)}(1 + L(T_{i-1};T_{i-1},T_i)(T_{i+1}-T_i))
+			B(t) = P(t;T_{m(t)+1})\prod_{i=0}^{m(t)}\left(1 + L\left(T_{i-1};T_{i-1},T_i\right)\left(T_{i+1}-T_i\right)\right)
 		\end{align}
 	\end{remark}
 	The numeraire in the spot measure can be explained as follows:\\
@@ -465,26 +471,26 @@
 			dL_i = \mu^i_t dt + \sigma^i_t dW^{\mathbb{Q}^B, L_i}_t,\label{eq:LMMSDE}\\
 			L_i(0)(T_{i+1} - T_i) = \frac{P(0;T_i)}{P(0;T_{i+1})} - 1,
 		\end{align}
-		where $(W^{\mathbb{Q}^B, L_i})_{i\in \{0, ..., N\}}$ are possibly instantaneously correlated Brownian-Motions.
+		where $(W^{\mathbb{Q}^B, L_i})_{i\in \{0, ..., N\}}$ are possibly instantaneously correlated Brownian Motions.
 	\end{assumption}
-	In the LIBOR model, all other variables are then derived from these interest rates, most importantly the $T_i$-Bond prices. The attentive reader will have noticed, however, that there is a hole in this derivation: the so-called short-period Bond $P(t;T_{m(t)+1})$ cannot be calculated by $(L_i(t))_{i\in\{0, ..., N\}}$ alone, which is why we need the following assumption:
+	In the LIBOR model, all other variables are then derived from these interest rates, most importantly the $T_i$-bond prices. The attentive reader will have noticed, however, that there is a hole in this derivation: the so-called short-period bond $P(t;T_{m(t)+1})$ cannot be calculated by $(L_i(t))_{i\in\{0, ..., N\}}$ alone, which is why we need the following assumption:
 	\begin{assumption}\label{as:LMMShortPeriodBond}
-		The short-period Bond
+		The short-period bond
 		\begin{align*}
 			P(t;T_{m(t)+1})
 		\end{align*}
-		is $\mathcal{F}_{m(t)}$-measurable. This means that all $T_i$-Bond prices are predictable in $[T_{i-1};T_i]$.\\
+		is $\mathcal{F}_{m(t)}$-measurable. This means that all $T_i$-bond prices are predictable in $[T_{i-1},T_i]$.\\
 		A specification that satisfies this assumption is:
 		\begin{align*}
-			P(t;T_{m(t)+1}) = (1 + L_{m(t)}(t)(T_{m(t)+1} - t))^{-1}
+			P(t;T_{m(t)+1}) = \left(1 + L_{m(t)}(t)\left(T_{m(t)+1} - t\right)\right)^{-1}
 		\end{align*}
 	\end{assumption}
 	Let us fix the spot measure as our valuation measure $\mathbb{Q}^B$.
-	Given a variance-structure for the rates $(\sigma^i)_{i\in\{0,...,N\}}$, a correlation-structure $(\rho^{i,j})_{i,j \in \{0,...,N\}}$ for the Brownian-Motions and 
+	Given a variance-structure for the rates $(\sigma^i)_{i\in\{0,...,N\}}$, a correlation-structure $(\rho^{i,j})_{i,j \in \{0,...,N\}}$ for the Brownian Motions and 
 	we can specify a drift for the SDEs of the LIBORs:
 	\begin{lemma}\label{lem:LMMDriftSpec}
 		Let $\mathbb{Q}^B$ be the spot measure.
-		Let $L_i$ satisfy \cref{as:LIBORisItoProcess} and \ref{as:LMMShortPeriodBond}. Let $(\sigma^i)_{i\in\{0,...,N\}}$ and $(\rho^{i,j})_{i,j \in \{0,...,N\}}$ be given, where
+		Let $L_i$ satisfy \cref{as:LMMShortPeriodBond,as:LIBORisItoProcess}. Let $(\sigma^i)_{i\in\{0,...,N\}}$ and $(\rho^{i,j})_{i,j \in \{0,...,N\}}$ be given, where
 		\begin{align*}
 			d\left\langle W^{\mathbb{Q}^B, L_i}, W^{\mathbb{Q}^B, L_j} \right\rangle_t = \rho^{i,j}_t dt.
 		\end{align*}
@@ -494,16 +500,16 @@
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
-		The proof is beyond the scope of this thesis, but can be found in a variety of literature. We reference \cite{FriesBook} and \cite{fima3Lecture}. One can also take a look at the next section at the proof of \Cref{theo:defDriftTheo}, which is very similar  and carries its' idea and outline.
+		The proof is beyond the scope of this thesis, but can be found in a variety of literature. We reference \cite{FriesBook} (pages 301 - 303) and \cite{fima3Lecture}, (pages 81 - 86). One can also take a look at the next section at the proof of \cref{theo:defDriftTheo}, which is very similar  and carries its' idea and outline.
 	\end{proof}
 	Note that in its original form, the LIBOR model is a log-normal model (see \cite{FriesBook}), hence the original model assumed $\sigma^i_t = L_i(t)\tilde{\sigma}_t$. However all proofs also work on a non log-normal model as well. The only restriction we need to apply is
 	\begin{align*}
 		L_i(t) > -1 \quad \forall i \in \{0,...,N\}
 	\end{align*}
 	to prevent negative or no zero coupon bond prices.\\
-	As mentioned in the previous chapter, having a model in terms of correlated Brownian-Motions is not ideal for numerical replication. We therefore move to another notation, which uses factor loadings instead:
+	As mentioned in the previous chapter, having a model in terms of correlated Brownian Motions is not ideal for numerical replication. We therefore move to another notation, which uses factor loadings instead:
 	\begin{lemma}\label{lem:LMMFactorVersion}
-		There exist $m$-dimensional stochastic processes $\lambda^{i} = (\lambda^{i k})_{k \in \{1, ... m\}}$ and a $m$-dimensional $\mathbb{Q}^B$-Brownian-Motion $U=(U^k)_{k \in \{1,...,m\}}$ such that
+		There exist $m$-dimensional stochastic processes $\lambda^{i} = (\lambda^{i k})_{k \in \{1, ... m\}}$ and a $m$-dimensional $\mathbb{Q}^B$-Brownian Motion $U=(U^k)_{k \in \{1,...,m\}}$ such that
 		\begin{align*}
 			dL_i(t) = \mu^{i}_t dt + \sigma^{i}_t dW^{\mathbb{Q}^B, L_i}_t \iff 
 			dL_i(t) = \mu^{i}_t dt + \lambda^{i}_t\cdot dU_t
@@ -528,7 +534,7 @@
 		\end{align*}
 	\end{remark}
 	\begin{proof}
-		By \Cref{lem:LMMDriftSpec} and \ref{lem:LMMFactorVersion} we have:
+		By \cref{lem:LMMDriftSpec,lem:LMMFactorVersion} we have:
 		\begin{align*}
 			\mu^{i}_t &= \sigma^{i}_t\sum_{j=m(t)+1}^{i}\frac{\rho^{i j}_t \sigma^{j}_t\Delta T_j}{1 + \Delta T_j L_j(t)} = \sum_{j=m(t)+1}^{i}\frac{\rho^{i j, d}_t \sigma^{j, d}_t \sigma^{i}_t\Delta T_j}{1 + \Delta T_j L_j(t)}\\
 			&= \sum_{j=m(t)+1}^{i}\frac{\left(\sum_{k=1}^{m}\lambda^{i k}_t\lambda^{j k}_t\right)\Delta T_j}{1 + \Delta T_j L_j(t)}
@@ -554,7 +560,7 @@
 		Furthermore we do not consider recovery rates, i.e. we assume that a party is either able to pay all or nothing.
 		We now introduce the concept of default and defaultable zero coupon bonds.
 	\begin{definition}
-		The \emph{default time} is a stopping time \(\tau(\omega)\) on the Filtration \((\mathcal{F}_t)_{t\in \mathbb{R}^+}\).\\
+		The \emph{default time} is a stopping time \(\tau(\omega)\) on the filtration \((\mathcal{F}_t)_{t\in \mathbb{R}^+}\).\\
 		The \emph{default indicator} \(J(t)\) is the indicator process over the default time:
 		\[J(t) := \mathbf{1}_{\{\tau(\omega) \le t\}}\]
 	\end{definition}
@@ -640,7 +646,7 @@
 			 & + \prod_{j=m(t)+1}^{i}(1+\Delta T_j L^d_j(t))^{-1} d\left(\frac{P^d(t;T_{m(t)+1})}{B(t)}\right)\\
 			 & + d\left\langle\frac{P^d(t;T_{m(t)+1})}{B(t)}, \prod_{j=m(t)+1}^{i}(1+\Delta T_j L^d_j(t))^{-1}\right\rangle.
 		\end{align*}
-		With \Cref{as:LMMShortPeriodBond} and \ref{as:DLMMShortPeriodBond} we get 
+		With \cref{as:LMMShortPeriodBond,as:DLMMShortPeriodBond} we get 
 		\begin{align*}
 			d\left(\frac{P^d(t;T_{m(t)+1})}{P(t;T_{m(t)+1})}\right) = (...)dt - \frac{P^{d,*}(t;T_{m(t)+1})}{P(t;T_{m(t)+1})}dJ(t).
 		\end{align*}
@@ -662,13 +668,13 @@
 		\begin{align*}
 			d\left\langle  L_i^d(t), \frac{P^d(t;T_{i+1})}{B(t)} \right\rangle = \sigma^{i, d}_t \frac{P^d(t;T_{m(t)+1})}{B(t)} \sum_{j=m(t)+1}^{i}\frac{\sigma^{j, d}_t\Delta T_j}{1 + \Delta T_j L^d_j(t)}\rho^{i j, d}_t  dt.
 		\end{align*}
-		Inserting into (\ref{defDriftDeriv}) yields our statement (\ref{defDriftTheo}).
+		Inserting into \cref{defDriftDeriv} yields our statement (\ref{defDriftTheo}).
 	\end{proof}
 	
 	%TODO: Insert Terminal measure drift
-	Just as we did in the last section, we now move from the "covariance" process model to a "factor loading" model as described in \Cref{sec::FactorLoading}. Note that we also need to include the non defaultable covariance structure for our new model.\\
+	Just as we did in the last section, we now move from the "covariance" process model to a "factor loading" model as described in \cref{sec::FactorLoading}. Note that we also need to include the non defaultable covariance structure for our new model.\\
 	\begin{lemma}\label{lem:defLMMFactorVersion}
-		There exist $m^d$-dimensional stochastic processes $\lambda^{i,d} = (\lambda^{i k, d})_{k \in \{1, ..., m^d\}}$, $\lambda^{i}$ $= ((\lambda^{i k})_{k \in \{1, ... m\}}, (0)_{k \in \{m+1, ... m^d\}})$ and a $m^d $-dimensional $\mathbb{Q}^B$-Brownian-Motion $U=(U^k)_{k \in \{1,...,m^d\}}$ such that
+		There exist $m^d$-dimensional stochastic processes $\lambda^{i,d} = (\lambda^{i k, d})_{k \in \{1, ..., m^d\}}$, $\lambda^{i}$ $= ((\lambda^{i k})_{k \in \{1, ... m\}}, (0)_{k \in \{m+1, ... m^d\}})$ and a $m^d $-dimensional $\mathbb{Q}^B$-Brownian Motion $U=(U^k)_{k \in \{1,...,m^d\}}$ such that
 		\begin{align*}
 			\left.
 			\begin{aligned}
@@ -691,7 +697,7 @@
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
-		Follows directly from \Cref{sec::FactorLoading}. %TODO: Add right lemma etc.
+		Follows directly from \cref{sec::FactorLoading}. %TODO: Add right lemma etc.
 	\end{proof}
 	Hence from here on we use this computation friendly version:
 	\begin{align}\label{eq:defLMMSDE}
@@ -704,7 +710,7 @@
 		\end{align*}
 	\end{remark}
 	\begin{proof}
-		By \Cref{defDriftTheo} and \Cref{lem:defLMMFactorVersion} we have:
+		By \cref{defDriftTheo,lem:defLMMFactorVersion} we have:
 		\begin{align*}
 			\mu^{i, d}_t &= \sigma^{i, d}_t\sum_{j=m(t)+1}^{i}\frac{\rho^{i j, d}_t \sigma^{j, d}_t\Delta T_j}{1 + \Delta T_j L^d_j(t)} = \sum_{j=m(t)+1}^{i}\frac{\rho^{i j, d}_t \sigma^{j, d}_t \sigma^{i, d}_t\Delta T_j}{1 + \Delta T_j L^d_j(t)}\\
 			&= \sum_{j=m(t)+1}^{i}\frac{\left(\sum_{k=1}^{m^d}\lambda^{i k,d}_t\lambda^{j k,d}_t\right)\Delta T_j}{1 + \Delta T_j L^d_j(t)}
@@ -721,7 +727,7 @@
 		Let $L^d$ and $L$ be defined as before.
 		The \emph{spread} $S_i$ for the LIBOR period $[T_i; T_{i+1}]$, where $i \in \{0, ..., N\}$ is defined as:
 		\begin{align*}
-			S_i(t) := L^d_i(t) - L_i(t)
+			S_i(t) := L^d_i(t) - L_i(t) \quad \text{for } t \in \left[0,\tilde{T}\right]
 		\end{align*}
 	\end{definition}
 	\begin{remark}
@@ -740,7 +746,7 @@
 	
 	Note that we "extended" the vectors $\lambda^{i}_t = (\lambda^{i 1}_t, ..., \lambda^{i m}_t, 0, ..., 0)^T$.\\
 	Given a numeraire and the factor loadings of the non-defaultable LIBOR rates $\lambda^i$, the goal is, to find a specification for the defaultable factor loadings $\lambda^{i,d}$ such that $S_i$ is always positive.\\
-	The most common dynamics that guarantee positivity are log-normal dynamics as discussed in \Cref{lm:logNormalDyn}. So one idea is to find restrictions on $\lambda^{i,d}_t$ such that 
+	The most common dynamics that guarantee positivity are log-normal dynamics as discussed in \cref{lm:logNormalDyn}. So one idea is to find restrictions on $\lambda^{i,d}_t$ such that 
 	\begin{align*}
 		\mu^{i,d}_t - \mu^{i}_t = S_i(t)\tilde{\mu}^{i,S}_t, \quad \text{and} 
 		\quad \lambda^{i,d}_t - \lambda^{i}_t = S_i(t)\tilde{\lambda}^{i,S}_t
@@ -763,7 +769,7 @@
 		for some process $\tilde{\mu}^{i,S}$ and $\tilde{\lambda}^{i,S}$.
 	\end{lemma}
 	\begin{proof}
-		By \Cref{rem:defLMMDrift} we have:
+		By \cref{rem:defLMMDrift} we have:
 		\begin{align*}
 			%\begin{split}
 			dS_i =&\; dL^d_i - dL_i\\
@@ -780,13 +786,13 @@
 		
 		where (A) comes from the relation:
 		\begin{align*}
-			\frac{\lambda^{j k, d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} = \frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} \quad \text{for } k = 1, ..., m
+			\frac{\lambda^{j k, d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} = \frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} \quad \text{for } k \in \{1, ..., m\}
 		\end{align*}
 		and (B) comes from
 		\begin{align*}
 			\lambda^{i k,d}_t - \lambda^{i k}_t = \left(\frac{1 + L^d_i(t) \Delta T_i}{1 + L_i(t)\Delta T_i} - \frac{1 + L_i(t) \Delta T_i}{1 + L_i(t)\Delta T_i}\right)\lambda^{i k}_t = S_i \frac{\lambda^{i k}_t \Delta T_i}{1 + L_i(t) \Delta T_i}
 		\end{align*}
-		for $k = 1, ..., m$.
+		for $k \in \{1, ..., m\}$.
 	\end{proof}
 	
 	 \color{red}Elaborate!!!\color{black}. 
@@ -794,7 +800,7 @@
 	
 	
 	\subsection{The Survival Probability}
-	Until now we assumed every stochastic process to be adapted to the filtration $\mathbb{F}$. This is what is commonly done in mathematical finance to find theoretical prices and it simulates the availability of  information at each time $t$. This includes the indicator over the default time $J(t)$. However the products we are interested in, are rarely dependent on the (future) default state, but rather its' probability, as we see in the next chapter. So it is more efficient (and less dependent on extra assumptions) to calculate the survival probability instead of simulating the default time.\\
+	Until now we assumed every stochastic process to be adapted to the filtration $\mathbb{F}$. This is what is commonly done in mathematical finance to find theoretical prices and it simulates the availability of  information at each time $t$. This includes the indicator over the default time $J(t)$. However the products we are interested in, are rarely dependent on the (future) default state, but rather its probability, as we see in the next chapter. So it is more efficient (and less dependent on extra assumptions) to calculate the survival probability instead of simulating the default time.\\
 	
 	It is important to note here that for pricing we are only interested in the behavior of the rates under the martingale measure $\mathbb{Q}^B$ and so we also only focus on the survival probability under this measure. This means the probability we derive, is not to be confused with the real world probability of survival.\\
 	
@@ -814,12 +820,12 @@
 		\end{itemize}
 	\end{lemma}
 	\begin{proof}
-		Let $T_i \le s < t \le T_{i+1}$. With \Cref{as:LMMShortPeriodBond} we have: 
+		Let $T_i \le s < t \le T_{i+1}$. With \cref{as:LMMShortPeriodBond} we have: 
 		\begin{align*}
 			P(s;T_{i+1}) &= B(s) \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_s}\left[\frac{P(t;T_{i+1})}{B(t)} \right] = P(t;T_{i+1})B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_s}\left[\frac{P(t;t)}{B(t)}\right]\\
 			&=P(t;T_{i+1})P(s;t)
 		\end{align*}
-		We can do a very similar derivation for $P^{d,*}(s;t)$ with \Cref{as:DLMMShortPeriodBond}:
+		We can do a very similar derivation for $P^{d,*}(s;t)$ with \cref{as:DLMMShortPeriodBond}:
 		\begin{align*}
 			P^{d,*}(s;T_{i+1}) \mathbf{1}_{\{\tau > s\}} &= B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{P^d(t;T_{i+1})}{B(t)} \right]\\
 			&= P^{d,*}(t;T_{i+1}) B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{\mathbf{1}_{\{\tau > t\}}}{B(t)} \right]\\
@@ -844,7 +850,7 @@
 	\end{proof}
 	Setting $s=T_i$ and $t=T_{i+1}$ gives us the one step survival probability:
 	\begin{lemma}
-		Let $B$ be the numeraire under the spot measure, $i = 0, ..., N$.
+		Let $B$ be the numeraire under the spot measure, $i \in \{1, ..., N\}$.
 		The one-step survival probability until $T_{i+1}$ w.r.t. $\mathcal{F}_{T_i}$ given pre-default is
 		\begin{align}
 			q(T_{i+1}, \omega) := \mathbb{Q}^B_{\mathcal{F}_{T_i}}\left( \left.\left\{\tau(\omega) > T_{i+1} \right\}  \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right) = \frac{P^{d,*}(T_i;T_{i+1})}{P(T_i;T_{i+1})}. \label{eq:oneStepSProbwrtF}
@@ -864,7 +870,7 @@
 	
 	Let us start by stating an assumption that is important for the derivation:
 	\begin{assumption}
-		The default time $\tau(\omega)$ has a stochastic driver that is not fully dependent on the Brownian-Motion $U$. \\
+		The default time $\tau(\omega)$ has a stochastic driver that is not fully dependent on the Brownian Motion $U$. \\
 		Furthermore $\{\tau(\omega) > 0\} = \Omega$.
 	\end{assumption}
 	This statement seems to be a bit vague, but this is only a requirement to find $\sigma$-Algebras $\mathcal{G}_t$ such that $L^d_i(t)$ and $L_i(t)$ are $\mathcal{G}_t$-measurable but $J(t) = \mathbf{1}_{\{\tau < t\}}$ is not $\forall t \in [0;\tilde{T}]$.\\
@@ -947,7 +953,7 @@
 	\end{proof}
 	\end{comment}
 	
-	Note that while we calculate a probability here, it is a \emph{pathwise} probability: at each start of a LIBOR period $T_i$ - if default has not happened yet - we can evaluate how probable it is that $P^d$ survives the coming period.
+	Note that while we calculate a probability here, it is a \emph{pathwise} probability: at each start of a LIBOR period $T_i$ -- if default has not happened yet -- we can evaluate how probable it is that $P^d$ survives the coming period.
 	\begin{comment}
 	Note that while we calculate a probability here, it is a \emph{pathwise} probability.
 	At first glance this seems counter-intuitive, but consider this: $\mathbb{G}$ does not capture the default state. I.e. while we can calculate $P^{d,*}(t;T_i)$, the default might have already happened, which we would not know, even past $t$ and $T_i$. This is why we can and need to calculate the survival probability even when given $P^{d,*}(t;T_i)$.\\
@@ -1010,7 +1016,7 @@
 			\mathcal{G}_t := \sigma(U^k_t | k = 1, ..., m^d) \subset \mathcal{F}_t \quad \forall t \in  [0;\tilde{T}].
 		\end{align*}
 	\end{definition}
-	Note that all model primitives are $\mathbb{G}$-adapted, as $\mathbb{G}$ is the filtration over the only simulated stochastic processes (in our case the Brownian-Motion $U$). As mentioned before we are interested in pricing without simulating the default time $\tau$, which might be driven by other stochastic values. This means that $\tau$ is not necessarily a stopping time w.r.t. $\mathbb{G}$.
+	Note that all model primitives are $\mathbb{G}$-adapted, as $\mathbb{G}$ is the filtration over the only simulated stochastic processes (in our case the Brownian Motion $U$). As mentioned before we are interested in pricing without simulating the default time $\tau$, which might be driven by other stochastic values. This means that $\tau$ is not necessarily a stopping time w.r.t. $\mathbb{G}$.
 	
 	\subsection{General Application}
 	In this subsection, we derive a general pricing methodology before moving to specific products.\\
@@ -1021,7 +1027,7 @@
 		\caption{Paths of $P^d$}
 		\label{fig:survivalprobabilityvisualisation}
 	\end{figure}
-	\\While the model simulates only paths of $P^{d,*}(t; T_i)$ (in the figure $P^{d,*}(t; 4.0)$), there are indefinitely many paths of $P^d(t;T_i)$ (in the figure $P^d(t; 4.0)(\omega_j)$ for $j=1,2,3$) which satisfy
+	\\While the model simulates only paths of $P^{d,*}(t; T_i)$ (in the figure $P^{d,*}(t; 4.0)$), there are indefinitely many paths of $P^d(t;T_i)$ (in the figure $P^d(t; 4.0)(\omega_j)$ for $j \in \{1,2,3\}$) which satisfy
 	\begin{align*}
 		P^d(t;T_i) = P^{d,*}(t;T_i)(1 - J(t)),
 	\end{align*} 
@@ -1151,7 +1157,7 @@
 	\begin{align*}
 		\mathcal{N} \mbeq \sum_{i=1}^{N}c_i P^{d,*}(0;T_i) + \mathcal{N}P^{d,*}(0;T_N)
 	\end{align*}
-	We again have a natural solution to this equation. With the same arguments as for \Cref{rem:nativecouponsforloans} we find that setting
+	We again have a natural solution to this equation. With the same arguments as for \cref{rem:nativecouponsforloans} we find that setting
 	\begin{align*}
 		c_i = \mathcal{N}\Delta T_iL^d_i(0)
 	\end{align*}
@@ -1205,13 +1211,36 @@
 		\end{align}
 		where $\left(\cdot\right)^+ := \max(0, \cdot)$.
 	\end{remark}
-	We can numerically compute the price by:
+	We can numerically compute the price.
 	\begin{lemma}
 		The price of a claim with a payoff function as in \cref{eq:couponputoption} has the price:
 		\begin{align*}
 			\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)^+}{B^d(T_s)}\right]
 		\end{align*}
 	\end{lemma}
+	\begin{proof}
+		Directly follows from \cref{lm:pricingdefaultableclaims}.
+	\end{proof}
+	Also this product can be extended to both counter parties being defaultable: the debtor and the creditor.\\
+	The adjusted formulas are
+	\begin{align*}
+		\Psi(T_s) =\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^1,*}(T_s; T_i)\right)^+\mathbf{1}_{\{\tau^1 > T_s\}}\mathbf{1}_{\{\tau^2 > T_s\}}
+	\end{align*}
+	for the payoff and 
+	\begin{align*}
+		\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^1,*}(T_s; T_i)\right)^+}{B^{d^1}(T_s)}Q_2(T_s)\right]
+	\end{align*}
+	for pricing. A proof is omitted as it is trivial.\\
+	A more advanced product is a cancallable loan. We start with the case, where one can cancel the loan at a single time point (that is part of the LIBOR tenor).\\
+	Consider the cash flow of such a product from the debtors point of view:
+	We get the nominal $\mathcal{N}$ at the start of the loan. Then we pay coupons each tenor until we can decide to cancel the loan. If we cancel the loan we have to pay the redemption $\tilde{R}$, otherwise we keep paying coupons until the end of the loan. This is visualized in \cref{fig:cancellableloan}.
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\linewidth]{CancellableLoan}
+		\caption[Cashflow of a cancellable loan]{Cashflow of a cancellable loan}
+		\label{fig:cancellableloan}
+	\end{figure}
+	
 	
 	
 	\subsection{Introducing Behavioral Aspects}
@@ -1277,7 +1306,14 @@
 	\end{definition}
 	This scheme performs well in situations, where the factor loadings of $X$ are less dependent on $X$, than the factor loadings of $Y$ are on $Y$.\\
 	It is also very useful, if $f$ preserves a property of $Y$ which otherwise might be lost through the numerical error of the other schemes (such as staying in a certain domain).\\
-	Considering this, the functional Euler scheme is great for the approximation of log-normal processes, as it cancels a part of the numerical error due to the dependency of the factor loadings on the approximated process and at the same time it preserves its' positivity.\\
+	Considering this, the functional Euler scheme is great for the approximation of log-normal processes, as it cancels a part of the numerical error due to the dependency of the factor loadings on the approximated process and at the same time it preserves its' positivity.
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.8\linewidth]{Schemes_DirectCompare}
+		\caption[Comparison of Numerical Schemes for a Geometric Brownian Motion]{Comparison of Numerical Schemes for a Geometric Brownian Motion}
+		\label{fig:schemesdirectcompare}
+	\end{figure}
+	
 	\color{red}Elaborate (i.e. error estimates and reference for proofs that these work)!!!\color{black}. 
 	%TODO: Elaborate
 	
@@ -1287,16 +1323,18 @@
 	The finMath library is written in Java and provides interfaces and classes for the use in stochastics and financial mathematics.\\
 	In this section we take a look at the ones that are most frequently used by our code. For a more thorough description one can use the website of the finMath library \cite{finmathWebsite}, which is also our main source for this section.
 	\subsubsection*{RandomVariable}
-	%TODO: Write Section
+	As one can tell from the name, \texttt{RandomVariable} is an interface for working with stochastic values, hence it is the basis for Monte Carlo methods. Operator overloading is not possible in Java so the workaround is to have methods that represent these operations, which is what \texttt{RandomVariable} declares.
+	Taking the expectation (the mean) and the variance is also supported. A nice feature is a \texttt{RandomVariableFactory}, which handles all creations of a \texttt{RandomVariable}.
+	
 	\subsubsection*{ProcessModel}
 	The \texttt{ProcessModel} interface is the finMath equivalent of an SDE. It specifies that any implementation has methods for getting the initial state, the drift and the factor loadings.
 	
-	\lstinputlisting[caption={The  \texttt{ProcessModel} interface}, label={lst:javaCode1}, firstnumber=1, linerange={47, 63, 75, 99, 110, 129, 152, 174} ]{JavaCode/ProcessModel.txt}
+	\lstinputlisting[caption={The  \texttt{ProcessModel} interface (some methods were ommitted)}, label={lst:javaCode1}, firstnumber=1, linerange={47, 63, 99, 129, 152, 174} ]{JavaCode/ProcessModel.txt}
 	
 	We can use a \texttt{ProcessModel} as a plug in to numerical schemes simulating an SDE such as \texttt{EulerSchemeFromProcessModel}.
-	\subsubsection*{LIBORCovarianceModel}
-	%TODO: Write Section
 	\subsubsection*{MonteCarloProcess}
+	The \texttt{MonteCarloProcess} is an interface for the simulation of an SDE that was before specified as \texttt{ProcessModel}.
+	\subsubsection*{LIBORCovarianceModel}
 	%TODO: Write Section
 	
 	\subsection{Implementation of the Defaultable LIBOR Model}
@@ -1311,8 +1349,8 @@
 		\label{fig:classdiagramdlmm}
 	\end{figure}
 	
-	Let us take a look at the cooperation between our model and the numerical scheme simulating the Process in \Cref{fig:classdiagramdlmm}.\\
-	The \texttt{DefaultableLIBORMarketModel} can be used as a plug in for a class implementing the \texttt{MonteCarloProcess} interface, which calls SDE-methods of the \texttt{ProcessModel} to pre-calculate the process. Calls to \texttt{getFactorLoading(...)} should be delegated to the \texttt{DefaultableLIBORCovarianceModel}, as we can then reuse the code of \texttt{DefaultableLIBORMarketModel}, even though creating different kinds of covariance (factor-loading-) models. 
+	Let us take a look at the cooperation between our model and the numerical scheme simulating the Process in \cref{fig:classdiagramdlmm}.\\
+	The \texttt{DefaultableLIBORMarketModel} can be used as a plug in for a class implementing the \texttt{MonteCarloProcess} interface, which calls SDE-methods of the \texttt{ProcessModel} to pre-calculate the process. Calls to \texttt{getFactorLoading(...)} should be delegated to the \texttt{DefaultableLIBORCovarianceModel}, as we can then reuse the code of \texttt{DefaultableLIBORMarketModel}, even though creating different kinds of covariance (factor-loading) models. 
 	
 	Note here that we also extend the \texttt{LIBORMarketModel}. This however does not necessarily mean that the SDE specified by the \texttt{ProcessModel} simulates the LIBOR rates. 
 	In fact the process values approximating the SDE are accessed by our model through input parameters and can be processed further. We therefore have a clean separation of model specifications and simulation.\\
