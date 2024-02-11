@@ -44,6 +44,7 @@
 \newcommand{\codeprocess}[1]{\codepathmodels/process/#1}
 
 \newcommand{\einsch}{\,\rule[-5pt]{0.4pt}{15pt}\,{}}
+%\newcommand{\EQB}[1]{\mathbb{E}^{\mathbb{Q}^B}\left[#1\right]}
 \parindent 0ex
 \renewcommand{\baselinestretch}{1.5}
 \newtheorem{assumption}{Assumption}[section]
@@ -967,7 +968,7 @@
 	\\In this example $\mathbb{G}$ captures only the path of $P^{d,*}(t; 4.0)$, which is equal for $\omega = \omega_1, \omega_2$ and $\omega_3$, while $P^d(t; 4.0)(\omega_1) \ne P^d(t; 4.0)(\omega_2) \ne P^d(t; 4.0)(\omega_3)$ for $t = 4.0$.
 	\end{comment}
 	\\Let us define a new value:
-	\begin{definition}
+	\begin{definition}\label{def:totalsuvivalprob}
 		Let $i \in \{1, ..., N\}$. We define the random variable $Q$ as
 		\begin{align*}
 			Q(T_i, \omega) = \prod_{j=1}^{i}q(T_j, \omega)
@@ -1064,10 +1065,13 @@
 			&=\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_2}}\left[\left.Q(T_2)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] \right]\\
 			&=...\\
 			&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_i}}\left[\left.Q(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_i\}\right] \right] \tag{D}\\
-			&= \mathbb{E}^{\mathbb{Q}^B}\left[Q(T_i)\frac{X^S}{B(T_i)}\right],
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[Q(T_i)\frac{X^S}{B(T_i)}\right],\tag{E}
 		\end{align*}
 		where (B) comes from (A) and (C) comes from the tower property and the fact that $q(T_1)$ is a constant. Then we repeat these steps until eq. (D) always keeping in mind $q(T_j)$ is $\mathcal{F}_{T_i}$-measurable for all $j \le i$.
 	\end{proof}
+	\begin{remark}
+		Note that in (E) of the proof we omitted the condition on $\{\tau > T_i\}$. This means that $X^S$ is independent of this set. We can make this assumption, w.l.o.g. because $X^S$ was only ever defined for this set. So we can basically "extend" it, such that it has the same distribution under $\{\tau \le T_i\}$, which makes it independent of these sets.
+	\end{remark}
 	This methodology can easily be extended to products where only parts of the payoff are dependent on survival and even where other parts are dependent on default:
 	
 	\begin{lemma}
@@ -1109,6 +1113,45 @@
 		= \mathbb{Q}^B(\{\tau > T_i\})\\
 		&= \mathbb{E}^{\mathbb{Q}^B}\left[ Q(T_i)\right]
 	\end{align*}
+	Let us now extend this model. Assume a product is dependent on the survival of two different parties. For use in later sections we will call them debtor and  creditor.\\
+	Such a claim is of the form
+	\begin{align}\label{eq:claimtwopartysurvive}
+		X = X^S\mathbf{1}_{\{\tau^d > T_i\}}\mathbf{1}_{\{\tau^c > T_i\}},
+	\end{align}
+	where $\tau^d$ is the default time of the debtor and $\tau^c$ that of the creditor.
+	Before we go on to find the price of such a claim, let us first state an assumption for simplicity's sake:
+	\begin{assumption}\label{as:counterpartiesareindependent}
+		The default time of the debtor $\tau^d$ is independent of that the creditor $\tau^c$.
+	\end{assumption}
+	While this assumption is not realistic for all counter parties (the default of a big bank often triggers a wave of defaults of its clients \color{red}[Add source]\color{black}), %TODO: Add source
+	we can assume that it is true for most.\\
+	The price of such a claim can be found in the same way as above:
+	\begin{lemma}\label{lem:creditordefPrice}
+		Let \cref{as:counterpartiesareindependent} hold. The price for a $T_i$ claim with a payoff function as in \cref{eq:claimtwopartysurvive} can be computed by
+		\begin{align*}
+			\Pi^\Psi = \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{X^S}{B(T_i)}Q^d(T_i)Q^c(T_i)\right],
+		\end{align*}
+		where $Q^d$ and $Q^c$ are computed as defined in \cref{def:totalsuvivalprob} from two separate defaultable LIBOR market models with the same underlying non-defaultable model.
+	\end{lemma}
+	Note that we now construct a totally new set of defaultable values: we have the defaultable LIBOR market model for the debtor with $P^{d^d,*}$, $L^{d^d}$ and their default time $\tau^d$ and we have a second defaultable model for the creditor and their values: $P^{d^c,*}$, $L^{d^c}$ and $\tau^c$. At the same time we still have the underlying non defaultable LIBOR market model.
+	\begin{proof}
+		For ease of notation let $A_j := \{\tau^d > T_j\} \cap\{\tau^c > T_j\}$ for all $j \in \{1, ..., N\}$.
+		We follow exactly the proof of \cref{lm:pricingdefaultableclaims}, only we exchange $\mathbf{1}_{\{\tau > T_i\}}$ with $\mathbf{1}_{A_i}$:
+		\begin{align*}
+			\Pi^X &=  \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right]\\
+		 	&=
+		 	\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right| A_1 \right]q^d(T_1)q^c(T_1)\tag{A}\\
+		 	&=...\\
+		 	&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_i}}\left[\left.Q^d(T_i)Q^c(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right| A_i \right]\right]\tag{B}
+		\end{align*}
+		where we get (A) from the independence of $\tau^d$ and $\tau^c$:
+		\begin{align*}
+		 	\mathbb{Q}^B\left(\{\tau^d > T_1\} \cap\{\tau^c > T_1\}\right) = q^d(T_1)q^c(T_1)
+		\end{align*}
+		and (B) in the same way as in the proof of \cref{lm:pricingdefaultableclaims}.
+	\end{proof}
+	
+	
 	With these formulas we now have an expression for claim prices in terms of an expectation over model primitives. We can therefore move to more specific products now.
 	
 	\subsection{General Loan Pricing}
@@ -1191,13 +1234,21 @@
 	\begin{align*}
 		c_i = \mathcal{N}\Delta T_iL^d_i(0)
 	\end{align*}
-	In the past example default of the creditor did not matter, but in this case actually the future coupon bond could not be bought. Hence creditor default possibility does indeed change the payoff and hence the price of the product:
+	In the past example default of the creditor did not matter, but in this case actually the future contract depends on their survival. Hence creditor default possibility does indeed change the payoff
 	\begin{align}\label{eq:loanForwardCreditorDefaultable}
-		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^1,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau^1 > T_s\}}\mathbf{1}_{\{\tau^2 > T_s\}}
+		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau^d > T_s\}}\mathbf{1}_{\{\tau^c > T_s\}}.
 	\end{align}
-	where 
-	\color{red}Elaborate i.e. on default of the issuer!!!\color{black}. 
-	%TODO: Elaborate
+	and hence also the price of such a product:
+	\begin{lemma}
+		Let \cref{as:counterpartiesareindependent} hold. The price for a product with a payoff as in \cref{eq:loanForwardCreditorDefaultable} at $t=0$ is:
+		\begin{align*}
+			\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)}{B(T_s)}Q^d(T_s)Q^c(T_s)\right]\\
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)}{B^{d^d}(T_s)}Q^c(T_s)\right]
+		\end{align*}
+	\end{lemma}
+	\begin{proof}
+		Follows directly from \cref{lem:creditordefPrice}.
+	\end{proof}
 	
 	
 	\subsection{Credit Options}
@@ -1213,7 +1264,7 @@
 	\end{remark}
 	We can numerically compute the price.
 	\begin{lemma}
-		The price of a claim with a payoff function as in \cref{eq:couponputoption} has the price:
+		A claim with a payoff function as in \cref{eq:couponputoption} has the price:
 		\begin{align*}
 			\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)^+}{B^d(T_s)}\right]
 		\end{align*}
@@ -1224,22 +1275,24 @@
 	Also this product can be extended to both counter parties being defaultable: the debtor and the creditor.\\
 	The adjusted formulas are
 	\begin{align*}
-		\Psi(T_s) =\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^1,*}(T_s; T_i)\right)^+\mathbf{1}_{\{\tau^1 > T_s\}}\mathbf{1}_{\{\tau^2 > T_s\}}
+		\Psi(T_s) =\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)^+\mathbf{1}_{\{\tau^d > T_s\}}\mathbf{1}_{\{\tau^c > T_s\}}
 	\end{align*}
 	for the payoff and 
 	\begin{align*}
-		\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^1,*}(T_s; T_i)\right)^+}{B^{d^1}(T_s)}Q_2(T_s)\right]
+		\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)^+}{B^{d^d}(T_s)}Q^c(T_s)\right]
 	\end{align*}
 	for pricing. A proof is omitted as it is trivial.\\
 	A more advanced product is a cancallable loan. We start with the case, where one can cancel the loan at a single time point (that is part of the LIBOR tenor).\\
 	Consider the cash flow of such a product from the debtors point of view:
-	We get the nominal $\mathcal{N}$ at the start of the loan. Then we pay coupons each tenor until we can decide to cancel the loan. If we cancel the loan we have to pay the redemption $\tilde{R}$, otherwise we keep paying coupons until the end of the loan. This is visualized in \cref{fig:cancellableloan}.
+	We get the nominal $\mathcal{N}$ at the start of the loan. Then we pay coupons each tenor until we can decide to cancel the loan. If we cancel the loan we have to pay the redemption $\tilde{R}$, otherwise we keep paying coupons until the end of the loan. This is visualized in \cref{fig:cancellableloan}.\\
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\linewidth]{CancellableLoan}
 		\caption[Cashflow of a cancellable loan]{Cashflow of a cancellable loan}
 		\label{fig:cancellableloan}
 	\end{figure}
+	\color{red}Elaborate!!!\color{black}. 
+	%TODO: Elaborate
 	
 	
 	
@@ -1306,13 +1359,15 @@
 	\end{definition}
 	This scheme performs well in situations, where the factor loadings of $X$ are less dependent on $X$, than the factor loadings of $Y$ are on $Y$.\\
 	It is also very useful, if $f$ preserves a property of $Y$ which otherwise might be lost through the numerical error of the other schemes (such as staying in a certain domain).\\
-	Considering this, the functional Euler scheme is great for the approximation of log-normal processes, as it cancels a part of the numerical error due to the dependency of the factor loadings on the approximated process and at the same time it preserves its' positivity.
+	Considering this, the functional Euler scheme is great for the approximation of log-normal processes, as it cancels a part of the numerical error due to the dependency of the factor loadings on the approximated process and at the same time it preserves its' positivity.\\
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.8\linewidth]{Schemes_DirectCompare}
 		\caption[Comparison of Numerical Schemes for a Geometric Brownian Motion]{Comparison of Numerical Schemes for a Geometric Brownian Motion}
 		\label{fig:schemesdirectcompare}
 	\end{figure}
+	In \cref{fig:schemesdirectcompare} we can see a direct comparison of the schemes for two different paths of a geometric Brownian motion, i.e. $X_t = X_0\exp((\mu - 0.5 \sigma^2) t + \sigma W_t)$, where $X_0=0.1$, $\mu=-0.1$ and $\sigma=0.7$.\\
+	In this case the functional Euler scheme generates exact paths, which do not have any numeric error from approximating the SDE. 
 	
 	\color{red}Elaborate (i.e. error estimates and reference for proofs that these work)!!!\color{black}. 
 	%TODO: Elaborate
@@ -1322,6 +1377,7 @@
 	As a starting point for the code base we use the finMath Library of Prof. Christian Fries.\\
 	The finMath library is written in Java and provides interfaces and classes for the use in stochastics and financial mathematics.\\
 	In this section we take a look at the ones that are most frequently used by our code. For a more thorough description one can use the website of the finMath library \cite{finmathWebsite}, which is also our main source for this section.
+	
 	\subsubsection*{RandomVariable}
 	As one can tell from the name, \texttt{RandomVariable} is an interface for working with stochastic values, hence it is the basis for Monte Carlo methods. Operator overloading is not possible in Java so the workaround is to have methods that represent these operations, which is what \texttt{RandomVariable} declares.
 	Taking the expectation (the mean) and the variance is also supported. A nice feature is a \texttt{RandomVariableFactory}, which handles all creations of a \texttt{RandomVariable}.
@@ -1332,8 +1388,10 @@
 	\lstinputlisting[caption={The  \texttt{ProcessModel} interface (some methods were ommitted)}, label={lst:javaCode1}, firstnumber=1, linerange={47, 63, 99, 129, 152, 174} ]{JavaCode/ProcessModel.txt}
 	
 	We can use a \texttt{ProcessModel} as a plug in to numerical schemes simulating an SDE such as \texttt{EulerSchemeFromProcessModel}.
+	
 	\subsubsection*{MonteCarloProcess}
-	The \texttt{MonteCarloProcess} is an interface for the simulation of an SDE that was before specified as \texttt{ProcessModel}.
+	The \texttt{MonteCarloProcess} is an interface for the numerical scheme simulating an SDE that was before specified as \texttt{ProcessModel}. The most important implementation of this interface is \texttt{EulerSchemeFromProcessModel}, which handles as well the computation for normal Euler schemes as for functional Euler schemes.
+	
 	\subsubsection*{LIBORCovarianceModel}
 	%TODO: Write Section
 	
