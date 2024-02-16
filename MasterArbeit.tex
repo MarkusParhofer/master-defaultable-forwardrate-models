@@ -20,6 +20,10 @@
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage[noabbrev]{cleveref}
+\usepackage{subfig}
+
+\renewcommand{\thesubfigure}{Figure \arabic{subfigure}}
+\captionsetup[subfigure]{labelformat=simple, labelsep=colon}
 
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 
@@ -42,6 +46,8 @@
 \newcommand{\codedlmm}[1]{\codepathmodels/defaultablelibormodels/#1}
 \newcommand{\codecovdlmm}[1]{\codepathmodels/defaultablecovariancemodels/#1}
 \newcommand{\codeprocess}[1]{\codepathmodels/process/#1}
+
+\newcommand{\fig}[1]{figures/#1}
 
 \newcommand{\einsch}{\,\rule[-5pt]{0.4pt}{15pt}\,{}}
 %\newcommand{\EQB}[1]{\mathbb{E}^{\mathbb{Q}^B}\left[#1\right]}
@@ -70,6 +76,7 @@
 	language			=Java,
 	basicstyle			=\ttfamily\scriptsize,
 	backgroundcolor		=\color{codebackground},
+	tabsize				=3,
 	captionpos			=b,
 	morekeywords		={java2tikz},
 	keywordstyle		=\color{orange},
@@ -85,8 +92,8 @@
 	numbersep			=5pt,
 	breaklines,
 	breakatwhitespace,
-	emph=[1]{RandomVariable,ProcessModel,MonteCarloProcess,LIBORMarketModel,DefaultableLIBORMarketModel},emphstyle=[1]\color{mydarkblue}, %some words to emphasise
-	emph=[2]{CalculationException}, emphstyle=[2]\color{mydarkblue},    
+	emph=[1]{RandomVariable,ProcessModel,MonteCarloProcess,LIBORMarketModel,DefaultableLIBORMarketModel,SimulationModel,CalculationException},emphstyle=[1]\color{mydarkblue}, %some words to emphasise
+	emph=[2]{SPREADS}, emphstyle=[2]\color{mylilas},    
 }
 
 
@@ -106,7 +113,7 @@
 		
 		
 		\begin{center}
-			\includegraphics[width=1.8in]{siegel}\\[13ex]
+			\includegraphics[width=1.8in]{\fig{siegel}}\\[13ex]
 		\end{center}
 		
 		\begin{center}
@@ -323,7 +330,7 @@
 		is a $1$-dimensional standard Brownian Motion.
 	\end{lemma} 
 	\begin{proof}
-		We proof that $W$ fulfills the properties of a Brownian Motion:\\
+		We prove that $W$ fulfills the properties of a Brownian Motion:\\
 		\emph{Property $W_0=0$ a.s.}:
 		\begin{align*}
 			W_0 = \sum_{i=1}^{d}a_iU^i_0 = 0 \text{ a.s.}
@@ -844,9 +851,9 @@
 	\begin{proof}
 		Let $T_i \le s < t \le T_{i+1}$. From the martingale property of $\frac{P^{d}(s;t)}{B(s)}$ we have:
 		\begin{align*}
-				\dfrac{P^{d,*}(s;t)}{P(s;t)} = \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{B(s)}{B(t)}\right]^{-1} B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\left.\frac{\mathbf{1}_{\{\tau > t\}}}{B(t)} \right| \{\tau> s\}\right]\\
-				= \left(\frac{B(s)}{B(t)}\right)^{-1} \frac{B(s)}{B(t)} \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[ \left. \mathbf{1}_{\{\tau > t\}} \right| \{\tau> s\} \right]\\
-				= \mathbb{Q}^B_{\mathcal{F}_s}\left(\left  \{\tau > t\} \right| \{\tau > s\}\right)
+				\dfrac{P^{d,*}(s;t)}{P(s;t)} &= \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{B(s)}{B(t)}\right]^{-1} B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\left.\frac{\mathbf{1}_{\{\tau > t\}}}{B(t)} \right| \{\tau> s\}\right]\\
+				&= \left(\frac{B(s)}{B(t)}\right)^{-1} \frac{B(s)}{B(t)} \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[ \left. \mathbf{1}_{\{\tau > t\}} \right| \{\tau> s\} \right]\\
+				&= \mathbb{Q}^B_{\mathcal{F}_s}\left(\left  \{\tau > t\} \right| \{\tau > s\}\right)
 		\end{align*}
 	\end{proof}
 	Setting $s=T_i$ and $t=T_{i+1}$ gives us the one step survival probability:
@@ -975,7 +982,7 @@
 		\end{align*}
 	\end{definition}
 	While $Q$ in theory is not a probability, we can view it as the pathwise survival probability until $T_i$, if we have no information regarding the actual default state even at time $T_i$. Note that this is an \emph{interpretation} and the actual proof for this statement needs extra assumptions \color{red}[Attach proof for this?]\color{black}.\\
-	What we actually proof in the next chapter is that the total survival probability until $T_i$ is given by the expectation of $Q$:
+	What we actually prove in the next chapter is that the total survival probability until $T_i$ is given by the expectation of $Q$:
 	\begin{align*}
 		\mathbb{Q}^B\left(\{\tau > T_i\}\right) = \mathbb{E}^{\mathbb{Q}^B} \left[Q(T_i;\omega)\right]
 	\end{align*}
@@ -1024,7 +1031,7 @@
 	A problem is that our model does not capture default. This is illustrated in \cref{fig:survivalprobabilityvisualisation}.
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=\linewidth]{SurvivalProbability}
+		\includegraphics[width=\linewidth]{\fig{SurvivalProbability}}
 		\caption{Paths of $P^d$}
 		\label{fig:survivalprobabilityvisualisation}
 	\end{figure}
@@ -1034,7 +1041,7 @@
 	\end{align*} 
 	but are not equal.\\
 	We therefore use a trick and replace the default state $1-J(t)$ in all our pricing formulas with the random variable $Q$ that we defined in the previous chapter. \\
-	To proof this works, assume a $T_i$-claim $X$ that has a payoff that is dependent on survival of the defaultable bonds. We can then use the pricing methodology described in te following lemma.
+	To prove this works, assume a $T_i$-claim $X$ that has a payoff that is dependent on survival of the defaultable bonds. We can then use the pricing methodology described in te following lemma.
 	\begin{lemma}\label{lm:pricingdefaultableclaims}
 		Let $X$ be a payoff at $T_i \in \{T_1, ..., T_N\}$, with
 		\begin{align*}
@@ -1046,7 +1053,7 @@
 			\Pi^X = \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} Q\left(T_i,\omega\right) \right].
 		\end{align*}
 	\end{lemma}
-	Note that by construction $Q(T_i, \omega)$ is $\mathcal{G}_{T_i}$-measurable, which means, we have a price in terms of model primitives. Let us now proof this statement.
+	Note that by construction $Q(T_i, \omega)$ is $\mathcal{G}_{T_i}$-measurable, which means, we have a price in terms of model primitives. Let us now prove this statement.
 	\begin{proof} 
 		For our proof we use following property of the conditional expectation extensively:
 		\begin{align*}
@@ -1214,7 +1221,7 @@
 	\end{align}
 	where $T_s$ is the start time of the bond and for ease of notation the terminal coupon $c_N$ includes the terminal payment of the nominal $\mathcal{N}$.\\
 	This payoff function gives us a direct approach to price the product:
-	\begin{lemma}
+	\begin{lemma}\label{lm:simpledefcouponbondforward}
 		A $T_s$ claim with a payoff function as in \cref{eq:loanForward} has the price
 		\begin{align*}
 			\Pi^\Psi &= \mathcal{N}P^d(0;T_s) - \sum_{i=s+1}^{N}c_iP^{d}(0; T_i)\\
@@ -1232,8 +1239,17 @@
 	\end{proof}
 	To gain an initial price of zero one can set the coupons as done before:
 	\begin{align*}
-		c_i = \mathcal{N}\Delta T_iL^d_i(0)
+		c_i = \mathcal{N}\Delta T_iL^d_i(0).
 	\end{align*}
+	Let us rewrite the same price as discussed in \cref{lm:simpledefcouponbondforward} for a numerical valuation instead of an analytic one:
+	\begin{align*}
+		\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)}{B(T_s)}Q(T_s)\right].
+	\end{align*}
+	Here one can see that the forward has two main stochastic cost drivers: 
+	\begin{itemize}
+		\item The default probability \emph{past} maturity time, which has a positive relation to the price: if the default probability rises, $P^{d,*}(T_s;T_i)$ decreases, which drives the price up.
+		\item The default probability \emph{before} maturity time, which has a negative relation to the price intensity: if the default probability rises, $Q(T_s)$ decreases, which lowers the absolute value of the price (as $0 < Q(T_s) < 1$).
+	\end{itemize}
 	In the past example default of the creditor did not matter, but in this case actually the future contract depends on their survival. Hence creditor default possibility does indeed change the payoff
 	\begin{align}\label{eq:loanForwardCreditorDefaultable}
 		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau^d > T_s\}}\mathbf{1}_{\{\tau^c > T_s\}}.
@@ -1249,6 +1265,13 @@
 	\begin{proof}
 		Follows directly from \cref{lem:creditordefPrice}.
 	\end{proof}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{\fig{ValuationCouponBondForwards}}
+		\caption[Valuation of Forwards on Coupon Bonds]{Valuation of Forwards on Coupon Bonds}
+		\label{fig:valuationcouponbondforwards}
+	\end{figure}
+	It is easy to see that the price of a coupon bond forward, which considers both parties to be defaultable is less intense (i.e. it decreases the absolute value of the price more) than that, which only considers the debtor to be defaultable. In \cref{fig:valuationcouponbondforwards} one can also see that the difference increases the further maturity is away.
 	
 	
 	\subsection{Credit Options}
@@ -1282,15 +1305,81 @@
 		\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)^+}{B^{d^d}(T_s)}Q^c(T_s)\right]
 	\end{align*}
 	for pricing. A proof is omitted as it is trivial.\\
-	A more advanced product is a cancallable loan. We start with the case, where one can cancel the loan at a single time point (that is part of the LIBOR tenor).\\
+	A more advanced product is a cancellable loan. We start with the case, where one can cancel the loan at a single time point $T_k$ for $k \in \{1, ... N-1\}$.\\
 	Consider the cash flow of such a product from the debtors point of view:
-	We get the nominal $\mathcal{N}$ at the start of the loan. Then we pay coupons each tenor until we can decide to cancel the loan. If we cancel the loan we have to pay the redemption $\tilde{R}$, otherwise we keep paying coupons until the end of the loan. This is visualized in \cref{fig:cancellableloan}.\\
+	We get the nominal $\mathcal{N}$ at the start of the loan. Then we pay coupons each tenor until $T_k$. If we cancel the loan, we have to pay the redemption $\tilde{R}$, otherwise we keep paying coupons until the end of the loan.
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.5\linewidth]{CancellableLoan}
-		\caption[Cashflow of a cancellable loan]{Cashflow of a cancellable loan}
+		\makebox[\textwidth][c]{%
+			\subfloat{\scalebox{0.4}{\includegraphics{\fig{CancellableLoan}}}}
+			\quad
+			\subfloat{\scalebox{0.4}{\includegraphics{\fig{LoanAndPutOption}}}}
+		}
+		\caption[Cashflow of a cancellable loan and its splitting into two products]{Cashflow of a cancellable loan and its splitting into two products}
 		\label{fig:cancellableloan}
 	\end{figure}
+	\\To derive a price for this product, we split the cash flow in two parts: a  loan and a put option on a loan, as visualized in \cref{fig:cancellableloan}. 
+	The option is then treated as single cash flow in terms of the price, which leads us to a payoff of (note, we again only consider debtor default):
+	
+	\begin{center}
+		\begin{tabular}{cl}
+			$\mathcal{N}$ & at $T_0$, \\
+			$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., N\}$, \\
+			$\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+\mathbf{1}_{\{\tau > T_k\}}$ 
+			& at $T_k$.
+		\end{tabular}
+	\end{center}
+	
+	From there it is easy to compute the price:
+	\begin{align}\label{eq:priceofcancellableloan}
+		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]
+	\end{align}
+	
+	\begin{remark}
+		One can also construct the cash flows for the cancellable loan from a loan and a call option on a loan:
+
+		\begin{center}
+			\begin{tabular}{cl}
+				$\mathcal{N}$ & at $T_0$, \\
+				$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., k\}$, \\
+				$-\tilde{R}\mathbf{1}_{\{\tau > T_k\}}$  & at $T_k$ and\\
+				$\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) \right)^+\mathbf{1}_{\{\tau > T_k\}}$ 
+				& at $T_k$.
+			\end{tabular}
+		\end{center}
+		
+		For any $c_i, \mathcal{N}, \tilde{R} \in \mathbb{R}$ for $i \in \{1, ..., N\}$ this will yield the same price formula as \cref{eq:priceofcancellableloan}.
+	\end{remark}
+	\begin{proof}
+		This can be trivially derived from the relation:
+		\begin{align*}
+			&\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]\\
+			&\;= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j)\right)^+}{B^d(T_k)}\right]
+			+ \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}}{B^d(T_k)}\right]\\
+			&\;= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j)\right)^+}{B^d(T_k)}\right]
+			+\sum_{j=k+1}^{N}c_jP^{d,*}(0;T_j) - \tilde{R}P^{d,*}(0;T_k)
+		\end{align*}
+	\end{proof}
+	Let us look at how to set the starting value of the cancellable loan to zero.
+	We have to set the coupons and $\tilde{R}$ such that:
+	\begin{align*}
+		\mathcal{N} + \Pi^\Psi \mbeq \sum_{i=1}^{N}c_iP^{d,*}(0;T_i),
+	\end{align*}
+	where $\Pi^\Psi$ is the price of a put option on a coupon bond with maturity $T_k$ and strike $\tilde{R}$, i.e.
+	\begin{align*}
+		\Pi^\Psi = \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]
+	\end{align*}
+	To derive this, one needs to fix the redemption $\tilde{R}$: generally it can be set arbitrarily and the price formula will hold. However, \color{red}it is good practice to \color{black} set it to the price of the remaining nominal (which is not payed back through the coupons until $T_k$) plus a penalty $p\in \mathbb{R}$:
+	\begin{align*}
+		\tilde{R} = \sum_{j=k+1}^{N}c_j \frac{P^{d,*}(T_0;T_j)}{P^{d,*}(T_0;T_k)} + p
+	\end{align*}
+	%TODO: How to set coupons for the price to be 0
+	%TODO: What is the price for both parties defaultable
+	
+	
+	Let us generalize this product for the possibility to cancel at any time past $T_k$ for a fixed $k \in \{1,...,N-1\}$.
+	Note that in this case the redemption $\tilde{R}_t$ would be dependent on the cancel time, but still deterministic.
+	
 	\color{red}Elaborate!!!\color{black}. 
 	%TODO: Elaborate
 	
@@ -1362,12 +1451,13 @@
 	Considering this, the functional Euler scheme is great for the approximation of log-normal processes, as it cancels a part of the numerical error due to the dependency of the factor loadings on the approximated process and at the same time it preserves its' positivity.\\
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=0.8\linewidth]{Schemes_DirectCompare}
+		\includegraphics[width=0.8\linewidth]{\fig{Schemes_DirectCompare}}
 		\caption[Comparison of Numerical Schemes for a Geometric Brownian Motion]{Comparison of Numerical Schemes for a Geometric Brownian Motion}
 		\label{fig:schemesdirectcompare}
 	\end{figure}
-	In \cref{fig:schemesdirectcompare} we can see a direct comparison of the schemes for two different paths of a geometric Brownian motion, i.e. $X_t = X_0\exp((\mu - 0.5 \sigma^2) t + \sigma W_t)$, where $X_0=0.1$, $\mu=-0.1$ and $\sigma=0.7$.\\
-	In this case the functional Euler scheme generates exact paths, which do not have any numeric error from approximating the SDE. 
+	In \cref{fig:schemesdirectcompare} we can see a direct comparison of the schemes for two different paths of a geometric Brownian motion, i.e. $X_t = X_0\exp((\mu - 0.5 \sigma^2) t + \sigma W_t)$, where $X_0=0.1$, $\mu=-0.1$ and $\sigma=0.7$. As time discretization we chose $\Delta t = 0.2$.\\
+	In this case the functional Euler scheme generates exact paths, which do not have any numeric error from discretizing the SDE.
+	We see that as well the Euler as the Milstein scheme portray a numerical error that is quite extensive at certain times. One path of the Euler scheme even reaches a value below zero, while the dynamics of the geometric Brownian motion are such that this should be impossible. It is worth to note, however, that the time discretization is chosen quite rough for demonstration purposes.
 	
 	\color{red}Elaborate (i.e. error estimates and reference for proofs that these work)!!!\color{black}. 
 	%TODO: Elaborate
@@ -1385,15 +1475,30 @@
 	\subsubsection*{ProcessModel}
 	The \texttt{ProcessModel} interface is the finMath equivalent of an SDE. It specifies that any implementation has methods for getting the initial state, the drift and the factor loadings.
 	
-	\lstinputlisting[caption={The  \texttt{ProcessModel} interface (some methods were ommitted)}, label={lst:javaCode1}, firstnumber=1, linerange={47, 63, 99, 129, 152, 174} ]{JavaCode/ProcessModel.txt}
+	\lstinputlisting[caption={The  \texttt{ProcessModel} interface (some methods are ommitted)}, label={lst:javaCode1}, firstnumber=1, linerange={47, 63, 99, 129, 152, 174} ]{JavaCode/ProcessModel.txt}
 	
 	We can use a \texttt{ProcessModel} as a plug in to numerical schemes simulating an SDE such as \texttt{EulerSchemeFromProcessModel}.
 	
 	\subsubsection*{MonteCarloProcess}
 	The \texttt{MonteCarloProcess} is an interface for the numerical scheme simulating an SDE that was before specified as \texttt{ProcessModel}. The most important implementation of this interface is \texttt{EulerSchemeFromProcessModel}, which handles as well the computation for normal Euler schemes as for functional Euler schemes.
 	
+	\subsubsection*{LIBORMarketModel}
+	The \texttt{LIBORMarketModel} is a representation for a LIBOR model. It is an interface that extends the \texttt{ProcessModel} and allows for querying LIBOR and other forward rates for different periods at different evaluation times, given a \texttt{MonteCarloProcess}.
+	
+	
 	\subsubsection*{LIBORCovarianceModel}
-	%TODO: Write Section
+	We use the \texttt{LIBORCovarianceModel} interface for the flexible implementation of covariance structures of LIBOR models. Its only responsibility is to provide covariances and their factor loadings. One can use it as plug in to a \texttt{LIBORMarketModel}, as well as one to other \texttt{LIBORCovarianceModel}s, which from there derive other factor loadings.
+	\\
+	\\
+	Let us furthermore discuss some important concepts of computer science that the finMath Library uses, such that we can use its full power and flexibility.
+	
+	\subsubsection*{Abstraction}
+	We see that all the objects described above are interfaces, not directly classes.
+	This means that none of them have a specific implementation and yet we can describe what they are and what they do. Neither the user nor any class, that uses such objects need to know the exact implementation to use them. The main advantage is that it allows to reuse code in many situations. Consider as example the simulation of SDEs: if we could not specify a \texttt{ProcessModel} as an input, there would need to be a \texttt{MonteCarloProcess} class for every SDE that we create, even though the calculation of its paths is always the same. This concept is commonly known as abstraction in computer science.
+	
+	\subsubsection*{Single Responsibility Principle}
+	%TODO write section!!!!!!!
+	
 	
 	\subsection{Implementation of the Defaultable LIBOR Model}
 	
@@ -1402,7 +1507,7 @@
 	
 	\begin{figure}[h]
 		\centering
-		\includegraphics[width=\linewidth]{ClassDiagramDefaultableLIBORMarketModel}
+		\includegraphics[width=\linewidth]{\fig{ClassDiagramDefaultableLIBORMarketModel}}
 		\caption{Using \texttt{DefaultableLIBORMarketModel} as Plug-In for \texttt{MonteCarloProcess}}
 		\label{fig:classdiagramdlmm}
 	\end{figure}
@@ -1412,14 +1517,21 @@
 	
 	Note here that we also extend the \texttt{LIBORMarketModel}. This however does not necessarily mean that the SDE specified by the \texttt{ProcessModel} simulates the LIBOR rates. 
 	In fact the process values approximating the SDE are accessed by our model through input parameters and can be processed further. We therefore have a clean separation of model specifications and simulation.\\
-	A way to 
+	
+	We take advantage of this fact in the class \texttt{DefaultableLIBORFromSpreadDynamic}. We here allow the user to specify which values should be simulated by the SDE: either the spreads or the defaultable LIBOR rates directly. When getting the defaultable LIBOR rates we query the given \texttt{MonteCarloProcess} for its values and process them as needed:
+	\lstinputlisting[caption={Getting the defaultable LIBOR rates in \texttt{DefaultableLIBORFromSpreadDynamic}}, label={lst:javaGetDefaultableLIBOR}, firstnumber=1, linerange={597-605} ]{\codedlmm{DefaultableLIBORFromSpreadDynamic.java}}
 	
 	
 	
 	\subsection{Valuation of Financial Products}
 	
+	\subsection{Numerical results}
 	
-	
+	\pagebreak
+	\section{Conclusion}
+	Ideas:\\
+	Outlook: Considering correlated Defaultable models\\
+	Calibration of the defaultable Covariance structure to Products.
 	
 	
 	
