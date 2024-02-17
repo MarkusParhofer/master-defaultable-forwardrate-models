@@ -175,16 +175,17 @@
 	\subsection{Probability Theory}
 	In our whole thesis we assume a filtered probability space
 	\begin{align*}
-		(\Omega, \mathcal{F}, \mathbb{F}, \mathbb{Q})
+		(\Omega, \mathcal{G}, \mathbb{G}, \mathbb{Q})
 	\end{align*}
 	where
 	\begin{itemize}
 		\item $\Omega$ is the set of all states,
-		\item $\mathcal{F}$ is a $\sigma$-algebra,
-		\item $\mathbb{F} = (\mathcal{F}_t)_{t \in \left[0,\tilde{T}\right]}$ is a filtration with $\mathcal{F}_t \subset \mathcal{F} \quad \forall t \in [0,\tilde{T}]$, $\mathcal{F}_0 = \{\Omega, \emptyset \}$ and
-		\item $\mathbb{Q}$ is a probability measure on $\mathcal{F}$.
+		\item $\mathcal{G}$ is a $\sigma$-algebra,
+		\item $\mathbb{G} = (\mathcal{G}_t)_{t \in \left[0,\tilde{T}\right]}$ is a filtration with $\mathcal{G}_t \subset \mathcal{G} \quad \forall t \in [0,\tilde{T}]$, $\mathcal{G}_0 = \{\Omega, \emptyset \}$ and
+		\item $\mathbb{Q}$ is a probability measure on $\mathcal{G}$.
 	\end{itemize}
-	Let us cover some notations.
+	$\mathbb{G}$ is the pricing filtration, which captures all states of all traded assets at each time $t$. Hence we implicitly assume all market values that we encounter to be $\mathbb{G}$-adapted.\\
+	Let us cover some further notations.
 	\begin{notation}
 		Let $X=(X_t)_{t\in \left[0,\tilde{T}\right]}$ and $Y=(Y_t)_{t\in \left[0,\tilde{T}\right]}$ be Itô stochatic processes and $W$ be a Brownian Motion with:
 		\begin{align*}
@@ -271,7 +272,7 @@
 		Following statements are equivalent:
 		\begin{itemize}
 			\item The market is arbitrage-free and complete.
-			\item There exists exactly one probability measure $\mathbb{Q}^B$ w.r.t. a numeraire $B$, such that the price process of every traded asset discounted by the numeraire $\frac{X}{B}$ is a martingale w.r.t. the filtration $\mathbb{F}$.
+			\item There exists exactly one probability measure $\mathbb{Q}^B$ w.r.t. a numeraire $B$, such that the price process of every traded asset discounted by the numeraire $\frac{X}{B}$ is a martingale w.r.t. the filtration $\mathbb{G}$.
 		\end{itemize}
 	\end{theorem}
 	\begin{proof}
@@ -281,7 +282,7 @@
 	\begin{lemma}
 		Let $X$ be the payoff of a $T$-claim. Then the arbitrage-free price of the claim at any time $t\in \left[0, T\right]$ is
 		\begin{align*}
-			\Pi^X_t = B(t)\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X}{B(T)} \right| \mathcal{F}_t\right].
+			\Pi^X_t = B(t)\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X}{B(T)} \right| \mathcal{G}_t\right].
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
@@ -487,7 +488,7 @@
 		\begin{align*}
 			P(t;T_{m(t)+1})
 		\end{align*}
-		is $\mathcal{F}_{m(t)}$-measurable. This means that all $T_i$-bond prices are predictable in $[T_{i-1},T_i]$.\\
+		is $\mathcal{G}_{m(t)}$-measurable. This means that all $T_i$-bond prices are predictable in $[T_{i-1},T_i]$.\\
 		A specification that satisfies this assumption is:
 		\begin{align*}
 			P(t;T_{m(t)+1}) = \left(1 + L_{m(t)}(t)\left(T_{m(t)+1} - t\right)\right)^{-1}
@@ -562,13 +563,12 @@
 	Our main source for this section is the article "Defaultable Discrete Forward Rate Model with Covariance Structure guaranteeing Positive Credit Spreads" authored by Christian Fries \cite{FriesDLMM}.
 
 	\subsection{The Defaultable Forward Rate}
-		We remain in the same setting as in the non-defaultable model, where we have a LIBOR tenor discretization \((T_i)_{i\in\{0, 1, ..., N\}}\) and a set of (non-defaultable) zero coupon bonds \((P(t;T_i))_{i\in\{0, 1, ..., N\}}\). Hence we can define the same products and apply the same valuation formulas.\\
+		We remain in the same setting as in the non-defaultable model, where we have a LIBOR tenor discretization \((T_i)_{i\in\{0, 1, ..., N\}}\) and a set of (non-defaultable) zero coupon bonds \((P(t;T_i))_{i\in\{0, 1, ..., N\}}\). Hence we can define the same products and apply the same valuation formulas. This also means we have to apply the same numeraire for pricing, as in the non-defaultable model.\\
 		We extend the model by defining an additional set of zero coupon bonds which are defaultable: \((P^d(t;T_i))_{i\in\{0, ..., N\}}\).\\
-		Note here that by construction we must still use the riskless bonds for the calculation of the Numeraire, as one can not use a risky asset as numeraire.
-		Furthermore we do not consider recovery rates, i.e. we assume that a party is either able to pay all or nothing.
+		Furthermore we will model only bonds and products that pay nothing if defaulted. However, products considering recovery rates can then be derived by applying a linear combination of non-defaultable and defaultable values.\\
 		We now introduce the concept of default and defaultable zero coupon bonds.
 	\begin{definition}
-		The \emph{default time} is a stopping time \(\tau(\omega)\) on the filtration \((\mathcal{F}_t)_{t\in \mathbb{R}^+}\).\\
+		The \emph{default time} is a stopping time \(\tau(\omega)\) on the filtration \((\mathcal{G}_t)_{t\in \mathbb{R}^+}\).\\
 		The \emph{default indicator} \(J(t)\) is the indicator process over the default time:
 		\[J(t) := \mathbf{1}_{\{\tau(\omega) \le t\}}\]
 	\end{definition}
@@ -591,8 +591,7 @@
 		\end{align}
 		where \(T_i \in \{T_0, ... T_N\}\).
 	\end{definition}
-	The simple Defaultable Forward Rate is the rate at which one can lend money to a defaultable party (for the time period \(T_i\) to \(T_{i+1}\)) at the risk of default, if the defaultable party is not in default at the evaluation time \(t\) \color{red}[Add source]\color{black} % TODO: add a source for this statement.
-	.
+	Note here that while $L^d$ follows the same concept as $L$, we will use it only as an abstract model, not as an actual rate that can be received.
 	
 	\begin{assumption}
 		\label{as:DLMMShortPeriodBond}
@@ -808,18 +807,18 @@
 	
 	
 	\subsection{The Survival Probability}
-	Until now we assumed every stochastic process to be adapted to the filtration $\mathbb{F}$. This is what is commonly done in mathematical finance to find theoretical prices and it simulates the availability of  information at each time $t$. This includes the indicator over the default time $J(t)$. However the products we are interested in, are rarely dependent on the (future) default state, but rather its probability, as we see in the next chapter. So it is more efficient (and less dependent on extra assumptions) to calculate the survival probability instead of simulating the default time.\\
+	Until now we assumed every stochastic process to be adapted to the filtration $\mathbb{G}$. This is what is commonly done in mathematical finance to find theoretical prices and it simulates the availability of  information at each time $t$. This includes the indicator over the default time $J(t)$. However the products we are interested in, are rarely dependent on the (future) default state, but rather its probability, as we see in the next chapter. So it is more efficient (and less dependent on extra assumptions) to calculate the survival probability instead of simulating the default time.\\
 	
 	It is important to note here that for pricing we are only interested in the behavior of the rates under the martingale measure $\mathbb{Q}^B$ and so we also only focus on the survival probability under this measure. This means the probability we derive, is not to be confused with the real world probability of survival.\\
 	
-	As we work quite a lot with conditional probability and expectation we denote for a $\sigma$-algebra $\mathcal{G}$:
+	As we work quite a lot with conditional probability and expectation we denote for a $\sigma$-algebra $\mathcal{F}$:
 	\begin{align*}
-		\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}}\left[ \; \cdot \; \right] &=  \mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{G} \; \right]\\
-		\mathbb{Q}^B_{\mathcal{G}}\left(\;\cdot \; \right) &= \mathbb{Q}^B\left( \left. \;\cdot \; \right| \mathcal{G} \right).
+		\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}}\left[ \; \cdot \; \right] &=  \mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{F} \; \right]\\
+		\mathbb{Q}^B_{\mathcal{F}}\left(\;\cdot \; \right) &= \mathbb{Q}^B\left( \left. \;\cdot \; \right| \mathcal{F} \right).
 	\end{align*} 
 	With the assumption that the short period bond is deterministic w.r.t. the previous LIBOR time, we can derive the price of a zero-coupon bond that only lives inside a LIBOR period:
 	\begin{lemma}
-		For $T_i \le s < t \le T_{i+1}$ it holds that
+		Let \cref{as:LMMShortPeriodBond,as:DLMMShortPeriodBond} be given. For $T_i \le s < t \le T_{i+1}$ it holds that
 		\begin{itemize}
 			\item $P(s;T_{i+1}) = P(s;t)P(t;T_{i+1})$ or 
 			$P(s;t) = \frac{P(s;T_{i+1})}{P(t;T_{i+1})}$ and
@@ -830,14 +829,14 @@
 	\begin{proof}
 		Let $T_i \le s < t \le T_{i+1}$. With \cref{as:LMMShortPeriodBond} we have: 
 		\begin{align*}
-			P(s;T_{i+1}) &= B(s) \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_s}\left[\frac{P(t;T_{i+1})}{B(t)} \right] = P(t;T_{i+1})B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_s}\left[\frac{P(t;t)}{B(t)}\right]\\
+			P(s;T_{i+1}) &= B(s) \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_s}\left[\frac{P(t;T_{i+1})}{B(t)} \right] = P(t;T_{i+1})B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_s}\left[\frac{P(t;t)}{B(t)}\right]\\
 			&=P(t;T_{i+1})P(s;t)
 		\end{align*}
 		We can do a very similar derivation for $P^{d,*}(s;t)$ with \cref{as:DLMMShortPeriodBond}:
 		\begin{align*}
-			P^{d,*}(s;T_{i+1}) \mathbf{1}_{\{\tau > s\}} &= B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{P^d(t;T_{i+1})}{B(t)} \right]\\
-			&= P^{d,*}(t;T_{i+1}) B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{\mathbf{1}_{\{\tau > t\}}}{B(t)} \right]\\
-			&= P^{d,*}(t;T_{i+1}) B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{P^d(t;t)}{B(t)} \right] \\
+			P^{d,*}(s;T_{i+1}) \mathbf{1}_{\{\tau > s\}} &= B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{s}}\left[\frac{P^d(t;T_{i+1})}{B(t)} \right]\\
+			&= P^{d,*}(t;T_{i+1}) B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{s}}\left[\frac{\mathbf{1}_{\{\tau > t\}}}{B(t)} \right]\\
+			&= P^{d,*}(t;T_{i+1}) B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{s}}\left[\frac{P^d(t;t)}{B(t)} \right] \\
 			&= P^{d,*}(t;T_{i+1})P^{d,*}(s;t)\mathbf{1}_{\{\tau > s\}}
 		\end{align*}
 	\end{proof}
@@ -845,23 +844,23 @@
 	\begin{lemma}
 		Let $\mathbb{Q}^B$ be the spot measure. For $T_i \le s < t \le T_{i+1}$ it holds that:
 		\begin{align*}
-			\mathbb{Q}^B_{\mathcal{F}_s}\left(\left  \{\tau > t\} \right| \{\tau > s\}\right) = \dfrac{P^{d,*}(s;t)}{P(s;t)}
+			\mathbb{Q}^B_{\mathcal{G}_s}\left(\left  \{\tau > t\} \right| \{\tau > s\}\right) = \dfrac{P^{d,*}(s;t)}{P(s;t)}
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
 		Let $T_i \le s < t \le T_{i+1}$. From the martingale property of $\frac{P^{d}(s;t)}{B(s)}$ we have:
 		\begin{align*}
-				\dfrac{P^{d,*}(s;t)}{P(s;t)} &= \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\frac{B(s)}{B(t)}\right]^{-1} B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[\left.\frac{\mathbf{1}_{\{\tau > t\}}}{B(t)} \right| \{\tau> s\}\right]\\
-				&= \left(\frac{B(s)}{B(t)}\right)^{-1} \frac{B(s)}{B(t)} \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{s}}\left[ \left. \mathbf{1}_{\{\tau > t\}} \right| \{\tau> s\} \right]\\
-				&= \mathbb{Q}^B_{\mathcal{F}_s}\left(\left  \{\tau > t\} \right| \{\tau > s\}\right)
+				\dfrac{P^{d,*}(s;t)}{P(s;t)} &= \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{s}}\left[\frac{B(s)}{B(t)}\right]^{-1} B(s)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{s}}\left[\left.\frac{\mathbf{1}_{\{\tau > t\}}}{B(t)} \right| \{\tau> s\}\right]\\
+				&= \left(\frac{B(s)}{B(t)}\right)^{-1} \frac{B(s)}{B(t)} \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{s}}\left[ \left. \mathbf{1}_{\{\tau > t\}} \right| \{\tau> s\} \right]\\
+				&= \mathbb{Q}^B_{\mathcal{G}_s}\left(\left  \{\tau > t\} \right| \{\tau > s\}\right)
 		\end{align*}
 	\end{proof}
 	Setting $s=T_i$ and $t=T_{i+1}$ gives us the one step survival probability:
 	\begin{lemma}
 		Let $B$ be the numeraire under the spot measure, $i \in \{1, ..., N\}$.
-		The one-step survival probability until $T_{i+1}$ w.r.t. $\mathcal{F}_{T_i}$ given pre-default is
+		The one-step survival probability until $T_{i+1}$ w.r.t. $\mathcal{G}_{T_i}$ given pre-default is
 		\begin{align}
-			q(T_{i+1}, \omega) := \mathbb{Q}^B_{\mathcal{F}_{T_i}}\left( \left.\left\{\tau(\omega) > T_{i+1} \right\}  \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right) = \frac{P^{d,*}(T_i;T_{i+1})}{P(T_i;T_{i+1})}. \label{eq:oneStepSProbwrtF}
+			q(T_{i+1}, \omega) := \mathbb{Q}^B_{\mathcal{G}_{T_i}}\left( \left.\left\{\tau(\omega) > T_{i+1} \right\}  \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right) = \frac{P^{d,*}(T_i;T_{i+1})}{P(T_i;T_{i+1})}. \label{eq:oneStepSProbwrtF}
 		\end{align}
 	\end{lemma}
 	\begin{proof}
@@ -887,7 +886,7 @@
 	\begin{definition}
 		The filtration $\mathbb{G} := (\mathcal{G}_t)_{t\in\left[0;\tilde{T}\right]}$ is given by
 		\begin{align*}
-			\mathcal{G}_t := \sigma(U^k_t | k = 1, ..., m^d) \subset \mathcal{F}_t \quad \forall t \in  [0;\tilde{T}].
+			\mathcal{G}_t := \sigma(U^k_t | k = 1, ..., m^d) \subset \mathcal{G}_t \quad \forall t \in  [0;\tilde{T}].
 		\end{align*}
 	\end{definition}
 	\begin{remark}
@@ -909,7 +908,7 @@
 	\begin{proof}
 		Let $T_i < s < t < T_{i+1}$. With \Cref{as:LMMShortPeriodBond} we have: 
 		\begin{align*}
-			P(s;T_{i+1}) &= B(s) \mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{P(t;T_{i+1})}{B(t)} \; \right| \; \mathcal{F}_s\right] = P(t;T_{i+1})B(s)\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{P(t;t)}{B(t)} \; \right| \; \mathcal{F}_s\right]\\
+			P(s;T_{i+1}) &= B(s) \mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{P(t;T_{i+1})}{B(t)} \; \right| \; \mathcal{G}_s\right] = P(t;T_{i+1})B(s)\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{P(t;t)}{B(t)} \; \right| \; \mathcal{G}_s\right]\\
 			&=P(t;T_{i+1})P(s;t)
 		\end{align*}
 		\color{red}Prove the same for $P^{d,*}$!!!\color{black}
@@ -939,17 +938,17 @@
 			q_i(T_i, \omega) &= \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[ \left.\mathbf{1}_{\left\{ \tau > T_{i+1}\right\}}   \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right]
 			\tag{A}\\
 			&= \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[
-			\frac{B(T_i)B(T_{i+1})}{B(T_i)B(T_{i+1})} \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_i}}\left[ \left.\mathbf{1}_{\left\{ \tau > T_{i+1}\right\}}   \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right]\right]
+			\frac{B(T_i)B(T_{i+1})}{B(T_i)B(T_{i+1})} \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[ \left.\mathbf{1}_{\left\{ \tau > T_{i+1}\right\}}   \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right]\right]
 			\tag{B}\\
 			&= \mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\left( \frac{B(T_i)}{B(T_{i+1})}\right)^{-1} B(T_i)
-			\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_i}}\left[ \left.\frac{\mathbf{1}_{\left\{ \tau > T_{i+1}\right\}}}{B(T_{i+1})}   \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right] \right]
+			\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[ \left.\frac{\mathbf{1}_{\left\{ \tau > T_{i+1}\right\}}}{B(T_{i+1})}   \;\right|\; \left\{\tau(\omega) > T_{i} \right\} \right] \right]
 			\tag{C}\\
 			&=\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\left( B(T_i)\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\frac{1}{B(T_{i+1})}\right]\right)^{-1} \left( \left. P^d(T_i;T_{i+1})\; \right| \; \left\{\tau(\omega) > T_{i} \right\} \right)\right]
 			\tag{D}\\
 			&=\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\frac{P^{d,*}(T_i;T_{i+1})}{P(T_i;T_{i+1})}\right] = \frac{P^{d,*}(T_i;T_{i+1})}{P(T_i;T_{i+1})}
 			\tag{E}
 		\end{align*}
-		where from (A) to (B) we use the tower property of conditional expectation. From (B) to (C) we use the $\mathcal{G}_{T_{i}}$- and therefore $\mathcal{F}_{T_{i}}$-measurability of $B(T_{i+1})$, which we again use from (C) to (D). From (C) to (D) and from (D) to (E) we use the martingale property of $\frac{P^d(t; T_{i+1})}{B(t)}$ and $\frac{P(t; T_{i+1})}{B(t)}$ respectively.\\
+		where from (A) to (B) we use the tower property of conditional expectation. From (B) to (C) we use the $\mathcal{G}_{T_{i}}$- and therefore $\mathcal{G}_{T_{i}}$-measurability of $B(T_{i+1})$, which we again use from (C) to (D). From (C) to (D) and from (D) to (E) we use the martingale property of $\frac{P^d(t; T_{i+1})}{B(t)}$ and $\frac{P(t; T_{i+1})}{B(t)}$ respectively.\\
 		For \Cref{eq:survivalProbTotal} we use Bayes-Rule and \cref{as:survivalProbNoChange} to get:
 		\begin{align*}
 			\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i+1} \right\}  \right| \mathcal{G}_{T_i} \right) &= q(T_i, \omega) 	\mathbb{Q}^B\left( \left. \left\{\tau(\omega) > T_{i} \right\}  \right| \mathcal{G}_{T_i} \right)\\
@@ -996,7 +995,7 @@
 		\begin{align*}
 			Q\left( T_{i+1}, \omega \right) = \dfrac{B(T_i)}{\prod_{k=0}^{i}(1 + \Delta T_k L^d_k(T_k)(\omega))} =: \dfrac{B(T_i)}{B^d(T_i)}.
 		\end{align*}
-		Note that $Q(T_i, \omega)$ is $\mathcal{F}_{T_{i-1}}$-measurable.
+		Note that $Q(T_i, \omega)$ is $\mathcal{G}_{T_{i-1}}$-measurable.
 	\end{remark}
 	The denominator in this equation can be seen as a "defaultable numeraire", which we define next:
 	\begin{definition}
@@ -1019,12 +1018,12 @@
 	Note here that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo Methods to approximate the expectation.\\
 	For a start let us define our simulation filtration:
 	\begin{definition}
-		The filtration $\mathbb{G} := (\mathcal{G}_t)_{t\in\left[0,\tilde{T}\right]}$ is given by
+		The filtration $\mathbb{F} := (\mathcal{F}_t)_{t\in\left[0,\tilde{T}\right]}$ is given by
 		\begin{align*}
-			\mathcal{G}_t := \sigma(U^k_t | k = 1, ..., m^d) \subset \mathcal{F}_t \quad \forall t \in  [0,\tilde{T}].
+			\mathcal{F}_t := \sigma(U^k_t | k = 1, ..., m^d) \subset \mathcal{G}_t \quad \forall t \in  [0,\tilde{T}].
 		\end{align*}
 	\end{definition}
-	Note that all model primitives are $\mathbb{G}$-adapted, as $\mathbb{G}$ is the filtration over the only simulated stochastic processes (in our case the Brownian Motion $U$). As mentioned before we are interested in pricing without simulating the default time $\tau$, which might be driven by other stochastic values. This means that $\tau$ is not necessarily a stopping time w.r.t. $\mathbb{G}$.
+	Note that all model primitives are $\mathbb{F}$-adapted, as $\mathbb{F}$ is the filtration over the only simulated stochastic processes (in our case the Brownian Motion $U$). As mentioned before we are interested in pricing without simulating the default time $\tau$, which might be driven by other stochastic values. This means that $\tau$ is not necessarily a stopping time w.r.t. $\mathbb{F}$.
 	
 	\subsection{General Application}
 	In this subsection, we derive a general pricing methodology before moving to specific products.\\
@@ -1047,34 +1046,34 @@
 		\begin{align*}
 			X = X^S \mathbf{1}_{\{\tau(\omega) > T_i\}},
 		\end{align*}
-		where $X^S$ is the payoff conditional pre-default. Let $X^S$ be $\mathcal{G}_{T_i}$-measurable.\\
+		where $X^S$ is the payoff conditional pre-default. Let $X^S$ be $\mathcal{F}_{T_i}$-measurable.\\
 		Then the price at time $t=0$ is
 		\begin{align*}
 			\Pi^X = \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} Q\left(T_i,\omega\right) \right].
 		\end{align*}
 	\end{lemma}
-	Note that by construction $Q(T_i, \omega)$ is $\mathcal{G}_{T_i}$-measurable, which means, we have a price in terms of model primitives. Let us now prove this statement.
+	Note that by construction $Q(T_i, \omega)$ is $\mathcal{F}_{T_i}$-measurable, which means, we have a price in terms of model primitives. Let us now prove this statement.
 	\begin{proof} 
 		For our proof we use following property of the conditional expectation extensively:
 		\begin{align*}
 			\mathbb{E}^{\mathbb{Q}^B}\left[Y\right] = \mathbb{E}^{\mathbb{Q}^B}\left[Y | A\right]\mathbb{Q}^B(A) + \mathbb{E}^{\mathbb{Q}^B}\left[Y | A^c\right]\mathbb{Q}^B(A^c) \tag{A}
 		\end{align*}
-		for any set $A \in \mathcal{F}$.\\
+		for any set $A \in \mathcal{G}$.\\
 		For ease of notation we write $q(T_i):= q(T_i, \omega)$ and $Q(T_i):= Q(T_i, \omega)$. Note $B(T_0) = 1$. We have:
 		\begin{align*}
 			\Pi^X &=  \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right]\\
 			&=
 			\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_1\} \right]q(T_1) \tag{B}\\
 			&=
-			\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_1}}\left[\left.q(T_1)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_1\}\right] \right]\tag{C}\\
+			\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_1}}\left[\left.q(T_1)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_1\}\right] \right]\tag{C}\\
 			&=
-			\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_1}}\left[\left.q(T_1)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] q(T_2)\right]\\
-			&=\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_2}}\left[\left.Q(T_2)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] \right]\\
+			\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_1}}\left[\left.q(T_1)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] q(T_2)\right]\\
+			&=\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_2}}\left[\left.Q(T_2)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_2\}\right] \right]\\
 			&=...\\
-			&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_i}}\left[\left.Q(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_i\}\right] \right] \tag{D}\\
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\left.Q(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_i\}\right] \right] \tag{D}\\
 			&= \mathbb{E}^{\mathbb{Q}^B}\left[Q(T_i)\frac{X^S}{B(T_i)}\right],\tag{E}
 		\end{align*}
-		where (B) comes from (A) and (C) comes from the tower property and the fact that $q(T_1)$ is a constant. Then we repeat these steps until eq. (D) always keeping in mind $q(T_j)$ is $\mathcal{F}_{T_i}$-measurable for all $j \le i$.
+		where (B) comes from (A) and (C) comes from the tower property and the fact that $q(T_1)$ is a constant. Then we repeat these steps until eq. (D) always keeping in mind $q(T_j)$ is $\mathcal{G}_{T_i}$-measurable for all $j \le i$.
 	\end{proof}
 	\begin{remark}
 		Note that in (E) of the proof we omitted the condition on $\{\tau > T_i\}$. This means that $X^S$ is independent of this set. We can make this assumption, w.l.o.g. because $X^S$ was only ever defined for this set. So we can basically "extend" it, such that it has the same distribution under $\{\tau \le T_i\}$, which makes it independent of these sets.
@@ -1086,7 +1085,7 @@
 		\begin{align*}
 			X = X^O + X^S \mathbf{1}_{\{\tau(\omega) > T_i\}} + X^D \mathbf{1}_{\{\tau(\omega) \le T_i\}},
 		\end{align*}
-		where the payoff $X^O$ is unconditional, $X^S$ is conditional pre-default and $X^D$ is conditional past-default and all are  $\mathcal{G}_{T_i}$-measurable.\\
+		where the payoff $X^O$ is unconditional, $X^S$ is conditional pre-default and $X^D$ is conditional past-default and all are  $\mathcal{F}_{T_i}$-measurable.\\
 		Then the price at time $t=0$ is
 		\begin{align*}
 			\Pi^X =& \mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^O}{B(T_i)} \right]
@@ -1149,7 +1148,7 @@
 		 	&=
 		 	\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right| A_1 \right]q^d(T_1)q^c(T_1)\tag{A}\\
 		 	&=...\\
-		 	&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}_{T_i}}\left[\left.Q^d(T_i)Q^c(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right| A_i \right]\right]\tag{B}
+		 	&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\left.Q^d(T_i)Q^c(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right| A_i \right]\right]\tag{B}
 		\end{align*}
 		where we get (A) from the independence of $\tau^d$ and $\tau^c$:
 		\begin{align*}
@@ -1329,7 +1328,7 @@
 			& at $T_k$.
 		\end{tabular}
 	\end{center}
-	
+	Note that if $\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right) > 0$ at $T_k$, the debtor could get a new loan on the nominal $\tilde{R}$ for better conditions then the initial one.\\
 	From there it is easy to compute the price:
 	\begin{align}\label{eq:priceofcancellableloan}
 		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]
@@ -1378,14 +1377,55 @@
 	
 	
 	Let us generalize this product for the possibility to cancel at any time past $T_k$ for a fixed $k \in \{1,...,N-1\}$.
-	Note that in this case the redemption $\tilde{R}_t$ would be dependent on the cancel time, but still deterministic.
+	Note that in this case the redemption $\tilde{R}_t$ would depend on the cancel time, but still be deterministic. Then the adjusted cash flow is
 	
-	\color{red}Elaborate!!!\color{black}. 
-	%TODO: Elaborate
+	\begin{center}
+		\begin{tabular}{cl}
+			$\mathcal{N}$ & at $T_0$, \\
+			$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., N\}$, \\
+			$\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu\right)\mathbf{1}_{\{\tau > \nu\}}$
+			& at $\nu$,
+		\end{tabular}
+	\end{center}
 	
-	
+	where $\nu = \nu(\omega)$ is the stopping time:
+	\begin{align*}
+		\nu(\omega) = \min\left(t\in \left[T_k,T_N\right[ \;\left| \;\left(\sum_{j=m(t)+1}^{N}c_jP^{d,*}(t;T_j) - \tilde{R}_t\right) > 0\right. \right) \wedge T_N
+	\end{align*}
+	Hence this has the form of an American option, where we can choose to exercise the option in the time interval $\left[T_k,T_N\right]$. As always the price can be obtained by taking the discounted expectation:	
+	\begin{align*}
+		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu\right)}{B^d(\nu)}\right].
+	\end{align*}
+	As $\nu$ is only dependent on $\mathbb{F}$-adapted values, it is also a value in terms of model primitives, which makes it usable to us.
 	
 	\subsection{Introducing Behavioral Aspects}
+	Let us spin our model a bit further. Until now we have assumed that all market participants have a perfect overview of the market (captured by the filtration $\mathbb{G}$). Furthermore we assumed that debtors always act in an optimized manner (exercise the option if it has a positive value). While big companies may have implemented ways such that these are feasible assumptions, this is far from realistic for small market participants such as private people.\\
+	A study from 2021 from Germany asked people how to best spend €1,000 given two options: making a special repayment of an existing loan of theirs, which charges 5 \% interest or invest in a fixed coupon bond with 3 \% interest and maturity of 3 years \cite{finKnowledgeStudy}.
+	The results showed that only 60 \% of the participants would make the special repayment. 15 \% stated that they did not know the answer, 13 \% thought both options were equally good and 12 \% would rather buy the coupon bond \cite{finKnowledgeStudy}.\\
+	% Not only knowing when to cancel, but also motivation is something to take into account when dealing with private debtors: 
+	This shows that the assumption of optimal exercising for cancellable loans is an idealization and hence for fair pricing models we need to adjust for this deficit.
+	
+	\begin{remark}
+		Note that in general (non-defaultable) option pricing an adjustment would generate an arbitrage possibility, because small market participants could buy cheap options and resell them to big companies at a higher price, without any risk.\\
+		However, a cancellable loan is not transferable (the defaultable LIBOR models are calibrated to the individual client), meaning it also can not be resold. This closes the arbitrage possibility.
+	\end{remark}
+	
+	How do we inject such a behavioral aspect in our valuation formula? We could construct a stochastic model which simulates the exercising of a market participant. However, we already omitted modeling the default time for the simple reason of computational cost and modeling behavior would require at least the same amount of computing power.\\
+	Hence we try a simpler approach: we apply a so called deterministic shadow barrier $\tilde{S}_t$, for each $t \in \left[T_k,T_N\right]$, which leads to a different cash flow:
+	
+	\begin{center}
+		\begin{tabular}{cl}
+			$\mathcal{N}$ & at $T_0$, \\
+			$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., N\}$, \\
+			$\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu - \tilde{S}_\nu\right)\mathbf{1}_{\{\tau > \nu\}}$
+			& at $\nu$,
+		\end{tabular}
+	\end{center}
+	
+	Generally one can see $\tilde{S}_t$ as the profit it takes, until the debtor would be motivated enough to exercise the option. The price calculation is equivalent to before, only we exchange $\tilde{R}_\nu$ for $\tilde{R}_\nu + \tilde{S}_\nu$.
+	% TODO: Add a plot of a European cancellable loan, an American one and the Shadow barrier equivalents.
+	%TODO: Warn about relending the money!
+	
 	
 	
 	
@@ -1548,8 +1588,8 @@
 		$m(t)$ & For a tenor $T_0 < ... < T_N$, $m(t):= \max\{i \in \{0, ..., N-1\} \; | \; T_i \le t \}$\\
 		$(\partial_{x}f)(x)$ & Same as $\frac{\partial}{\partial x}f(x)$.\\
 		$(\partial_{x y}f)(x, y)$ & Same as $\frac{\partial^2}{\partial x \partial y}f(x, y)$.\\
-		$\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}}\left[ \; \cdot \; \right]$ & Same as
-		$\mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{G} \; \right].$ for a $\sigma$-algebra $\mathcal{G}$\\
+		$\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}}\left[ \; \cdot \; \right]$ & Same as
+		$\mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{F} \; \right].$ for a $\sigma$-algebra $\mathcal{F}$\\
 		
 	\end{tabular}
 	\pagebreak
