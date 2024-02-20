@@ -129,6 +129,7 @@
 	
 \end{titlepage}
 
+	% ------------------------------Content------------------------
 \tableofcontents
 \thispagestyle{empty}
 \clearpage
@@ -136,24 +137,42 @@
 
 	
 	
-	% ------------------------------Content------------------------
-	
 	
 	% ----------- Intro -----------
 	
 	
 	
 	\section{Introduction}
+	\color{red}The valuation of loans in financial markets is crucial for creditors and debtors alike. Understanding and measuring the risks associated with interest rates, especially default risk, is essential for valuing and collateralizing financial products\color{black}. This master's thesis focuses on extending the existing and well researched discrete forward rate models (short: LIBOR models) to account for default risk, building upon the work of Professor Dr. Christian Fries.
+	
+	
 	\subsection{Motivation}
+	While they are very popular for the valuation of interest rate products, traditional LIBOR models do not account for the risk of default, which is a crucial aspect in financial mathematics. 
+	
+	Using exogenous models to adjust for the probability of default (PD) and a loss given default (LGD) is a work around, that is widely used in praxis. However, there is another solution that directly links the interest rate model with the risk of default.\\
+	Prof. Fries' Paper on "Discrete Forward Rate Model with	Covariance Structure guaranteeing Positive Credit Spreads" \cite{friesDLMM} provides a foundation for models that address this gap by incorporating default risk dynamics directly into the LIBOR model.\\
+	This begs the question of how to apply these models to pricing and how this impacts prices which are otherwise only driven by interest rates.
+	
 	\subsection{Aim of the thesis}
+	
+	This thesis aims to contribute to the field by describing the discrete forward rate models, developing a valuation methodology with this framework and providing an implementation in the programming language Java for evaluating its usability.\\
+	
+	We begin by stating some fundamentals in section \ref{sec:Fundamentals}, which are mainly results from financial mathematics in continuous time.\\
+	In section \ref{sec::LIBORModel} we describe the traditional LIBOR market model, which is given by a set of stochastic differential equations.\\
+	Throughout section \ref{sec:defaultableLMM} we describe the model developed by Prof. Fries and derive some implications.\\
+	We then develop a general pricing methodology in section \ref{sec:pricing} and derive valuation formulas for some specific products.\\
+	Section \ref{sec:numerical} gives an overview of the actual numerical specification of the model and also displays results gained from the usage.\\
+	Finally, in section \ref{sec:conclusion} we conclude the thesis by summarizing key findings, outlining limitations, and offering recommendations for future research.
+	
+	
 	\subsection{Preliminaries}
 	The thesis is aimed at an audience that has a deep analytical background and a basic knowledge in probability theory and financial mathematics.\\
-	\color{red}If one has knowledge in the following areas, it is a good start:\color{black}
+	A list of required topics may include, but is not limited to
 	\begin{itemize}
 		\item Brownian Motions and martingales,
 		\item stochastic integration,
-		\item Itô stochastic processes,
-		\item definition of and theorems on arbitrage freeness.
+		\item Itô stochastic processes and
+		\item definition of and theorems on arbitrage free markets.
 	\end{itemize}
 	Furthermore we assume a fundamental understanding of what these mathematical concepts imply on the real world and the other way around: How are the mathematical concepts motivated by the economical world?
 	
@@ -165,7 +184,7 @@
 	
 	
 	\pagebreak
-	\section{Fundamentals}
+	\section{Fundamentals}\label{sec:Fundamentals}
 	In this section we provide some fundamentals for the thesis. Many of the results mentioned here can also be found in different versions in other scientific papers. We will generally stick to the lecture notes of the course "Stochastic Calculus and Arbitrage Theory in Continuous Time" by Professor Meyer-Brandis at the Ludwig-Maximilians-University in Munich \cite{fima2Lecture}.
 	
 	\subsection{Probability Theory}
@@ -562,7 +581,7 @@
 	
 	
 	\pagebreak
-	\section{Defaultable LIBOR Market Models}
+	\section{Defaultable LIBOR Market Models}\label{sec:defaultableLMM}
 	
 	In this section we introduce defaultable LIBOR market models that we can use to value credits and credit options.\\
 	Our main source for this section is the article "Defaultable Discrete Forward Rate Model with Covariance Structure guaranteeing Positive Credit Spreads" authored by Professor Christian Fries \cite{FriesDLMM}.\\
@@ -1018,7 +1037,7 @@
 	
 	
 	\pagebreak
-	\section{Loans and Credit Option Pricing}
+	\section{Loans and Credit Option Pricing}\label{sec:pricing}
 	A model is useless without a practical application for it. Hence we take a look at how to apply our results to pricing loans and credit options.\\
 	Note here that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo methods to approximate the expectation.\\
 	For a start let us define our simulation filtration:
@@ -1373,11 +1392,17 @@
 	\begin{align*}
 		\Pi^\Psi = \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]
 	\end{align*}
-	To derive this, one needs to fix the redemption $\tilde{R}$: generally it can be set arbitrarily and the price formula will hold. However, \color{red}it is good practice to \color{black} set it to the price of the remaining nominal (which is not payed back through the coupons until $T_k$) plus a penalty $p\in \mathbb{R}$:
+	Note that it is easiest to distribute the value of $\Pi^\Psi$ on the first $k$ coupons, as $\Pi^\Psi$ itself is influenced by the later ones.
+	Hence we can set the later coupons as done before and distribute the accrued price of $\Pi^\Psi$ to the earlier ones: 
+	\begin{align*}
+		c_i &= \mathcal{N} \Delta T_i L^d_i(0) + \frac{\Pi^\Psi}{k P^{d,*}(0;T_i)} \quad &\text{for } i \in \{1,...,k\}\\
+		c_i &= \mathcal{N} \Delta T_i L^d_i(0) \quad &\text{for } i \in \{k+1,..., N -1\}\\
+		c_i &= \mathcal{N} \left(\Delta T_i L^d_i(0) + 1\right) \quad &\text{for } i = N
+	\end{align*}
+	Generally the redemption $\tilde{R}$ can be set arbitrarily and the price formula will hold. However, \color{red}it is good practice to \color{black} set it to the price of the remaining nominal (which is not payed back through the coupons until $T_k$) plus a penalty $p\in \mathbb{R}$:
 	\begin{align*}
 		\tilde{R} = \sum_{j=k+1}^{N}c_j \frac{P^{d,*}(T_0;T_j)}{P^{d,*}(T_0;T_k)} + p
 	\end{align*}
-	%TODO: How to set coupons for the price to be 0
 	%TODO: What is the price for both parties defaultable
 	
 	
@@ -1441,7 +1466,7 @@
 	
 	
 	\pagebreak
-	\section{Implementation Details}
+	\section{Numerical Specification}\label{sec:numerical}
 	The implementation of the described concepts are a crucial part of this thesis.\\
 	We use Java, which is a purely object oriented programming language, for having a good  code readability while still performing very well. We assume a basic knowledge in Java.
 	As build system we use Maven.\\
@@ -1605,7 +1630,7 @@
 	\subsection{Numerical results}
 	
 	\pagebreak
-	\section{Conclusion}
+	\section{Conclusion}\label{sec:conclusion}
 	Ideas:\\
 	Outlook: Considering correlated Defaultable models\\
 	Calibration of the defaultable Covariance structure to Products.
