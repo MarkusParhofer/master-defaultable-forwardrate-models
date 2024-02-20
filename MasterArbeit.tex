@@ -166,11 +166,7 @@
 	
 	\pagebreak
 	\section{Fundamentals}
-	In this section we provide some fundamentals for the thesis. Many of the results mentioned here can also be found in different versions in other scientific papers. We stick to source 
-	\color{red}[Add source] \color{black} %TODO: Add source
-	for more theoretical and source 
-	\color{red}[Add source] \color{black} %TODO: Add source
-	for more application-oriented results.
+	In this section we provide some fundamentals for the thesis. Many of the results mentioned here can also be found in different versions in other scientific papers. We will generally stick to the lecture notes of the course "Stochastic Calculus and Arbitrage Theory in Continuous Time" by Professor Meyer-Brandis at the Ludwig-Maximilians-University in Munich \cite{fima2Lecture}.
 	
 	\subsection{Probability Theory}
 	In our whole thesis we assume a filtered probability space
@@ -195,7 +191,7 @@
 		The \emph{sharp bracket} or \emph{quadratic variation} of $X$ is 
 		\begin{align*}
 			\left\langle X \right\rangle_t = \int_{0}^{t}\phi_s^2 ds.
-		\end{align*}.
+		\end{align*}
 		The \emph{quadratic covariation} of $X$ and $Y$ is 
 		\begin{align*}
 			\left\langle X, Y \right\rangle_t = \int_{0}^{t}\phi_s \psi_s ds.
@@ -267,7 +263,7 @@
 	\end{remark}
 	
 	\subsection{Financial Mathematics}
-	While the reader should have a deep understanding of what arbitrage is and how to avoid it when pricing financial products, we formulate some fundamental results as a reminder.
+	While the reader should have a deep understanding of what arbitrage is and how to avoid it when pricing financial products, we formulate the following two fundamental results as a reminder.
 	\begin{theorem}
 		Following statements are equivalent:
 		\begin{itemize}
@@ -288,8 +284,7 @@
 	\begin{proof}
 		See \cite{fima2Lecture}, page 89, 90. %TODO: Add line where this is done.
 	\end{proof}
-	 \color{red}Elaborate!!!\color{black}. 
-	%TODO: Elaborate
+	Let us now cover a concept that we need for numerical purposes.
 	
 	
 	\subsection{Factor Loadings}\label{sec::FactorLoading}
@@ -374,7 +369,7 @@
 		Then for all $i, k \in \{1, ..., d\}$ 
 		\begin{align*}
 			\sum_{j=1}^{d}\lambda^{i,j}\lambda^{k,j} = \rho_{i,k}\\
-			d\left\langle W^{i}, W^{k} \right\rangle_t = \rho_{i,k}dt
+			d\left\langle W^{i}, W^{k} \right\rangle_t = \rho_{i,k}dt.
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
@@ -391,8 +386,7 @@
 	While the actual LIBOR, short for "London Inter-Bank Offered Rate" \color{red}[Add source] \color{black} %TODO: Add source
 	lost most of its influence after the banking crash of 2008 \color{red}[Add source] \color{black} %TODO: Add source
 	the LIBOR market model -- or discrete forward rate model -- is still a very popular mathematical model for simulation and valuation of financial products on fixed income markets.\\
-	The idea of the model  \color{red}Elaborate!!!\color{black}. 
-	%TODO: Elaborate
+	The idea of the model is to discretize a given time horizon into periods, for each of which different rates hold. The main difference to other models however is, that each rate for a given period is driven by different stochastic parameters.
 	\\
 	The basic assumption of the LIBOR Market Model is that we are in an arbitrage free and complete market.
 	
@@ -401,7 +395,7 @@
 	\begin{definition}
 		A \emph{zero coupon bond} with maturity $T \in [0,\tilde{T}]$ (short: $T$-bond) is a product that pays $1$ at maturity. Its price process is denoted:
 		\begin{align*}
-			P(t;T) := P(\omega,t;T)
+			P(t;T) := P(\omega,t;T).
 		\end{align*}
 	\end{definition}
 	Note: by construction $P(T;T) = 1$ and $P(\cdot, T)$ discounted with the numeraire must be a martingale under the corresponding martingale-measure $\mathbb{Q}^B$.\\
@@ -430,7 +424,7 @@
 	\begin{definition}\label{def:simpleFR}
 		We define the \emph{simple forward rate} $L(t;S,T)$ with fixing time $S$ and payment time $T$ at evaluation time $t$ to be a relation of $S$- and $T$-bonds:
 		\begin{align}
-			1 + L(t;S,T)(T - S) = \frac{P(t;S)}{P(t;T)}
+			1 + L(t;S,T)(T - S) = \frac{P(t;S)}{P(t;T)}.
 		\end{align}
 	\end{definition}
 	We can define different products that are strictly positive as numeraires as alternatives to the money market account. We then use a change of measure which gives us a different martingale measure corresponding to the numeraire, i.e. under this new measure all price processes of traded assets discounted with the numeraire are martingales as well.\\
@@ -438,7 +432,7 @@
 	\begin{definition}
 		The \emph{terminal measure} is the martingale measure $\mathbb{Q}^B$ gained by using the terminal bond as numeraire, i.e. 
 		\begin{align}\label{eq:terminalNumeraire}
-			B(t) = P(t;\tilde{T})
+			B(t) = P(t;\tilde{T}).
 		\end{align}
 	\end{definition}
 	A more complex example is the spot measure.
@@ -453,14 +447,14 @@
 	\begin{remark}
 		Note that \cref{eq:spotNumeraire} can be rewritten to:
 		\begin{align}\label{eq:spotNumeraireAlt}
-			B(t) = P(t;T_{m(t)+1})\prod_{i=0}^{m(t)}\left(1 + L\left(T_{i-1};T_{i-1},T_i\right)\left(T_{i+1}-T_i\right)\right)
+			B(t) = P(t;T_{m(t)+1})\prod_{i=0}^{m(t)}\left(1 + L\left(T_{i-1};T_{i-1},T_i\right)\left(T_{i+1}-T_i\right)\right).
 		\end{align}
 	\end{remark}
 	The numeraire in the spot measure can be explained as follows:\\
 	At $T_0 = 0$ we invest $1$ into $T_1$-bonds. Once these expire (at $T_1$) we reinvest the money gained from them into $T_2$-bonds and so on.
 	This product is generally known as \emph{rolling bond}.\\
-	\color{red}Elaborate!!!\color{black}. 
-	%TODO: Elaborate
+	
+	We now have all fundamentals to specify the model itself.
 	
 	\subsection{Model specification}\label{sec:libModel}
 	Through the LIBOR model we construct the stochastic differential equations of simple forward rates for a consecutive set of time periods.\\
@@ -495,8 +489,8 @@
 		\end{align*}
 	\end{assumption}
 	Let us fix the spot measure as our valuation measure $\mathbb{Q}^B$.
-	Given a variance-structure for the rates $(\sigma^i)_{i\in\{0,...,N\}}$, a correlation-structure $(\rho^{i,j})_{i,j \in \{0,...,N\}}$ for the Brownian Motions and 
-	we can specify a drift for the SDEs of the LIBORs:
+	Given a variance-structure for the rates $(\sigma^i)_{i\in\{0,...,N\}}$ and a correlation-structure $(\rho^{i,j})_{i,j \in \{0,...,N\}}$ for the Brownian Motions
+	we can specify a drift for the SDEs of the LIBORs under the spot measure:
 	\begin{lemma}\label{lem:LMMDriftSpec}
 		Let $\mathbb{Q}^B$ be the spot measure.
 		Let $L_i$ satisfy \cref{as:LMMShortPeriodBond,as:LIBORisItoProcess}. Let $(\sigma^i)_{i\in\{0,...,N\}}$ and $(\rho^{i,j})_{i,j \in \{0,...,N\}}$ be given, where
@@ -509,13 +503,22 @@
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
-		The proof is beyond the scope of this thesis, but can be found in a variety of literature. We reference \cite{FriesBook} (pages 301 - 303) and \cite{fima3Lecture}, (pages 81 - 86). One can also take a look at the next section at the proof of \cref{theo:defDriftTheo}, which is very similar  and carries its' idea and outline.
+		The proof is beyond the scope of this thesis, but can be found in a variety of literature. We reference \cite{FriesBook} (pages 301 - 303) and \cite{fima3Lecture}, (pages 81 - 86). One can also take a look at the next section at the proof of \cref{theo:defDriftTheo}, which is very similar  and carries its idea and outline.
 	\end{proof}
-	Note that in its original form, the LIBOR model is a log-normal model (see \cite{FriesBook}), hence the original model assumed $\sigma^i_t = L_i(t)\tilde{\sigma}_t$. However all proofs also work on a non log-normal model as well. The only restriction we need to apply is
+	Note that in its original form, the LIBOR model is a log-normal model (see \cite{FriesBook}), hence the original model assumed $\sigma^i_t = L_i(t)\tilde{\sigma}^i_t$. However all proofs also work on a non log-normal model as well. The only restriction we need to apply is
 	\begin{align*}
 		L_i(t) > -1 \quad \forall i \in \{0,...,N\}
 	\end{align*}
 	to prevent negative or no zero coupon bond prices.\\
+	Other commonly used covariance structures are the displaced log-normal model, where
+	\begin{align*}
+		\sigma^i_t = \left(L_i(t) + d\right)\tilde{\sigma}^i_t
+	\end{align*}
+	with a constant $d\in \mathbb{R}$ and the blended covariance structure
+	\begin{align*}
+		\sigma^i_t = \left((1-\alpha) L_i(t) + \alpha\right)\tilde{\sigma}^i_t
+	\end{align*}
+	with $\alpha \in \left[0, 1\right]$.
 	As mentioned in the previous chapter, having a model in terms of correlated Brownian Motions is not ideal for numerical replication. We therefore move to another notation, which uses factor loadings instead:
 	\begin{lemma}\label{lem:LMMFactorVersion}
 		There exist $m$-dimensional stochastic processes $\lambda^{i} = (\lambda^{i k})_{k \in \{1, ... m\}}$ and a $m$-dimensional $\mathbb{Q}^B$-Brownian Motion $U=(U^k)_{k \in \{1,...,m\}}$ such that
@@ -551,6 +554,8 @@
 			&= \sum_{k=1}^{m}\lambda^{i k}_t\sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t\Delta T_j}{1 + \Delta T_j L_j(t)}
 		\end{align*}
 	\end{proof}
+	With this model one can go on and price interest rate products, which is done in praxis. However, the products priced -- assuming no external model is used -- would not take any possibility of default into account. This is what is discussed in the next chapter.
+	
 	
 	% ------ Defaultable LMM ------
 	
@@ -560,7 +565,7 @@
 	\section{Defaultable LIBOR Market Models}
 	
 	In this section we introduce defaultable LIBOR market models that we can use to value credits and credit options.\\
-	Our main source for this section is the article "Defaultable Discrete Forward Rate Model with Covariance Structure guaranteeing Positive Credit Spreads" authored by Christian Fries \cite{FriesDLMM}.
+	Our main source for this section is the article "Defaultable Discrete Forward Rate Model with Covariance Structure guaranteeing Positive Credit Spreads" authored by Professor Christian Fries \cite{FriesDLMM}.\\
 
 	\subsection{The Defaultable Forward Rate}
 		We remain in the same setting as in the non-defaultable model, where we have a LIBOR tenor discretization \((T_i)_{i\in\{0, 1, ..., N\}}\) and a set of (non-defaultable) zero coupon bonds \((P(t;T_i))_{i\in\{0, 1, ..., N\}}\). Hence we can define the same products and apply the same valuation formulas. This also means we have to apply the same numeraire for pricing, as in the non-defaultable model.\\
@@ -595,12 +600,11 @@
 	
 	\begin{assumption}
 		\label{as:DLMMShortPeriodBond}
-		%TODO: Assumption must also be noted in the non defaultable version.
 		As in the non defaultable model we assume that the defaultable short period bond conditional pre-default
 		\begin{align*}
 			P^{d,*}(t;T_{m(t)+1})
 		\end{align*}
-		has no diffusion. This means that the only stochasticity on the defaultable short rate bond is the default time.\\
+		has no diffusion. This means that the only stochasticity on the defaultable short period bond is the default time.\\
 		I.e. we specify the defaultable short period bond as:
 		\begin{align*}
 			P^{d,*}(t;T_{m(t)+1}) = (1 + L^d_{m(t)}(t)(T_{m(t)+1} - t))^{-1}
@@ -632,7 +636,7 @@
 		By Itô we have:
 		\begin{align*}
 			d\left(L_i^d(t)\frac{P^d(t;T_{i+1})}{B(t)}\right) = \; &L_i^d(t) d\left(\frac{P^d(t;T_{i+1})}{B(t)}\right) +  \frac{P^d(t;T_{i+1})}{B(t)}dL_i^d(t) \\
-			&+ d \left\langle  L_i^d(t), \frac{P^d(t;T_{i+1})}{B(t)} \right\rangle
+			&+ d \left\langle  L_i^d(t), \frac{P^d(t;T_{i+1})}{B(t)} \right\rangle.
 		\end{align*}
 		We analyze the drift terms on each diffusion:
 		\begin{align*}
@@ -643,7 +647,7 @@
 		are martingale diffusions and hence have no drift.
 		Therefore the drift terms of the two remaining differentials must cancel each other out. I.e.:
 		\begin{align}\label{defDriftDeriv}
-			\frac{P^d(t;T_{i+1})}{B(t)} \mu^{i, d}_t dt \mbeq - d \left\langle  L_i^d(t), \frac{P^d(t;T_{i+1})}{B(t)} \right\rangle
+			\frac{P^d(t;T_{i+1})}{B(t)} \mu^{i, d}_t dt \mbeq - d \left\langle  L_i^d(t), \frac{P^d(t;T_{i+1})}{B(t)} \right\rangle.
 		\end{align}
 		To calculate the quadratic variation we need the diffusion of the discounted defaultable zero coupon bond:
 		\begin{align*}
@@ -713,7 +717,7 @@
 	\begin{remark}\label{rem:defLMMDrift}
 		For the spot measure the drifts $\mu^{i,d}$ in \cref{eq:defLMMSDE} can be rewritten in terms of $\lambda^{d}$:
 		\begin{align*}
-			\mu^{i,d}_t = \sum_{k=1}^{m^d}\lambda^{i k, d}_t \sum_{j=m(t)}^{i}\frac{\lambda^{j k, d}_t\Delta T_j}{1 + L^d_j(t)\Delta T_j}
+			\mu^{i,d}_t = \sum_{k=1}^{m^d}\lambda^{i k, d}_t \sum_{j=m(t)}^{i}\frac{\lambda^{j k, d}_t\Delta T_j}{1 + L^d_j(t)\Delta T_j}.
 		\end{align*}
 	\end{remark}
 	\begin{proof}
@@ -802,8 +806,9 @@
 		for $k \in \{1, ..., m\}$.
 	\end{proof}
 	
-	 \color{red}Elaborate!!!\color{black}. 
-	%TODO: Elaborate
+	This gives us a whole set of covariance structures for the defaultable LIBOR model, which guarantee positivity of the spread. Note that there might be other structures that also guarantee positivity.\\
+	The next sections can be applied to any such model and do not depend on a covariance model that is structured like the one that was derived.\\
+	We now move on to deriving the survival probability, which we need for pricing.
 	
 	
 	\subsection{The Survival Probability}
@@ -1015,7 +1020,7 @@
 	\pagebreak
 	\section{Loans and Credit Option Pricing}
 	A model is useless without a practical application for it. Hence we take a look at how to apply our results to pricing loans and credit options.\\
-	Note here that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo Methods to approximate the expectation.\\
+	Note here that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo methods to approximate the expectation.\\
 	For a start let us define our simulation filtration:
 	\begin{definition}
 		The filtration $\mathbb{F} := (\mathcal{F}_t)_{t\in\left[0,\tilde{T}\right]}$ is given by
@@ -1073,7 +1078,7 @@
 			&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\left.Q(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{\{\tau(\omega) > T_i\}} \right| \{\tau > T_i\}\right] \right] \tag{D}\\
 			&= \mathbb{E}^{\mathbb{Q}^B}\left[Q(T_i)\frac{X^S}{B(T_i)}\right],\tag{E}
 		\end{align*}
-		where (B) comes from (A) and (C) comes from the tower property and the fact that $q(T_1)$ is a constant. Then we repeat these steps until eq. (D) always keeping in mind $q(T_j)$ is $\mathcal{G}_{T_i}$-measurable for all $j \le i$.
+		where (B) comes from (A) and (C) comes from the tower property and the fact that $q(T_1)$ is a constant. Then we repeat these steps until equation (D) always keeping in mind $q(T_j)$ is $\mathcal{G}_{T_i}$-measurable for all $j \le i$.
 	\end{proof}
 	\begin{remark}
 		Note that in (E) of the proof we omitted the condition on $\{\tau > T_i\}$. This means that $X^S$ is independent of this set. We can make this assumption, w.l.o.g. because $X^S$ was only ever defined for this set. So we can basically "extend" it, such that it has the same distribution under $\{\tau \le T_i\}$, which makes it independent of these sets.
@@ -1101,7 +1106,7 @@
 		\end{align*}
 		with the same arguments as in the lemma before.
 	\end{proof}
-	Lets re-evaluate the above equation with our expression for the $Q$. One might notice that pricing defaultable products is similar to a change of numeraire with the defaultable numeraire: 
+	Lets re-evaluate the above equation with our expression for $Q$. One might notice that pricing defaultable products is similar to a change of numeraire with the defaultable numeraire: 
 	\begin{align}\label{eq:defaultableclaimvaluation}
 		\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B(T_i)} Q(T_i) \right] =
 		\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^S}{B^d(T_i)} \right].
@@ -1137,7 +1142,7 @@
 		\begin{align*}
 			\Pi^\Psi = \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{X^S}{B(T_i)}Q^d(T_i)Q^c(T_i)\right],
 		\end{align*}
-		where $Q^d$ and $Q^c$ are computed as defined in \cref{def:totalsuvivalprob} from two separate defaultable LIBOR market models with the same underlying non-defaultable model.
+		where $Q^d$ and $Q^c$ are computed as given in \cref{def:totalsuvivalprob} from two separate defaultable LIBOR market models with the same underlying non-defaultable model.
 	\end{lemma}
 	Note that we now construct a totally new set of defaultable values: we have the defaultable LIBOR market model for the debtor with $P^{d^d,*}$, $L^{d^d}$ and their default time $\tau^d$ and we have a second defaultable model for the creditor and their values: $P^{d^c,*}$, $L^{d^c}$ and $\tau^c$. At the same time we still have the underlying non defaultable LIBOR market model.
 	\begin{proof}
@@ -1238,7 +1243,7 @@
 	\end{proof}
 	To gain an initial price of zero one can set the coupons as done before:
 	\begin{align*}
-		c_i = \mathcal{N}\Delta T_iL^d_i(0).
+		c_i = \mathcal{N}\Delta T_iL^d_i(0), \quad c_N = \mathcal{N}\left(1 + \Delta T_iL^d_i(0)\right).
 	\end{align*}
 	Let us rewrite the same price as discussed in \cref{lm:simpledefcouponbondforward} for a numerical valuation instead of an analytic one:
 	\begin{align*}
@@ -1422,7 +1427,10 @@
 		\end{tabular}
 	\end{center}
 	
-	Generally one can see $\tilde{S}_t$ as the profit it takes, until the debtor would be motivated enough to exercise the option. The price calculation is equivalent to before, only we exchange $\tilde{R}_\nu$ for $\tilde{R}_\nu + \tilde{S}_\nu$.
+	Generally one can see $\tilde{S}_t$ as the profit it takes, until the debtor would be motivated enough to exercise the option. The price calculation is equivalent to before, only we exchange $\tilde{R}_\nu$ for $\tilde{R}_\nu + \tilde{S}_\nu$:
+	\begin{align*}
+		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu - \tilde{S}_\nu\right)}{B^d(\nu)}\right].
+	\end{align*}
 	% TODO: Add a plot of a European cancellable loan, an American one and the Shadow barrier equivalents.
 	%TODO: Warn about relending the money!
 	
@@ -1440,8 +1448,8 @@
 	Before we can jump into any code, though, we need to describe ways to discretize a stochastic process.
 	
 	\subsection{Numerical Schemes for Stochastic Processes}
-	In this chapter we introduce three ways to approach the simulation of stochastic processes described by SDEs. All of these numerical schemes can also be found in \cite{kloedenSchemes}, which is also the main source of this section.\\
-	As basis for all our schemes we have a known SDE for a $n$-dimensional stochastic process $X=(X_t)_{t\in [0,\tilde{T}]}$ that we want to simulate:
+	In this chapter we introduce ways to approach the simulation of stochastic processes described by SDEs. These numerical schemes can also be found in \cite{kloedenSchemes}, which is also the main source of this section.\\
+	As basis for the schemes we have a known SDE for a $n$-dimensional stochastic process $X=(X_t)_{t\in [0,\tilde{T}]}$ that we want to simulate:
 	\begin{align}
 		\begin{aligned}\label{eq:schemeGoalSDE}
 		dX_t &= \mu(t, X_t)dt + \sigma(t, X_t) \cdot dU_t,\\
@@ -1450,7 +1458,7 @@
 	\end{align}
 	where $U$ is a $d$-dimensional standard Brownian Motion, $\mu: [0,\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^n$ and $\sigma: [0,\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^{n \times d}$ are functions and $x \in \mathbb{R}^n$.\\
 	Let us start with the well-known Euler or Euler-Maruyama scheme:
-	\begin{definition}
+	\begin{definition}\label{def:eulerscheme}
 		Let $X=(X_t)_{t\in [0,\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}).\\
 		Furthermore let $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$.\\
 		Then we call the discrete process $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$, given by
@@ -1463,20 +1471,22 @@
 	
 	The Euler-Maruyama scheme takes the concept of approaching deterministic integrals and applies it on stochastic integrals. While this works quite well for constant and deterministic factor loadings $\sigma(t_i, x) = \sigma(t_i)$ \color{red}[Add source]\color{black} %TODO: Add source
 	, it has a weakness for stochastic factor loadings.\\
+	An improvement would be the Milstein scheme as described in \cite{kloedenSchemes}, but due to its correction term, which gets fairly complicated for higher dimensional Brownian motions, it is not well suited for our purpose.
+	\begin{comment}
 	An improvement is the Milstein scheme:
-	\begin{definition}
+	\begin{definition}\label{def:milsteinscheme}
 		Let again $X=(X_t)_{t\in [0,\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}) and $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$.\\
 		Then we call the discrete process $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$, given by
 		\begin{align*}
 			\hat{X}_{t_0} =&\; x,\\
 			\hat{X}^l_{t_{i+1}} =&\; \hat{X}^l_{t_{i}} + \mu(t_i, \hat{X}_{t_{i}})\Delta t_i + \sigma(t_i, \hat{X}_{t_{i}}) \cdot \Delta U_{t_i}\\
-			&+ \frac{1}{2}\sum_{k=1}^{d}\sigma_k(t_i, \hat{X}_{t_i})(\partial_{x^l}\sigma_k)(t_i, \hat{X}_{t_i})((\Delta U^k_{t_i})^2 - \Delta t_i),
+			&+ \frac{1}{2}\sum_{k=1}^{d}\sigma_k(t_i, \hat{X}_{t_i})(\partial_{x^k}\sigma_l)(t_i, \hat{X}_{t_i})((\Delta U^k_{t_i})^2 - \Delta t_i),
 		\end{align*}
 		where $i \in \{0, ..., m-1\}$ and $l \in \{1, ..., n\}$, a \emph{Milstein scheme of $X$}.
 	\end{definition}
-	This gives an improvement due to the correction term at the end. We can also easily see that if $\sigma$ is independent of $X_t$ the Milstein is equal to the Euler-Maruyama scheme.\\
-	Another numerical scheme for the approximation of stochastic processes is the functional Euler Scheme:
-	\begin{definition}
+	This gives an improvement due to the correction term at the end. We can also easily see that if $\sigma$ is independent of $X_t$ the Milstein is equal to the Euler-Maruyama scheme.\\\end{comment}
+	Instead we consider the functional Euler Scheme:
+	\begin{definition}\label{def:funceulerscheme}
 		Let $X=(X_t)_{t\in [0,\tilde{T}]}$ be as above in (\ref{eq:schemeGoalSDE}).\\
 		Let $Y=(Y_t)_{t\in [0,\tilde{T}]}$ be defined as $Y_t = f(t, X_t) \quad \forall t\in [0,\tilde{T}]$ for a $2$-times differentiable function $f: [0,\tilde{T}] \times \mathbb{R}^n \rightarrow \mathbb{R}^k$ and $k \in \mathbb{N}$.\\
 		Let $m \in \mathbb{N}$, $(t_i)_{i\in \{0, ..., m\}}$, where $0=t_0 < t_1 < ... < t_m=\tilde{T}$. Let  $\hat{X} = (\hat{X}_{t_i})_{i \in \{0, ..., m\}}$ be an Euler-Maruyama scheme of $X$.\\
@@ -1488,7 +1498,7 @@
 	\end{definition}
 	This scheme performs well in situations, where the factor loadings of $X$ are less dependent on $X$, than the factor loadings of $Y$ are on $Y$.\\
 	It is also very useful, if $f$ preserves a property of $Y$ which otherwise might be lost through the numerical error of the other schemes (such as staying in a certain domain).\\
-	Considering this, the functional Euler scheme is great for the approximation of log-normal processes, as it cancels a part of the numerical error due to the dependency of the factor loadings on the approximated process and at the same time it preserves its' positivity.\\
+	Considering this, the functional Euler scheme is great for the approximation of log-normal processes, as it cancels a part of the numerical error due to the dependency of the factor loadings on the approximated process and at the same time it preserves its positivity.\\
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.8\linewidth]{\fig{Schemes_DirectCompare}}
@@ -1497,10 +1507,37 @@
 	\end{figure}
 	In \cref{fig:schemesdirectcompare} we can see a direct comparison of the schemes for two different paths of a geometric Brownian motion, i.e. $X_t = X_0\exp((\mu - 0.5 \sigma^2) t + \sigma W_t)$, where $X_0=0.1$, $\mu=-0.1$ and $\sigma=0.7$. As time discretization we chose $\Delta t = 0.2$.\\
 	In this case the functional Euler scheme generates exact paths, which do not have any numeric error from discretizing the SDE.
-	We see that as well the Euler as the Milstein scheme portray a numerical error that is quite extensive at certain times. One path of the Euler scheme even reaches a value below zero, while the dynamics of the geometric Brownian motion are such that this should be impossible. It is worth to note, however, that the time discretization is chosen quite rough for demonstration purposes.
+	We see that the Euler scheme portrays a numerical error that is quite extensive at certain times. One path of the Euler scheme even reaches a value below zero, while the dynamics of the geometric Brownian motion are such that this should be impossible. It is worth to note, however, that the time discretization is chosen quite rough for demonstration purposes.\\
+	%TODO Adjust the following sentece:
+	To also prove that the schemes work analytically, we define some convergence rates as in \cite{kloedenSchemes}:
+	\begin{definition}
+		Let $\hat{X}^{\delta}$ be a time-discrete scheme for the approximation of a process $X$, where $\delta$ is the maximum time difference between approximations, i.e. $\delta=\max\left\{t_i-t_{i-1} | i\in \{1,...,m\}\right\}$.\\
+		Then we say that $\hat{X}^{\delta}$ converges strongly to $X$ if:
+		\begin{align*}
+			\lim\limits_{\delta \downarrow 0} \mathbb{E}\left[\left|X_{\tilde{T}} - \hat{X}^{\delta}_{\tilde{T}} \right|\right] = 0.
+		\end{align*}
+		We say that $\hat{X}^{\delta}$ converges strongly with order $\gamma > 0$ to $X$ if $\exists C > 0$ and a $\delta_{max}$ such that
+		\begin{align*}
+			\mathbb{E}\left[\left|X_{\tilde{T}} - \hat{X}^{\delta}_{\tilde{T}} \right|\right] \le C\delta^\gamma
+		\end{align*}
+		for all $\delta \in \left]0,\delta_{max}\right[$.
+	\end{definition}
+	It is well known that the Euler scheme fulfills the  following properties:
+	\begin{lemma}
+		Let $X$ be the solution of \cref{eq:schemeGoalSDE}.
+		Let furthermore 
+		\begin{align*}
+			|\mu(t,x) - \mu(t,y)| + |\sigma(t,x) - \sigma(t,y)| &\le K_1 |x - y|,\\
+			|\mu(t,x)| + |\sigma(t,x)| &\le K_2(1+|x|),\\
+			|\mu(t,x) - \mu(s,x)| + |\sigma(t,x) - \sigma(s,x)| &\le K_3 (1+|x|) |t - s|^{\frac{1}{2}}
+		\end{align*}
+		for all $s,t \in \left[0,\tilde{T}\right]$ and $x,y\in \mathbb{R}^n$ for some constants $K_1, K_2, K_3 \in \mathbb{R}$.
+		Then the Euler scheme given in \cref{def:eulerscheme} converges strongly to $X$ with order $\frac{1}{2}$.
+	\end{lemma}
+	\begin{proof}
+		See \cite{kloedenSchemes}, pp. 342.
+	\end{proof}
 	
-	\color{red}Elaborate (i.e. error estimates and reference for proofs that these work)!!!\color{black}. 
-	%TODO: Elaborate
 	
 	\subsection{The finMath Library}
 	We can now start to look at the actual implementation.\\
