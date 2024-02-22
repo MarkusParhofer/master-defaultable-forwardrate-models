@@ -107,7 +107,7 @@
 				Mathematisches Institut}\\[15ex]
 			
 			\LARGE{Master's Thesis}\\[1.2ex]	
-			\LARGE{\textbf{Default Forward Rate Models for the Valuation of Loans including Behavioral Aspects}} \\[2.5ex]
+			\LARGE{\textbf{Default Forward Rate Models for the Valuation of Loans}} \\[2.5ex]
 			\Large{\textit{Markus Parhofer}}\\[9ex]
 		\end{center}
 		
@@ -119,7 +119,8 @@
 		\begin{center}
 			\normalsize{}
 			Under supervision of\\
-			Prof. Dr. Christian Fries\\
+			Prof.\ Dr.\ Christian Fries and\\
+			Dr.\ Andrea Mazzon\\
 			\today\
 			\\
 		\end{center}
@@ -1064,6 +1065,7 @@
 	\end{align*} 
 	but are not equal.\\
 	We therefore use a trick and replace the default state $1-J(t)$ in all our pricing formulas with the random variable $Q$ that we defined in the previous chapter. \\
+	\subsubsection{Single defaultable party products}
 	To prove this works, assume a $T_i$-claim $X$ that has a payoff that is dependent on survival of the defaultable bonds. We can then use the pricing methodology described in te following lemma.
 	\begin{lemma}\label{lm:pricingdefaultableclaims}
 		Let $X$ be a payoff at $T_i \in \{T_1, ..., T_N\}$, with
@@ -1143,6 +1145,8 @@
 		= \mathbb{Q}^B(\{\tau > T_i\})\\
 		&= \mathbb{E}^{\mathbb{Q}^B}\left[ Q(T_i)\right]
 	\end{align*}
+	
+	\subsubsection{2 party survive products}
 	Let us now extend this model. Assume a product is dependent on the survival of two different parties. For use in later sections we will call them debtor and  creditor.\\
 	Such a claim is of the form
 	\begin{align}\label{eq:claimtwopartysurvive}
@@ -1180,6 +1184,30 @@
 		\end{align*}
 		and (B) in the same way as in the proof of \cref{lm:pricingdefaultableclaims}.
 	\end{proof}
+	
+	\subsubsection{Funding considerations}
+	Assume now that a product is not dependent on the survival of any party. However, the seller of a forward contract can only borrow money at the continuously compounded rate $r_s(t)$, which is higher than the risk free rate $r(t) < r_s(t)$ for all $t\in \left[0,\tilde{T}\right]$. Then replicating the product comes at a higher cost than what it would be, if the seller could borrow money at the risk free rate.\\
+	Lets consider a simple example: the party $A$ sells a forward on an asset with price process $S_t$, strike price $K$ and maturity $\tilde{T}$. We first consider $A$ to be able to borrow at risk-free rate:
+	\begin{center}
+		\begin{tabular}{c|l}
+			Time & Replication \\
+			\hline
+			$0$ & Borrow $S_0$ amount of money. Buy 1 x $S_0$. \\
+			$\tilde{T}$ & Sell asset for $K$. Pay $S_0*\exp(\int_{0}^{\tilde{T}}r(t)dt)$ in redemption.  \\
+		\end{tabular}
+	\end{center}
+	It is easy to see, that the price for such a product therefore must be $S_0 - K\exp(-\int_{0}^{\tilde{T}}r(t)dt)$ (because the seller lends the price of the contract until maturity).
+	If we now consider $A$ to only be able to borrow at $r_s(t)$, but lend at $r(t)$, we need to adjust the replication:
+	\begin{center}
+		\begin{tabular}{c|l}
+			Time & Replication \\
+			\hline
+			$0$ & Borrow $S_0$ amount of money. Buy 1 x $S_0$. \\
+			$\tilde{T}$ & Sell asset for $K$. Pay $S_0*\exp(\int_{0}^{\tilde{T}}r_s(t)dt)$ in redemption.  \\
+		\end{tabular}
+	\end{center}
+	Now the price also needs to be adjusted to: $\left(S_0\exp(\int_{0}^{\tilde{T}}r_s(t)dt) - K\right)\exp(-\int_{0}^{\tilde{T}}r(t)dt)$
+	
 	
 	
 	With these formulas we now have an expression for claim prices in terms of an expectation over model primitives. We can therefore move to more specific products now.
@@ -1562,7 +1590,7 @@
 	\begin{proof}
 		See \cite{kloedenSchemes}, pp. 342.
 	\end{proof}
-	
+	Note that these conditions are the same as for the unique solution theorem. So if these were not satisfied, we could not guarantee that the SDEs of the LIBOR mode have a solution. Hence we assume that the conditions above are fulfilled. 
 	
 	\subsection{The finMath Library}
 	We can now start to look at the actual implementation.\\
@@ -1590,21 +1618,21 @@
 	
 	\subsubsection*{LIBORCovarianceModel}
 	We use the \texttt{LIBORCovarianceModel} interface for the flexible implementation of covariance structures of LIBOR models. Its only responsibility is to provide covariances and their factor loadings. One can use it as plug in to a \texttt{LIBORMarketModel}, as well as one to other \texttt{LIBORCovarianceModel}s, which from there derive other factor loadings.
-	\\
-	\\
-	Let us furthermore discuss some important concepts of computer science that the finMath Library uses, such that we can use its full power and flexibility.
+	
 	
 	\subsubsection*{Abstraction}
 	We see that all the objects described above are interfaces, not directly classes.
-	This means that none of them have a specific implementation and yet we can describe what they are and what they do. Neither the user nor any class, that uses such objects need to know the exact implementation to use them. The main advantage is that it allows to reuse code in many situations. Consider as example the simulation of SDEs: if we could not specify a \texttt{ProcessModel} as an input, there would need to be a \texttt{MonteCarloProcess} class for every SDE that we create, even though the calculation of its paths is always the same. This concept is commonly known as abstraction in computer science.
+	This means that none of them have a specific implementation and yet we can describe what they are and what they do. Neither the user nor any class, that uses such objects need to know the exact implementation to use them. The main advantage is that it allows to reuse code in many situations. Consider as example the simulation of SDEs: if we could not specify a \texttt{ProcessModel} as an input, there would need to be a \texttt{MonteCarloProcess} class for every SDE that we create, even though the calculation of its paths is always the same. This concept is commonly known as abstraction in computer science.\\
+	We follow along with that concept also in the implementation for our model.
 	
-	\subsubsection*{Single Responsibility Principle}
-	%TODO write section!!!!!!!
 	
 	
 	\subsection{Implementation of the Defaultable LIBOR Model}
+	In this section we describe the classes that were implemented for this thesis. The Java files and project setup can be found in the Github repository \cite{myJavaImplementation}. The repository is setup as Maven project, with all dependencies -- such as the finMath library -- linked in the "pom.xml" file. Further description of the packages and classes can be found in the README and the respective Java-Doc.
 	
-	To use the full flexibility of the finMath Library, the implementation of our models is structured in the same way: we have an Interface for the defaultable LIBOR market model which extends the \texttt{ProcessModel}:	
+	
+	\subsubsection*{DefaultableLIBORMarketModel}
+	To use the full flexibility of the finMath Library, the implementation of our models is structured in the same way as in the finMath library: we have an Interface for the defaultable LIBOR market model which extends the \texttt{ProcessModel}:	
 	\lstinputlisting[caption={Declaration of \texttt{DefaultableLIBORMarketModel}}, label={lst:javaCode2}, firstnumber=1, linerange={12} ]{\codedlmm{DefaultableLIBORMarketModel.java}}
 	
 	\begin{figure}[h]
@@ -1618,16 +1646,38 @@
 	The \texttt{DefaultableLIBORMarketModel} can be used as a plug in for a class implementing the \texttt{MonteCarloProcess} interface, which calls SDE-methods of the \texttt{ProcessModel} to pre-calculate the process. Calls to \texttt{getFactorLoading(...)} should be delegated to the \texttt{DefaultableLIBORCovarianceModel}, as we can then reuse the code of \texttt{DefaultableLIBORMarketModel}, even though creating different kinds of covariance (factor-loading) models. 
 	
 	Note here that we also extend the \texttt{LIBORMarketModel}. This however does not necessarily mean that the SDE specified by the \texttt{ProcessModel} simulates the LIBOR rates. 
-	In fact the process values approximating the SDE are accessed by our model through input parameters and can be processed further. We therefore have a clean separation of model specifications and simulation.\\
+	In fact the process values approximating the SDE are accessed by our model through input parameters and can be processed further. We therefore have a clean separation of model specifications and simulation.
 	
-	We take advantage of this fact in the class \texttt{DefaultableLIBORFromSpreadDynamic}. We here allow the user to specify which values should be simulated by the SDE: either the spreads or the defaultable LIBOR rates directly. When getting the defaultable LIBOR rates we query the given \texttt{MonteCarloProcess} for its values and process them as needed:
+	
+	\subsubsection*{DefaultableLIBORFromSpreadDynamic}
+	We take advantage of this fact in the class \texttt{DefaultableLIBORFromSpreadDynamic}, which implements the interface. We here allow the user to specify which values should be simulated by the SDE: either the spreads or the defaultable LIBOR rates directly. When getting the defaultable LIBOR rates we query the given \texttt{MonteCarloProcess} for its values and process them as needed:
 	\lstinputlisting[caption={Getting the defaultable LIBOR rates in \texttt{DefaultableLIBORFromSpreadDynamic}}, label={lst:javaGetDefaultableLIBOR}, firstnumber=1, linerange={597-605} ]{\codedlmm{DefaultableLIBORFromSpreadDynamic.java}}
 	
+	The \texttt{ProcessModel} in this class describes as well the SDEs of the non-defaultable model as well as the ones for the defaultable one (either spreads or directly the LIBORs). This is why in line 6 of \cref{lst:javaGetDefaultableLIBOR} we add the spread to the process value at $liborIndex$, which is the non defaultable LIBOR, to return the defaultable rate.\\
+	All methods corresponding to \texttt{ProcessModel} check if the given component index is smaller than the number of LIBORs, that are simulated. If so, they delegate the call to the non-defaultable model, which must be given in the constructor. As one might notice, we need to delegate the call with a reduced \texttt{MonteCarloProcess}, which is handled through \texttt{getNonDefaultableProcess(...)}.
+	\lstinputlisting[caption={Delegating of the non-defaultable drift calculation in \texttt{DefaultableLIBORFromSpreadDynamic}}, label={lst:javaGetNonDefaultableDrift}, firstnumber=1, linerange={369-379} ]{\codedlmm{DefaultableLIBORFromSpreadDynamic.java}}
 	
 	
-	\subsection{Valuation of Financial Products}
+	\subsubsection*{MultiLIBORVectorModel}
+	In a similar way, the \texttt{MultiLIBORVectorModel} acts as a wrapper class to simulate multiple defaultable LIBOR models at the same time, which we can then use to value products depending on two or more defaultable parties. A wrapper class is necessary, as the joint simulation of the multiple models -- non-defaultable and defaultable -- is essential for a meaningful valuation. 
+	
+	The initial inclination to separately simulate the instances of \texttt{DefaultableLIBORMarketModel} -- which each contains its own non-defaultable LIBOR simulation -- within distinct \texttt{MonteCarloProcess}es, is problematic. This approach would lead to either generating numerous disparate simulations of the non-defaultable model with different stochastic drivers, or employing the same stochastic driver for every defaultable model, resulting in a strong interdependence among the models.
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.6\linewidth]{figures/MultiModelGetFactorLoading}
+		\caption[Workflow of \texttt{MultiLIBORVectorModel.getFactorLoading(...)}]{Workflow of \texttt{MultiLIBORVectorModel.getFactorLoading(...)}}
+		\label{fig:multimodelgetfactorloading}
+	\end{figure}
+	
+	In \cref{fig:multimodelgetfactorloading} we see how the workflow of \texttt{getFactorLoading(...)} in \texttt{MultiLIBORVectorModel} achieves returning a joint factor loading vector for multiple models. First the component index is checked, which model it corresponds to, and the respective factor loadings are fetched. Then they are reordered to represent a model with $m + \sum_{i=0}^{l-1}\left(m^{d^i}-m\right)$ factors. Here $l$ is the number of defaultable models and $m^{d^i}$ is the number of factors corresponding to the $i$-th defaultable model. Note that the first Brownian Motion factors of each defaultable model match the Brownian Motion factors of the non-defaultable model. All factors that correspond exclusively to other defaultable models are set to constant zero.
+	
+	\subsubsection*{Valuation of Financial Products}
 	
 	\subsection{Numerical results}
+	% Positivity of the Spreads
+	% Valuation of basic products
+	
 	
 	\pagebreak
 	\section{Conclusion}\label{sec:conclusion}
