@@ -784,7 +784,7 @@
 		\quad \lambda^{i,d}_t - \lambda^{i}_t = S_i(t)\tilde{\lambda}^{i,S}_t
 	\end{align*}
 	for two processes $\tilde{\mu}^{i,S}$ and $\tilde{\lambda}^{i,S}$.
-	\begin{lemma}
+	\begin{lemma}\label{lem:flguaranteeingpositivespreads}
 		Let $\mathbb{Q}^B$ be the spot measure (i.e. $B(t)$ is given by \cref{eq:spotNumeraire}).
 		Let $L^d$ be defined as before with 
 		\begin{align}
@@ -1626,7 +1626,7 @@
 		where $K^f$ and $K^g$ are the Lipschitz constants of $f$ and $g$ respectively.
 		The second statement is trivial.
 	\end{proof}
-	\begin{lemma}
+	\begin{lemma}\label{lem:trickLipschitzforEuler}
 		Let $L_t:=\left(L_i(t)\right)_{i\in\{0,...,N-1\}}$ and $L^d_t:=\left(L^d_i(t)\right)_{i\in\{0,...,N-1\}}$.
 		Let $i \in \{0,...,N-1\}$, $C^i_1\in\left]-\frac{1}{\Delta T_i},0\right]$ and $C_2\in\left[0,\infty\right[$. Let $A\subset\mathbb{R}^{1+2N}$ be defined as the box $A:=\left[0, \tilde{T}\right] \times \prod_{j=0}^{N-1}\left[C^j_1, C_2\right]\times \prod_{j=0}^{N-1}\left[C^j_1, C_2\right]$. Let $\lambda^{i k,d}_t$ be such that there exist Lipschitz-continuous $\mathbb{R}$-valued functions $\lambda^{i k,d}(t,x_1,x_2)$ on $A$ such that 
 		\begin{align*}
@@ -1660,10 +1660,15 @@
 		\hat{\lambda}^{i k, d}_t &:= \lambda^{i k,d}\left(t,  L_t\big|_{\left[C_1,C_2\right]}, L^d_t\big|_{\left[C_1,C_2\right]}\right),
 	\end{align*}
 	where we used the functional form of $\mu^{i,d}$, $\lambda^{i,d}$ respectively, and we used $x\big|_{\left[C_1,C_2\right]} = \left(\min\left(\max\left(x_i, C^i_1\right), C_2\right)\right)_{i\in\{0,...,N-1\}}$. This yields $\mu^{i,d}$ and $\lambda^{i k,d}$ for all $i \in \left\{0,...,N-1\right\}$ and $k\in\left\{1,...m^d\right\}$ until $L_t$ or $L^d_t$ exit the box $A$, in which case we just fix $\hat{\mu}^{i,d}$ and $\hat{\lambda}^{i k,d}$ to be the edge case. It is easy to see, that the adjusted functions satisfy \cref{eq:lipschitzcont,eq:lineargrowth,eq:timelipschitz} for all $s,t\in\left[0,\tilde{T}\right]$ and $x,y\in\mathbb{R}^{2N}$.\\
-	The trick is to simulate the paths for the SDEs with the normal $\mu^{i,d}$ and $\lambda^{i k,d}$ anyway. We can only simulate a finite number of paths $Z\in\mathbb{N}$. Hence, we check if there is any path, for which the Euler scheme of $L_i(t)$ and $L^d_i(t)$ hit either $-1$ or $\infty$. If there is none, we argument, that we had set $C^i_1$ and $C_2$ to the lowest point of all paths (highest resp.) of $L^d_i(t)$ and $L_i(t)$. Otherwise we should rethink our choice of parameters.
-	
-	
-	
+	The trick is to simulate the paths for the SDEs with the normal $\mu^{i,d}$ and $\lambda^{i k,d}$ anyway. We can only simulate a finite number of paths $Z\in\mathbb{N}$. Hence, we check if there is any path, for which the Euler scheme of $L_i(t)$ and $L^d_i(t)$ hit either $\frac{-1}{\Delta T_i}$ or $\infty$ for any $i\in\{0,...N-1\}$. If there is none, we argument, that we had set $C^i_1$ and $C_2$ to the lowest point of all paths (highest resp.) of $L^d_i(t)$ and $L_i(t)$. Otherwise we should rethink our choice of parameters.
+	\begin{lemma}
+		Let $C^i_1\in\left]-\frac{1}{\Delta T_i}\right]$ and $C_2\in \left[0, \infty\right[$ be arbitrary for all $i \in \{0,...,N-1\}$. Let the factor loadings of the non-defaultable model $\lambda^{i k}(t,L(t))$ be Lipschitz-continuous on $\left[0,\tilde{T}\right]\times\prod_{j=0}^{N-1}\left[C^j_1,C_2\right]$ for all $i \in \{0,...,N-1\}$ and $k \in \{0,...,m\}$.
+		Then the factor loadings $\lambda^{i k, d}$ described in \cref{lem:flguaranteeingpositivespreads} are Lipschitz on the box $A$ (defined in \cref{lem:trickLipschitzforEuler}), if the free parameters $f^{i k}_t=f^{i k}(t,x,y)$ are Lipschitz on the box $A$.
+	\end{lemma}
+	\begin{proof}
+		This is a trivial consequence from \cref{lem:basicLipschitz,lem:trickLipschitzforEuler}.
+	\end{proof}
+	This concludes the analysis on how to simulate the LIBORs for our model.
 	
 	
 	\subsection{The finMath Library}
