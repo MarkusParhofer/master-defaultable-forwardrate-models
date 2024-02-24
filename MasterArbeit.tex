@@ -527,7 +527,7 @@
 	\end{proof}
 	Note that in its original form, the LIBOR model is a log-normal model (see \cite{FriesBook}), hence the original model assumed $\sigma^i_t = L_i(t)\tilde{\sigma}^i_t$. However all proofs also work on a non log-normal model as well. The only restriction we need to apply is
 	\begin{align*}
-		L_i(t) > -1 \quad \forall i \in \{0,...,N\}
+		\Delta T_iL_i(t) > -1 \quad \forall i \in \{0,...,N\}
 	\end{align*}
 	to prevent negative or no zero coupon bond prices.\\
 	Other commonly used covariance structures are the displaced log-normal model, where
@@ -538,7 +538,8 @@
 	\begin{align*}
 		\sigma^i_t = \left((1-\alpha) L_i(t) + \alpha\right)\tilde{\sigma}^i_t
 	\end{align*}
-	with $\alpha \in \left[0, 1\right]$.
+	with $\alpha \in \left[0, 1\right]$.\\
+	
 	As mentioned in the previous chapter, having a model in terms of correlated Brownian Motions is not ideal for numerical replication. We therefore move to another notation, which uses factor loadings instead:
 	\begin{lemma}\label{lem:LMMFactorVersion}
 		There exist $m$-dimensional stochastic processes $\lambda^{i} = (\lambda^{i k})_{k \in \{1, ... m\}}$ and a $m$-dimensional $\mathbb{Q}^B$-Brownian Motion $U=(U^k)_{k \in \{1,...,m\}}$ such that
@@ -751,7 +752,7 @@
 	\end{proof}
 	
 	
-	\subsection{Covariance Structures Guaranteeing positive spreads}
+	\subsection{Covariance Structures guaranteeing positive Spreads}
 	We now investigate how we can generate positive spreads from the defaultable LIBOR market model.\\
 	For this purpose let us define a spread:
 	\begin{definition}
@@ -1145,7 +1146,8 @@
 		= \mathbb{Q}^B(\{\tau > T_i\})\\
 		&= \mathbb{E}^{\mathbb{Q}^B}\left[ Q(T_i)\right]
 	\end{align*}
-	
+
+
 	\subsubsection{2 party survive products}
 	Let us now extend this model. Assume a product is dependent on the survival of two different parties. For use in later sections we will call them debtor and  creditor.\\
 	Such a claim is of the form
@@ -1186,7 +1188,21 @@
 	\end{proof}
 	
 	\subsubsection{Funding considerations}
-	Assume now that a product is not dependent on the survival of any party. However, the seller of a forward contract can only borrow money at the continuously compounded rate $r_s(t)$, which is higher than the risk free rate $r(t) < r_s(t)$ for all $t\in \left[0,\tilde{T}\right]$. Then replicating the product comes at a higher cost than what it would be, if the seller could borrow money at the risk free rate.\\
+	We have previously established that a party facing default risk can offer self-distributed zero-coupon bonds at a price of
+	\begin{align*}
+		P^{d,*}(0;T) = \mathbb{E}^{\mathbb{Q}^B}\left[\frac{1}{B^d(T)}\right],
+	\end{align*}
+	compensating the buyer for the associated default risk. Consequently, such a party can only borrow funds at a rate derived from the defaultable numeraire. This further implies that the valuation of any forward contract from their standpoint is based on this rate, as any self-financing replication strategy for any financial product would involve borrowing at this rate for the initial investment. The valuation of a $T$-claim with payoff $X$ is hence of the form:
+	\begin{align*}
+		\mathbb{E}^{\mathbb{Q}^B}\left[\frac{X}{B^d(T)}\right]
+	\end{align*}
+	\begin{remark}
+		It is important to note, that this formula holds only for valuation, not pricing. While it is priced higher (namely $\mathbb{E}^{\mathbb{Q}^B}\left[\frac{X}{B(T)}\right]$), the value for the defaultable party is as specified above.
+	\end{remark}
+	
+	\begin{comment}
+	Assume now that a product is not dependent on the survival of any party. However, the seller of a forward contract can only borrow money at the continuously compounded rate $r_s(t)$, which is higher than the risk free rate $r(t) < r_s(t)$ for all $t\in \left[0,\tilde{T}\right]$.\\
+	Then replicating the product comes at a higher cost than what it would be, if the seller could borrow money at the risk free rate.\\
 	Lets consider a simple example: the party $A$ sells a forward on an asset with price process $S_t$, strike price $K$ and maturity $\tilde{T}$. We first consider $A$ to be able to borrow at risk-free rate:
 	\begin{center}
 		\begin{tabular}{c|l}
@@ -1207,7 +1223,7 @@
 		\end{tabular}
 	\end{center}
 	Now the price also needs to be adjusted to: $\left(S_0\exp(\int_{0}^{\tilde{T}}r_s(t)dt) - K\right)\exp(-\int_{0}^{\tilde{T}}r(t)dt)$
-	
+\end{comment}
 	
 	
 	With these formulas we now have an expression for claim prices in terms of an expectation over model primitives. We can therefore move to more specific products now.
@@ -1522,8 +1538,7 @@
 		where $i \in \{0, ..., m-1\}$, an \emph{Euler-Maruyama scheme of $X$}.
 	\end{definition}
 	
-	The Euler-Maruyama scheme takes the concept of approaching deterministic integrals and applies it on stochastic integrals. While this works quite well for constant and deterministic factor loadings $\sigma(t_i, x) = \sigma(t_i)$ \color{red}[Add source]\color{black} %TODO: Add source
-	, it has a weakness for stochastic factor loadings.\\
+	The Euler-Maruyama scheme takes the concept of approaching deterministic integrals and applies it on stochastic integrals. While this works quite well for constant and deterministic factor loadings $\sigma(t_i, x) = \sigma(t_i)$ \cite{kloedenSchemes}, it has a weakness for stochastic factor loadings.\\
 	An improvement would be the Milstein scheme as described in \cite{kloedenSchemes}, but due to its correction term, which gets fairly complicated for higher dimensional Brownian motions, it is not well suited for our purpose.
 	\begin{comment}
 	An improvement is the Milstein scheme:
@@ -1552,13 +1567,14 @@
 	This scheme performs well in situations, where the factor loadings of $X$ are less dependent on $X$, than the factor loadings of $Y$ are on $Y$.\\
 	It is also very useful, if $f$ preserves a property of $Y$ which otherwise might be lost through the numerical error of the other schemes (such as staying in a certain domain).\\
 	Considering this, the functional Euler scheme is great for the approximation of log-normal processes, as it cancels a part of the numerical error due to the dependency of the factor loadings on the approximated process and at the same time it preserves its positivity.\\
+	In \cref{fig:schemesdirectcompare} we can see a direct comparison of the schemes for two different paths of a geometric Brownian motion, i.e. $X_t = X_0\exp((\mu - 0.5 \sigma^2) t + \sigma W_t)$, where $X_0=0.1$, $\mu=-0.1$ and $\sigma=0.7$.
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.8\linewidth]{\fig{Schemes_DirectCompare}}
-		\caption[Comparison of Numerical Schemes for a Geometric Brownian Motion]{Comparison of Numerical Schemes for a Geometric Brownian Motion}
+		\caption[Comparison of Numerical Schemes for two paths of a Geometric Brownian Motion]{Comparison of Numerical Schemes for two paths of a Geometric Brownian Motion}
 		\label{fig:schemesdirectcompare}
 	\end{figure}
-	In \cref{fig:schemesdirectcompare} we can see a direct comparison of the schemes for two different paths of a geometric Brownian motion, i.e. $X_t = X_0\exp((\mu - 0.5 \sigma^2) t + \sigma W_t)$, where $X_0=0.1$, $\mu=-0.1$ and $\sigma=0.7$. As time discretization we chose $\Delta t = 0.2$.\\
+	As time discretization we chose $\Delta t = 0.2$.\\
 	In this case the functional Euler scheme generates exact paths, which do not have any numeric error from discretizing the SDE.
 	We see that the Euler scheme portrays a numerical error that is quite extensive at certain times. One path of the Euler scheme even reaches a value below zero, while the dynamics of the geometric Brownian motion are such that this should be impossible. It is worth to note, however, that the time discretization is chosen quite rough for demonstration purposes.\\
 	%TODO Adjust the following sentece:
@@ -1577,20 +1593,78 @@
 	\end{definition}
 	It is well known that the Euler scheme fulfills the  following properties:
 	\begin{lemma}
-		Let $X$ be the solution of \cref{eq:schemeGoalSDE}.
+		Let $X$ be the solution of \cref{eq:schemeGoalSDE}. Let  $\lVert\cdot\rVert$ denote the euclidean norm.
 		Let furthermore 
-		\begin{align*}
-			|\mu(t,x) - \mu(t,y)| + |\sigma(t,x) - \sigma(t,y)| &\le K_1 |x - y|,\\
-			|\mu(t,x)| + |\sigma(t,x)| &\le K_2(1+|x|),\\
-			|\mu(t,x) - \mu(s,x)| + |\sigma(t,x) - \sigma(s,x)| &\le K_3 (1+|x|) |t - s|^{\frac{1}{2}}
-		\end{align*}
+		\begin{align}
+			|\mu(t,x) - \mu(t,y)| + \lVert\sigma(t,x) - \sigma(t,y)\rVert &\le K_1 \lVert x - y\rVert, \label{eq:lipschitzcont}\\
+			|\mu(t,x)| + \lVert\sigma(t,x)\rVert &\le K_2(1+\lVert x\rVert),\label{eq:lineargrowth}\\
+			|\mu(t,x) - \mu(s,x)| + \lVert\sigma(t,x) - \sigma(s,x)\rVert &\le K_3 (1+\lVert x\rVert) |t - s|^{\frac{1}{2}}\label{eq:timelipschitz}
+		\end{align}
 		for all $s,t \in \left[0,\tilde{T}\right]$ and $x,y\in \mathbb{R}^n$ for some constants $K_1, K_2, K_3 \in \mathbb{R}$.
 		Then the Euler scheme given in \cref{def:eulerscheme} converges strongly to $X$ with order $\frac{1}{2}$.
 	\end{lemma}
 	\begin{proof}
 		See \cite{kloedenSchemes}, pp. 342.
 	\end{proof}
-	Note that these conditions are the same as for the unique solution theorem. So if these were not satisfied, we could not guarantee that the SDEs of the LIBOR mode have a solution. Hence we assume that the conditions above are fulfilled. 
+	Note that we have to apply the conditions component-wise. We see that they are the same as for the unique solution theorem \cite{fima2Lecture}. So if these were not satisfied, we could not guarantee the SDEs of the LIBOR model to have a solution.\\
+	Let us state the following lemmata:
+	\begin{lemma}\label{lem:basicLipschitz}
+		The following statements hold for any $\mathbb{R}$-valued Lipschitz functions $f$ and $g$ with the same closed domain $A$:
+		\begin{itemize}
+			\item the function $(f\cdot g)$ (i.e.\ the product) is also Lipschitz on $A$.
+			\item the function $(f + g)$ (i.e.\ the sum) is also Lipschitz on $A$
+		\end{itemize}
+	\end{lemma}
+	\begin{proof}
+		Let us denote the absolute maximum of $g$ and $f$ on $A$ (which is attained because of continuity and the closed domain) $\bar{g}$ and $\bar{f}$ respectively. We get:
+		\begin{align*}
+			|f(x)g(x) - f(y)g(y) | &= | f(x)g(x) - f(y)g(x) + f(y)g(x) - f(y)g(y)|\\
+			&= | f(x)g(x) - f(y)g(x) + f(y)g(x) - f(y)g(y) |\\
+			&\le | f(x) - f(y)| | \bar{g} | + | g(x) - g(y)| | \bar{f} |\\
+			&\le | x - y| \left(K^f| \bar{g} | + K^g| \bar{f} |\right),
+		\end{align*}
+		where $K^f$ and $K^g$ are the Lipschitz constants of $f$ and $g$ respectively.
+		The second statement is trivial.
+	\end{proof}
+	\begin{lemma}
+		Let $L_t:=\left(L_i(t)\right)_{i\in\{0,...,N-1\}}$ and $L^d_t:=\left(L^d_i(t)\right)_{i\in\{0,...,N-1\}}$.
+		Let $i \in \{0,...,N-1\}$, $C^i_1\in\left]-\frac{1}{\Delta T_i},0\right]$ and $C_2\in\left[0,\infty\right[$. Let $A\subset\mathbb{R}^{1+2N}$ be defined as the box $A:=\left[0, \tilde{T}\right] \times \prod_{j=0}^{N-1}\left[C^j_1, C_2\right]\times \prod_{j=0}^{N-1}\left[C^j_1, C_2\right]$. Let $\lambda^{i k,d}_t$ be such that there exist Lipschitz-continuous $\mathbb{R}$-valued functions $\lambda^{i k,d}(t,x_1,x_2)$ on $A$ such that 
+		\begin{align*}
+		\lambda^{i k,d}\left(t,L_t, L^d_t\right) = \lambda^{i k,d}_t
+		\end{align*}
+		if $L_i(t), L^{d}_i(t) \in \left[C^i_1, C_2\right]$ for all $k \in \{1,...,m^d\}$.\\
+		Then \cref{eq:lipschitzcont,eq:lineargrowth,eq:timelipschitz} are satisfied for the SDEs of $L^d$ for $s,t\in \left[0,\tilde{T}\right]$ and $x,y\in\prod_{j=0}^{N-1}\left[C^j_1, C_2\right]\times \prod_{j=0}^{N-1}\left[C^j_1, C_2\right]$.
+	\end{lemma}
+	\begin{proof}
+		Let
+		\begin{align}\label{eq:driftasfunc}
+			\mu^{i,d}(t,x,y) := \sum_{k=1}^{m}\lambda^{i k,d}\left(t,x,y\right)\sum_{j=m(t)+1}^{i}\frac{\lambda^{j k,d}\left(t,x,y\right) \Delta T_j}{1 + y_j\Delta T_j}
+		\end{align}
+		on $A$. It is easy to see that, if $L_i(t), L^{d}_i(t) \in \left[C^i_1, C_2\right]$ for all $i \in \{0,...,N-1\}$, then $
+			\mu^{i,d}\left(t,L_t, L^d_t\right) = \mu^{i,d}_t$.\\
+		Because $y_j$ is bounded by its domain, we have that $\frac{\Delta T_j}{1 + y_j\Delta T_j}$ is Lipschitz-continuous on $A$ for all $j$. With \cref{lem:basicLipschitz}, it is trivial to see that $\mu^{i,d}(t,x,y)$ is a sum of Lipschitz-continuous functions and, hence, Lipschitz, which means that \cref{eq:lipschitzcont} is satisfied for all $i$.\\
+		Because both $\mu^{i,d}$ and $\lambda^{i k,d}$ are Lipschitz and defined on the closed set $A$, they have an absolute maximum, which we denote $\bar{\mu}^{i,d}$, $\bar{\lambda}^{i k,d}$. Setting $K_2 = \bar{\mu}^{i,d} + \sum_{k=1}^{m^d}\bar{\lambda}^{i k,d}$ yields \cref{eq:lineargrowth}.\\
+		As $\mu^{i,d}$ and $\lambda^{i k,d}$ are Lipschitz:
+		\begin{align*}
+			|\mu^{i,d}(t,x,y) - \mu^{i,d}(s,x,y)| + \lVert\lambda^{i k,d}&\left(t,x,y\right) - \lambda^{i k,d}\left(s,x,y\right)\rVert \\
+			&\le C |t - s|\\
+			&= C \sqrt{|t - s|}\sqrt{|t - s|}\\
+			&\le C \sqrt{\tilde{T}} \left(1 + \lVert (x,y)\rVert\right)\sqrt{|t - s|}
+		\end{align*}
+		which yields \cref{eq:timelipschitz}.
+	\end{proof}
+	Note that as a starting point we need to choose Lipschitz-continuous $\lambda$ and $\lambda^d$.\\
+	We have not proved \cref{eq:lipschitzcont,eq:lineargrowth,eq:timelipschitz} for the whole domain of $\lambda^d$ and $\mu^d$. If $C^i_1$ and $C_2$ are chosen such that the probability of $L_i(t), L^d_i(t)\in \left[C^i_1, C_2\right]$ is effectively zero for all $t\in \left[0,\tilde{T}\right]$, this is sufficient for our numerical analysis, however. We use a trick: we argument that we can use the Euler scheme for SDEs with adjusted drift $\hat{\mu}^{i,d}$ and factor loadings $\hat{\lambda}^{i k, d}$:
+	\begin{align*}
+		\hat{\mu}^{i,d}_t &:= \mu^{i,d}\left(t, L_t\big|_{\left[C_1,C_2\right]}, L^d_t\big|_{\left[C_1,C_2\right]} \right)\\
+		\hat{\lambda}^{i k, d}_t &:= \lambda^{i k,d}\left(t,  L_t\big|_{\left[C_1,C_2\right]}, L^d_t\big|_{\left[C_1,C_2\right]}\right),
+	\end{align*}
+	where we used the functional form of $\mu^{i,d}$, $\lambda^{i,d}$ respectively, and we used $x\big|_{\left[C_1,C_2\right]} = \left(\min\left(\max\left(x_i, C^i_1\right), C_2\right)\right)_{i\in\{0,...,N-1\}}$. This yields $\mu^{i,d}$ and $\lambda^{i k,d}$ for all $i \in \left\{0,...,N-1\right\}$ and $k\in\left\{1,...m^d\right\}$ until $L_t$ or $L^d_t$ exit the box $A$, in which case we just fix $\hat{\mu}^{i,d}$ and $\hat{\lambda}^{i k,d}$ to be the edge case. It is easy to see, that the adjusted functions satisfy \cref{eq:lipschitzcont,eq:lineargrowth,eq:timelipschitz} for all $s,t\in\left[0,\tilde{T}\right]$ and $x,y\in\mathbb{R}^{2N}$.\\
+	The trick is to simulate the paths for the SDEs with the normal $\mu^{i,d}$ and $\lambda^{i k,d}$ anyway. We can only simulate a finite number of paths $Z\in\mathbb{N}$. Hence, we check if there is any path, for which the Euler scheme of $L_i(t)$ and $L^d_i(t)$ hit either $-1$ or $\infty$. If there is none, we argument, that we had set $C^i_1$ and $C_2$ to the lowest point of all paths (highest resp.) of $L^d_i(t)$ and $L_i(t)$. Otherwise we should rethink our choice of parameters.
+	
+	
+	
+	
 	
 	\subsection{The finMath Library}
 	We can now start to look at the actual implementation.\\
