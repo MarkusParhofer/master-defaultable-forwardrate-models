@@ -1031,11 +1031,17 @@
 		\end{align*}
 		the \emph{defaultable numeraire}. 
 	\end{definition}
-	Due to $B^d$ not being a traded product, it is not a real numeraire. Hence there is not an equivalent martingale measure w.r.t. $B^d$ that we can use to price other products. And yet, we will see that the valuation formula for defaultable products is similar to a change of numeraires with $B^d$. Therefore, let us look at valuation in more detail.
+	Due to $B^d$ not being a traded product, it is not a real numeraire. Hence there is not an equivalent martingale measure w.r.t. $B^d$ that we can use to price other products. And yet, we will see that the pricing formula for defaultable products is similar to a change of numeraires with $B^d$. Therefore, let us look at pricing in more detail.
 	
-	\subsection{Valuation Methodology}\label{sec:pricing}
+	
+	
+	% -------- Pricing of credits with optionalities
+	
+	
+	\pagebreak
+	\section{Loans and Credit Option Pricing}\label{sec:pricing}
 	A model is useless without a practical application for it. Hence we take a look at how to apply our results to pricing loans and credit options.\\
-	Note here that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo methods to approximate the expectation as we will see in \color{red}Add section reference\color{black}.\\
+	Note here that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo methods to approximate the expectation.\\
 	For a start let us define our simulation filtration:
 	\begin{definition}
 		The filtration $\mathbb{F} := (\mathcal{F}_t)_{t\in\left[0,\tilde{T}\right]}$ is given by
@@ -1044,7 +1050,10 @@
 		\end{align*}
 	\end{definition}
 	Note that all model primitives are $\mathbb{F}$-adapted, as $\mathbb{F}$ is the filtration over the only simulated stochastic processes (in our case the Brownian Motion $U$). As mentioned before we are interested in pricing without simulating the default time $\tau$, which might be driven by other stochastic values. This means that $\tau$ is not necessarily a stopping time w.r.t. $\mathbb{F}$.
-	This is illustrated in \cref{fig:survivalprobabilityvisualisation}.
+	
+	\subsection{General Application}
+	In this subsection, we derive a general pricing methodology before moving to specific products.\\
+	A problem is that our model does not capture default. This is illustrated in \cref{fig:survivalprobabilityvisualisation}.
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\linewidth]{\fig{SurvivalProbability}}
@@ -1145,7 +1154,7 @@
 		\end{align*}
 		where $\Psi$ is a (random) payoff, which is to be collected (resp.\ payed) by the defaultable party if it is positive (resp.\ negative) and $x^+ := \max(x, 0)$ and $x^- := \max(-x, 0)$ for any $x\in \mathbb{R}$.
 	\end{remark}
-	
+
 	\subsubsection{Products depending on two defaultable parties}
 	Let us now extend this model. Assume a product is dependent on the survival of two different parties. For use in later sections we will call them debtor and  creditor.\\
 	Such a claim is of the form
@@ -1172,14 +1181,14 @@
 		We follow exactly the proof of \cref{lm:pricingdefaultableclaims}, only we exchange $\mathbf{1}_{\{\tau > T_i\}}$ with $\mathbf{1}_{A_i}$:
 		\begin{align*}
 			\Pi^X &=  \mathbb{E}^{\mathbb{Q}^B}\left[\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right]\\
-			&=
-			\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right| A_1 \right]q^d(T_1)q^c(T_1)\tag{A}\\
-			&=...\\
-			&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\left.Q^d(T_i)Q^c(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right| A_i \right]\right]\tag{B}
+		 	&=
+		 	\mathbb{E}^{\mathbb{Q}^B}\left[\left.\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right| A_1 \right]q^d(T_1)q^c(T_1)\tag{A}\\
+		 	&=...\\
+		 	&= \mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{G}_{T_i}}\left[\left.Q^d(T_i)Q^c(T_i)\frac{X^S}{B(T_i)} \mathbf{1}_{A_i} \right| A_i \right]\right]\tag{B}
 		\end{align*}
 		where we get (A) from the independence of $\tau^d$ and $\tau^c$:
 		\begin{align*}
-			\mathbb{Q}^B\left(\{\tau^d > T_1\} \cap\{\tau^c > T_1\}\right) = q^d(T_1)q^c(T_1)
+		 	\mathbb{Q}^B\left(\{\tau^d > T_1\} \cap\{\tau^c > T_1\}\right) = q^d(T_1)q^c(T_1)
 		\end{align*}
 		and (B) in the same way as in the proof of \cref{lm:pricingdefaultableclaims}.
 	\end{proof}
@@ -1210,43 +1219,268 @@
 	We see that a whole term is dropped: $X^D$ which is dependent on the default of $c$. Reasoning with funding costs: it is unnecessary to replicate cash flows that go beyond one owns default. Reasoning with the analogy above: $X^D$ is only relevant in the case where $c$ defaults, hence $c$ can neither benefit nor incur liabilities from $X^D$.\\
 	\color{red}Add Content!!!\color{black}\\%TODO: Ausführen & Verbessern
 	
-	\subsubsection{Introducing Behavioral Aspects}
-	Let us look at a specific product category: American loan options. This is the option to buy or sell a loan at a fixed nominal, even if the market conditions have changed. We assume an over the counter (OTC) product, meaning trading the product to other counter parties is not possible. The payoff of such a product if exercised at $t$ would be (in this case we can buy the loan):\\
-	\begin{align*}
-		\Psi(t) = \left(\mathcal{N} - \Pi_t\right)^+,
-	\end{align*}
-	where $\mathcal{N}$ is the nominal and $\Pi_t$ denotes the current value at time $t$ of the repayment obligation, typically structured as a coupon bond.\\
-	In option pricing it is always assumed that all market participants have a perfect overview of the market (captured by the pricing filtration $\mathbb{G}$). Furthermore it is assumed that debtors always act in an optimized manner (exercise the option if it has a positive value). While big companies may have implemented ways such that these are feasible assumptions, this is far from realistic for small market participants such as private people.\\
-	A study from 2021 from Germany asked people how to best spend €1,000 given two options: making a special repayment of an existing loan of theirs, which charges 5 \% interest or invest in a fixed coupon bond with 3 \% interest and maturity of 3 years \cite{finKnowledgeStudy}.
-	The results showed that only 60 \% of the participants would make the special repayment. 15 \% stated that they did not know the answer, 13 \% thought both options were equally good and 12 \% would rather buy the coupon bond \cite{finKnowledgeStudy}.\\
-	% Not only knowing when to cancel, but also motivation is something to take into account when dealing with private debtors: 
-	This shows that the assumption of optimal exercising is an idealization and hence for fair pricing models we need to adjust for this deficit.
-	
-	\begin{remark}
-		Note that in general option pricing an adjustment would generate an arbitrage possibility, because small market participants could buy cheap options and resell them to big companies at a higher price, without any risk.\\
-		However, as established we are talking about products that are not transferable (the defaultable LIBOR models are calibrated to the individual client). This closes the arbitrage possibility.
-	\end{remark}
-	
-	How do we inject such a behavioral aspect in our valuation formula? We could construct a stochastic model which simulates the exercising of a market participant. However, we already omitted modeling the default time for the simple reason of computational cost and modeling behavior would require at least the same amount of computing power.\\
-	Hence we try a simpler approach: we apply a so called deterministic shadow barrier $\tilde{S}_t$ (for flexibility we leave it dependent on time), which leads to a different cash flow:
-	
-	\begin{align*}
-		\Psi(t) = \left(\mathcal{N} - \Pi_t - \tilde{S}_t\right)^+,
-	\end{align*}
-	
-	Generally one can see $\tilde{S}_t$ as the profit it takes, until the debtor would be motivated enough to exercise the option.
-	 \color{red}Elaborate!!!\color{black}. 
-	%TODO: Elaborate
-	
-	
-	% -------- Pricing of credits with optionalities
-	
-	
-	\pagebreak
 	
 	
 	With these formulas we now have an expression for claim prices in terms of an expectation over model primitives. We can therefore move to more specific products now.
 	
+	\subsection{General Loan Pricing}
+	Let us first take a look what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time."\cite{corpFinInst}.\\
+	Hence a loan is nothing else than a fixed coupon bond, where the nominal $\mathcal{N}$ represents the debt and the coupons $c_i$ represent the interest.
+	In the non defaultable case, "pricing" the loan is therefore nothing else than setting the coupons such that (we assume the same coupon tenor as LIBOR tenor):
+	\begin{align}\label{eq:pricingnondefaultableloans}
+		\mathcal{N} \mbeq \sum_{i=1}^{N}c_i P(0;T_i) + \mathcal{N}P(0;T_N)
+	\end{align}
+	\begin{remark}\label{rem:nativecouponsforloans}
+		Setting 
+		\begin{align*}
+			c_i = \mathcal{N}\Delta T_{i-1}L_{i-1}(0)
+		\end{align*}
+		satisfies \cref{eq:pricingnondefaultableloans} and therefore yields a valid loan.
+	\end{remark}
+	\begin{proof}
+		We have 
+		\begin{align*}
+			\Delta T_{i}L_{i}(0) = \frac{P(0;T_{i})}{P(0;T_{i+1})} - 1
+		\end{align*}
+		Inserting in \cref{eq:pricingnondefaultableloans} yields (note $P(0;T_0) = 1$):
+		\begin{align*}
+			\sum_{i=1}^{N}\mathcal{N}\Delta T_{i-1}L_{i-1}(0) P(0;T_i) + \mathcal{N}P(0;T_N) \\
+			=\sum_{i=1}^{N}\mathcal{N}(\frac{P(0;T_{i-1})}{P(0;T_{i})} - 1) P(0;T_i) + \mathcal{N}P(0;T_N)\\
+			= \sum_{i=1}^{N}\mathcal{N}(P(0;T_{i-1}) - P(0;T_{i})) + \mathcal{N}P(0;T_N) = \mathcal{N}
+		\end{align*}
+	\end{proof}
+	Let us look at the defaultable case:
+	\begin{lemma}
+		The price of a coupon paying bond which has defaultable cashflows is:
+		\begin{align*}
+			\mathcal{N} = \sum_{i=1}^{N}c_i P^{d,*}(0;T_i) + \mathcal{N}P^{d,*}(0;T_N)
+		\end{align*}
+	\end{lemma}
+	\begin{proof}
+		Let $c\in \mathbb{R}$ be constant. Then for $i \in \{1, ..., N\}$:
+		\begin{align*}
+			&\mathbb{E}^{\mathbb{Q}^B}\left[\frac{c\;\mathbf{1}_{\left\{\tau(\omega) > T_{i} \right\}}}{B(T_i)}\right] = c \; \mathbb{E}^{\mathbb{Q}^B}\left[ 
+			\frac{P^d(T_i;T_i)}{B(T_i)} \right]\\
+			&= c \; P^d(0;T_i) = c \; P^{d,*}(0;T_i).
+		\end{align*}
+		Replacing $c$ with $c_i$, $\mathcal{N}$ repectively, and taking the sum yields the statement.
+	\end{proof}
+	A loan, where the debtor is defaultable hence must satisfy:
+	\begin{align*}
+		\mathcal{N} \mbeq \sum_{i=1}^{N}c_i P^{d,*}(0;T_i) + \mathcal{N}P^{d,*}(0;T_N)
+	\end{align*}
+	We again have a natural solution to this equation. With the same arguments as for \cref{rem:nativecouponsforloans} we find that setting
+	\begin{align*}
+		c_i = \mathcal{N}\Delta T_{i-1}L^d_{i-1}(0)
+	\end{align*}
+	yields a valid loan.\\
+	Note that for a simple loan it does not matter if the creditor is defaultable, because they have no debt w.r.t. the loan after $t=0$ and in case of their default the pending claim would still be collected.\\
+	Let us take a look at a future on defaultable loans, or rather a future on a defaultable coupon paying bond. 
+	Remember that in contrast to an option a future brings the obligation to enter into an agreement.
+	Hence from the debtors point of view we have a payoff function
+	\begin{align}\label{eq:loanForward}
+		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau > T_s\}}
+	\end{align}
+	where $T_s$ is the start time of the bond and for ease of notation the terminal coupon $c_N$ includes the terminal payment of the nominal $\mathcal{N}$.\\
+	This payoff function gives us a direct approach to price the product:
+	\begin{lemma}\label{lm:simpledefcouponbondforward}
+		A $T_s$ claim with a payoff function as in \cref{eq:loanForward} has the price
+		\begin{align*}
+			\Pi^\Psi &= \mathcal{N}P^d(0;T_s) - \sum_{i=s+1}^{N}c_iP^{d}(0; T_i)\\
+			&= \mathcal{N}P^{d,*}(0;T_s) - \sum_{i=s+1}^{N}c_iP^{d,*}(0; T_i)
+		\end{align*}
+		at $t=0$.
+	\end{lemma}
+	\begin{proof}
+		We have:
+		\begin{align*}
+			\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau > T_s\}}}{B(T_s)}\right]\\
+			&=\mathcal{N}\mathbb{E}^{\mathbb{Q}}\left[\dfrac{P^d(T_s;T_s)}{B(T_s)}\right] - \sum_{i=s+1}^{N} c_i \mathbb{E}^{\mathbb{Q}}\left[\dfrac{P^d(T_s;T_i)}{B(T_s)}\right]\\
+			&= \mathcal{N}P^d(0;T_s) - \sum_{i=s+1}^{N} c_i P^d(0;T_i)
+		\end{align*}
+	\end{proof}
+	To gain an initial price of zero one can set the coupons as done before:
+	\begin{align*}
+		c_i &= \mathcal{N}\Delta T_{i-1}L^d_{i-1}(0) \quad\text{for } i\in\{1,...,N-1\}, \\ 
+		c_N &= \mathcal{N}\left(1 + \Delta T_{i-1}L^d_{i-1}(0)\right).
+	\end{align*}
+	Let us rewrite the same price as discussed in \cref{lm:simpledefcouponbondforward} for a numerical valuation instead of an analytic one:
+	\begin{align*}
+		\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)}{B(T_s)}Q(T_s)\right].
+	\end{align*}
+	Here one can see that the forward has two main stochastic cost drivers: 
+	\begin{itemize}
+		\item The default probability \emph{past} maturity time, which has a positive relation to the price: if the default probability rises, $P^{d,*}(T_s;T_i)$ decreases, which drives the price up.
+		\item The default probability \emph{before} maturity time, which has a negative relation to the price intensity: if the default probability rises, $Q(T_s)$ decreases, which lowers the absolute value of the price (as $0 < Q(T_s) < 1$).
+	\end{itemize}
+	In the past example default of the creditor did not matter, but in this case actually the future contract depends on their survival. Hence creditor default possibility does indeed change the payoff
+	\begin{align}\label{eq:loanForwardCreditorDefaultable}
+		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau^d > T_s\}}\mathbf{1}_{\{\tau^c > T_s\}}.
+	\end{align}
+	and hence also the price of such a product:
+	\begin{lemma}
+		Let \cref{as:counterpartiesareindependent} hold. The price for a product with a payoff as in \cref{eq:loanForwardCreditorDefaultable} at $t=0$ is:
+		\begin{align*}
+			\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)}{B(T_s)}Q^d(T_s)Q^c(T_s)\right]\\
+			&= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)}{B^{d^d}(T_s)}Q^c(T_s)\right]
+		\end{align*}
+	\end{lemma}
+	\begin{proof}
+		Follows directly from \cref{lem:creditordefPrice}.
+	\end{proof}
+	
+	\begin{comment}
+	Until now we have not considered \cref{rem:defaultablepartystillcollects}, which states that a party that is in default still collects its claims, not however pays its liabilities. Let us adjust the cash flows in \cref{eq:loanForward,eq:loanForwardCreditorDefaultable} to account for this. Denoting 
+	\begin{align*}
+		\Psi(T_s) := \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)
+	\end{align*}
+	we get
+	\begin{align}
+		\Psi_1(T_s) &= \Psi\left(T_s\right)^+ - \Psi\left(T_s\right)^-\mathbf{1}_{\{\tau^d > T_s\}}\\
+		\Psi_2(T_s) &= \Psi\left(T_s\right)^+\mathbf{1}_{\{\tau^c > T_s\}} - \Psi\left(T_s\right)^-\mathbf{1}_{\{\tau^d > T_s\}}.
+	\end{align}
+	
+	\end{comment}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{\fig{ValuationCouponBondForwards}}
+		\caption[Valuation of Forwards on Coupon Bonds]{Valuation of Forwards on Coupon Bonds}
+		\label{fig:valuationcouponbondforwards}
+	\end{figure}
+	It is easy to see that the price of a coupon bond forward, which considers both parties to be defaultable is less intense (i.e. it decreases the absolute value of the price more) than that, which only considers the debtor to be defaultable. In \cref{fig:valuationcouponbondforwards} one can also see that the difference increases the further maturity is away.
+	
+	
+	\subsection{Credit Options}
+	In the last subsection we considered pricing loans and loan forwards. Essentially cash flow that is set in stone (with the exception of default). 
+	Now let us consider more intriguing products which bring an optionality with them:
+	We start with a simple put option on a coupon bond (note that we work a lot with coupon bonds as to their equivalence with a loan). 
+	\begin{remark}
+		A put option on a coupon paying bond, with maturity $T_s$ and strike price $\mathcal{N}$ where the debtor/payer is defaultable has the payoff function
+		\begin{align}\label{eq:couponputoption}
+			\Psi(T_s) =\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)^+\mathbf{1}_{\{\tau > T_s\}}
+		\end{align}
+		where $\left(\cdot\right)^+ := \max(0, \cdot)$.
+	\end{remark}
+	We can numerically compute the price.
+	\begin{lemma}
+		A claim with a payoff function as in \cref{eq:couponputoption} has the price:
+		\begin{align*}
+			\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)^+}{B^d(T_s)}\right]
+		\end{align*}
+	\end{lemma}
+	\begin{proof}
+		Directly follows from \cref{lm:pricingdefaultableclaims}.
+	\end{proof}
+	Also this product can be extended to both counter parties being defaultable: the debtor and the creditor.\\
+	The adjusted formulas are
+	\begin{align*}
+		\Psi(T_s) =\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)^+\mathbf{1}_{\{\tau^d > T_s\}}\mathbf{1}_{\{\tau^c > T_s\}}
+	\end{align*}
+	for the payoff and 
+	\begin{align*}
+		\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)^+}{B^{d^d}(T_s)}Q^c(T_s)\right]
+	\end{align*}
+	for pricing. A proof is omitted as it is trivial.\\
+	A more advanced product is a cancellable loan. We start with the case, where one can cancel the loan at a single time point $T_k$ for $k \in \{1, ... N-1\}$.\\
+	Consider the cash flow of such a product from the debtors point of view:
+	We get the nominal $\mathcal{N}$ at the start of the loan. Then we pay coupons each tenor until $T_k$. If we cancel the loan, we have to pay the redemption $\tilde{R}$, otherwise we keep paying coupons until the end of the loan.
+	\begin{figure}[h]
+		\centering
+		\makebox[\textwidth][c]{%
+			\subfloat{\scalebox{0.4}{\includegraphics{\fig{CancellableLoan}}}}
+			\quad
+			\subfloat{\scalebox{0.4}{\includegraphics{\fig{LoanAndPutOption}}}}
+		}
+		\caption[Cashflow of a cancellable loan and its splitting into two products]{Cashflow of a cancellable loan and its splitting into two products}
+		\label{fig:cancellableloan}
+	\end{figure}
+	\\To derive a price for this product, we split the cash flow in two parts: a  loan and a put option on a loan, as visualized in \cref{fig:cancellableloan}. 
+	The option is then treated as single cash flow in terms of the price, which leads us to a payoff of (note, we again only consider debtor default):
+	
+	\begin{center}
+		\begin{tabular}{cl}
+			$\mathcal{N}$ & at $T_0$, \\
+			$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., N\}$, \\
+			$\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+\mathbf{1}_{\{\tau > T_k\}}$ 
+			& at $T_k$.
+		\end{tabular}
+	\end{center}
+	Note that if $\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right) > 0$ at $T_k$, the debtor could get a new loan on the nominal $\tilde{R}$ for better conditions then the initial one.\\
+	From there it is easy to compute the price:
+	\begin{align}\label{eq:priceofcancellableloan}
+		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]
+	\end{align}
+	
+	\begin{remark}
+		One can also construct the cash flows for the cancellable loan from a loan and a call option on a loan:
+
+		\begin{center}
+			\begin{tabular}{cl}
+				$\mathcal{N}$ & at $T_0$, \\
+				$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., k\}$, \\
+				$-\tilde{R}\mathbf{1}_{\{\tau > T_k\}}$  & at $T_k$ and\\
+				$\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) \right)^+\mathbf{1}_{\{\tau > T_k\}}$ 
+				& at $T_k$.
+			\end{tabular}
+		\end{center}
+		
+		For any $c_i, \mathcal{N}, \tilde{R} \in \mathbb{R}$ for $i \in \{1, ..., N\}$ this will yield the same price formula as \cref{eq:priceofcancellableloan}.
+	\end{remark}
+	\begin{proof}
+		This can be trivially derived from the relation:
+		\begin{align*}
+			&\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]\\
+			&\;= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j)\right)^+}{B^d(T_k)}\right]
+			+ \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}}{B^d(T_k)}\right]\\
+			&\;= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j)\right)^+}{B^d(T_k)}\right]
+			+\sum_{j=k+1}^{N}c_jP^{d,*}(0;T_j) - \tilde{R}P^{d,*}(0;T_k)
+		\end{align*}
+	\end{proof}
+	Let us look at how to set the starting value of the cancellable loan to zero.
+	We have to set the coupons and $\tilde{R}$ such that:
+	\begin{align*}
+		\mathcal{N} + \Pi^\Psi \mbeq \sum_{i=1}^{N}c_iP^{d,*}(0;T_i),
+	\end{align*}
+	where $\Pi^\Psi$ is the price of a put option on a coupon bond with maturity $T_k$ and strike $\tilde{R}$, i.e.
+	\begin{align*}
+		\Pi^\Psi = \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]
+	\end{align*}
+	Note that it is easiest to distribute the value of $\Pi^\Psi$ on the first $k$ coupons, as $\Pi^\Psi$ itself is influenced by the later ones.
+	Hence we can set the later coupons as done before and distribute the accrued price of $\Pi^\Psi$ to the earlier ones: 
+	\begin{align*}
+		c_i &= \mathcal{N} \Delta T_{i-1} L^d_{i-1}(0) + \frac{\Pi^\Psi}{k P^{d,*}(0;T_i)} \quad &\text{for } i \in \{1,...,k\}\\
+		c_i &= \mathcal{N} \Delta T_{i-1} L^d_{i-1}(0) \quad &\text{for } i \in \{k+1,..., N -1\}\\
+		c_i &= \mathcal{N} \left(\Delta T_{i-1} L^d_{i-1}(0) + 1\right) \quad &\text{for } i = N
+	\end{align*}
+	Generally the redemption $\tilde{R}$ can be set arbitrarily and the price formula will hold. However, \color{red}it is good practice to \color{black} set it to the price of the remaining nominal (which is not payed back through the coupons until $T_k$) plus a penalty $p\in \mathbb{R}$:
+	\begin{align*}
+		\tilde{R} = \sum_{j=k+1}^{N}c_j \frac{P^{d,*}(T_0;T_j)}{P^{d,*}(T_0;T_k)} + p
+	\end{align*}
+	%TODO: What is the price for both parties defaultable
+	
+	
+	Let us generalize this product for the possibility to cancel at any time past $T_k$ for a fixed $k \in \{1,...,N-1\}$.
+	Note that in this case the redemption $\tilde{R}_t$ would depend on the cancel time, but still be deterministic. Then the adjusted cash flow is
+	
+	\begin{center}
+		\begin{tabular}{cl}
+			$\mathcal{N}$ & at $T_0$, \\
+			$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., N\}$, \\
+			$\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu\right)\mathbf{1}_{\{\tau > \nu\}}$
+			& at $\nu$,
+		\end{tabular}
+	\end{center}
+	
+	where $\nu = \nu(\omega)$ is the stopping time:
+	\begin{align*}
+		\nu(\omega) = \min\left(t\in \left[T_k,T_N\right[ \;\left| \;\left(\sum_{j=m(t)+1}^{N}c_jP^{d,*}(t;T_j) - \tilde{R}_t\right) > 0\right. \right) \wedge T_N
+	\end{align*}
+	Hence this has the form of an American option, where we can choose to exercise the option in the time interval $\left[T_k,T_N\right]$. As always the price can be obtained by taking the discounted expectation:	
+	\begin{align*}
+		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu\right)}{B^d(\nu)}\right].
+	\end{align*}
+	As $\nu$ is only dependent on $\mathbb{F}$-adapted values, it is also a value in terms of model primitives, which makes it usable to us.
 	
 	\subsection{Introducing Behavioral Aspects}
 	Let us spin our model a bit further. Until now we have assumed that all market participants have a perfect overview of the market (captured by the filtration $\mathbb{G}$). Furthermore we assumed that debtors always act in an optimized manner (exercise the option if it has a positive value). While big companies may have implemented ways such that these are feasible assumptions, this is far from realistic for small market participants such as private people.\\
@@ -1529,273 +1763,9 @@
 	
 	\subsubsection*{Valuation of Financial Products}
 	
-	
-	
-	\pagebreak
 	\section{Numerical Analysis}
 	% Positivity of the Spreads
 	% Valuation of basic products
-	
-	\subsection{General Loan Pricing}
-	Let us first take a look what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time."\cite{corpFinInst}.\\
-	Hence a loan is nothing else than a fixed coupon bond, where the nominal $\mathcal{N}$ represents the debt and the coupons $c_i$ represent the interest.
-	In the non defaultable case, "pricing" the loan is therefore nothing else than setting the coupons such that (we assume the same coupon tenor as LIBOR tenor):
-	\begin{align}\label{eq:pricingnondefaultableloans}
-		\mathcal{N} \mbeq \sum_{i=1}^{N}c_i P(0;T_i) + \mathcal{N}P(0;T_N)
-	\end{align}
-	\begin{remark}\label{rem:nativecouponsforloans}
-		Setting 
-		\begin{align*}
-			c_i = \mathcal{N}\Delta T_{i-1}L_{i-1}(0)
-		\end{align*}
-		satisfies \cref{eq:pricingnondefaultableloans} and therefore yields a valid loan.
-	\end{remark}
-	\begin{proof}
-		We have 
-		\begin{align*}
-			\Delta T_{i}L_{i}(0) = \frac{P(0;T_{i})}{P(0;T_{i+1})} - 1
-		\end{align*}
-		Inserting in \cref{eq:pricingnondefaultableloans} yields (note $P(0;T_0) = 1$):
-		\begin{align*}
-			\sum_{i=1}^{N}\mathcal{N}\Delta T_{i-1}L_{i-1}(0) P(0;T_i) + \mathcal{N}P(0;T_N) \\
-			=\sum_{i=1}^{N}\mathcal{N}(\frac{P(0;T_{i-1})}{P(0;T_{i})} - 1) P(0;T_i) + \mathcal{N}P(0;T_N)\\
-			= \sum_{i=1}^{N}\mathcal{N}(P(0;T_{i-1}) - P(0;T_{i})) + \mathcal{N}P(0;T_N) = \mathcal{N}
-		\end{align*}
-	\end{proof}
-	Let us look at the defaultable case:
-	\begin{lemma}
-		The price of a coupon paying bond which has defaultable cashflows is:
-		\begin{align*}
-			\mathcal{N} = \sum_{i=1}^{N}c_i P^{d,*}(0;T_i) + \mathcal{N}P^{d,*}(0;T_N)
-		\end{align*}
-	\end{lemma}
-	\begin{proof}
-		Let $c\in \mathbb{R}$ be constant. Then for $i \in \{1, ..., N\}$:
-		\begin{align*}
-			&\mathbb{E}^{\mathbb{Q}^B}\left[\frac{c\;\mathbf{1}_{\left\{\tau(\omega) > T_{i} \right\}}}{B(T_i)}\right] = c \; \mathbb{E}^{\mathbb{Q}^B}\left[ 
-			\frac{P^d(T_i;T_i)}{B(T_i)} \right]\\
-			&= c \; P^d(0;T_i) = c \; P^{d,*}(0;T_i).
-		\end{align*}
-		Replacing $c$ with $c_i$, $\mathcal{N}$ repectively, and taking the sum yields the statement.
-	\end{proof}
-	A loan, where the debtor is defaultable hence must satisfy:
-	\begin{align*}
-		\mathcal{N} \mbeq \sum_{i=1}^{N}c_i P^{d,*}(0;T_i) + \mathcal{N}P^{d,*}(0;T_N)
-	\end{align*}
-	We again have a natural solution to this equation. With the same arguments as for \cref{rem:nativecouponsforloans} we find that setting
-	\begin{align*}
-		c_i = \mathcal{N}\Delta T_{i-1}L^d_{i-1}(0)
-	\end{align*}
-	yields a valid loan.\\
-	Note that for a simple loan it does not matter if the creditor is defaultable, because they have no debt w.r.t. the loan after $t=0$ and in case of their default the pending claim would still be collected.\\
-	Let us take a look at a future on defaultable loans, or rather a future on a defaultable coupon paying bond. 
-	Remember that in contrast to an option a future brings the obligation to enter into an agreement.
-	Hence from the debtors point of view we have a payoff function
-	\begin{align}\label{eq:loanForward}
-		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau > T_s\}}
-	\end{align}
-	where $T_s$ is the start time of the bond and for ease of notation the terminal coupon $c_N$ includes the terminal payment of the nominal $\mathcal{N}$.\\
-	This payoff function gives us a direct approach to price the product:
-	\begin{lemma}\label{lm:simpledefcouponbondforward}
-		A $T_s$ claim with a payoff function as in \cref{eq:loanForward} has the price
-		\begin{align*}
-			\Pi^\Psi &= \mathcal{N}P^d(0;T_s) - \sum_{i=s+1}^{N}c_iP^{d}(0; T_i)\\
-			&= \mathcal{N}P^{d,*}(0;T_s) - \sum_{i=s+1}^{N}c_iP^{d,*}(0; T_i)
-		\end{align*}
-		at $t=0$.
-	\end{lemma}
-	\begin{proof}
-		We have:
-		\begin{align*}
-			\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau > T_s\}}}{B(T_s)}\right]\\
-			&=\mathcal{N}\mathbb{E}^{\mathbb{Q}}\left[\dfrac{P^d(T_s;T_s)}{B(T_s)}\right] - \sum_{i=s+1}^{N} c_i \mathbb{E}^{\mathbb{Q}}\left[\dfrac{P^d(T_s;T_i)}{B(T_s)}\right]\\
-			&= \mathcal{N}P^d(0;T_s) - \sum_{i=s+1}^{N} c_i P^d(0;T_i)
-		\end{align*}
-	\end{proof}
-	To gain an initial price of zero one can set the coupons as done before:
-	\begin{align*}
-		c_i &= \mathcal{N}\Delta T_{i-1}L^d_{i-1}(0) \quad\text{for } i\in\{1,...,N-1\}, \\ 
-		c_N &= \mathcal{N}\left(1 + \Delta T_{i-1}L^d_{i-1}(0)\right).
-	\end{align*}
-	Let us rewrite the same price as discussed in \cref{lm:simpledefcouponbondforward} for a numerical valuation instead of an analytic one:
-	\begin{align*}
-		\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)}{B(T_s)}Q(T_s)\right].
-	\end{align*}
-	Here one can see that the forward has two main stochastic cost drivers: 
-	\begin{itemize}
-		\item The default probability \emph{past} maturity time, which has a positive relation to the price: if the default probability rises, $P^{d,*}(T_s;T_i)$ decreases, which drives the price up.
-		\item The default probability \emph{before} maturity time, which has a negative relation to the price intensity: if the default probability rises, $Q(T_s)$ decreases, which lowers the absolute value of the price (as $0 < Q(T_s) < 1$).
-	\end{itemize}
-	In the past example default of the creditor did not matter, but in this case actually the future contract depends on their survival. Hence creditor default possibility does indeed change the payoff
-	\begin{align}\label{eq:loanForwardCreditorDefaultable}
-		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau^d > T_s\}}\mathbf{1}_{\{\tau^c > T_s\}}.
-	\end{align}
-	and hence also the price of such a product:
-	\begin{lemma}
-		Let \cref{as:counterpartiesareindependent} hold. The price for a product with a payoff as in \cref{eq:loanForwardCreditorDefaultable} at $t=0$ is:
-		\begin{align*}
-			\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)}{B(T_s)}Q^d(T_s)Q^c(T_s)\right]\\
-			&= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)}{B^{d^d}(T_s)}Q^c(T_s)\right]
-		\end{align*}
-	\end{lemma}
-	\begin{proof}
-		Follows directly from \cref{lem:creditordefPrice}.
-	\end{proof}
-	
-	\begin{comment}
-		Until now we have not considered \cref{rem:defaultablepartystillcollects}, which states that a party that is in default still collects its claims, not however pays its liabilities. Let us adjust the cash flows in \cref{eq:loanForward,eq:loanForwardCreditorDefaultable} to account for this. Denoting 
-		\begin{align*}
-			\Psi(T_s) := \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)
-		\end{align*}
-		we get
-		\begin{align}
-			\Psi_1(T_s) &= \Psi\left(T_s\right)^+ - \Psi\left(T_s\right)^-\mathbf{1}_{\{\tau^d > T_s\}}\\
-			\Psi_2(T_s) &= \Psi\left(T_s\right)^+\mathbf{1}_{\{\tau^c > T_s\}} - \Psi\left(T_s\right)^-\mathbf{1}_{\{\tau^d > T_s\}}.
-		\end{align}
-		
-	\end{comment}
-	
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=0.7\linewidth]{\fig{ValuationCouponBondForwards}}
-		\caption[Valuation of Forwards on Coupon Bonds]{Valuation of Forwards on Coupon Bonds}
-		\label{fig:valuationcouponbondforwards}
-	\end{figure}
-	It is easy to see that the price of a coupon bond forward, which considers both parties to be defaultable is less intense (i.e. it decreases the absolute value of the price more) than that, which only considers the debtor to be defaultable. In \cref{fig:valuationcouponbondforwards} one can also see that the difference increases the further maturity is away.
-	
-	
-	\subsection{Credit Options}
-	In the last subsection we considered pricing loans and loan forwards. Essentially cash flow that is set in stone (with the exception of default). 
-	Now let us consider more intriguing products which bring an optionality with them:
-	We start with a simple put option on a coupon bond (note that we work a lot with coupon bonds as to their equivalence with a loan). 
-	\begin{remark}
-		A put option on a coupon paying bond, with maturity $T_s$ and strike price $\mathcal{N}$ where the debtor/payer is defaultable has the payoff function
-		\begin{align}\label{eq:couponputoption}
-			\Psi(T_s) =\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)^+\mathbf{1}_{\{\tau > T_s\}}
-		\end{align}
-		where $\left(\cdot\right)^+ := \max(0, \cdot)$.
-	\end{remark}
-	We can numerically compute the price.
-	\begin{lemma}
-		A claim with a payoff function as in \cref{eq:couponputoption} has the price:
-		\begin{align*}
-			\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)^+}{B^d(T_s)}\right]
-		\end{align*}
-	\end{lemma}
-	\begin{proof}
-		Directly follows from \cref{lm:pricingdefaultableclaims}.
-	\end{proof}
-	Also this product can be extended to both counter parties being defaultable: the debtor and the creditor.\\
-	The adjusted formulas are
-	\begin{align*}
-		\Psi(T_s) =\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)^+\mathbf{1}_{\{\tau^d > T_s\}}\mathbf{1}_{\{\tau^c > T_s\}}
-	\end{align*}
-	for the payoff and 
-	\begin{align*}
-		\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)^+}{B^{d^d}(T_s)}Q^c(T_s)\right]
-	\end{align*}
-	for pricing. A proof is omitted as it is trivial.\\
-	A more advanced product is a cancellable loan. We start with the case, where one can cancel the loan at a single time point $T_k$ for $k \in \{1, ... N-1\}$.\\
-	Consider the cash flow of such a product from the debtors point of view:
-	We get the nominal $\mathcal{N}$ at the start of the loan. Then we pay coupons each tenor until $T_k$. If we cancel the loan, we have to pay the redemption $\tilde{R}$, otherwise we keep paying coupons until the end of the loan.
-	\begin{figure}[h]
-		\centering
-		\makebox[\textwidth][c]{%
-			\subfloat{\scalebox{0.4}{\includegraphics{\fig{CancellableLoan}}}}
-			\quad
-			\subfloat{\scalebox{0.4}{\includegraphics{\fig{LoanAndPutOption}}}}
-		}
-		\caption[Cashflow of a cancellable loan and its splitting into two products]{Cashflow of a cancellable loan and its splitting into two products}
-		\label{fig:cancellableloan}
-	\end{figure}
-	\\To derive a price for this product, we split the cash flow in two parts: a  loan and a put option on a loan, as visualized in \cref{fig:cancellableloan}. 
-	The option is then treated as single cash flow in terms of the price, which leads us to a payoff of (note, we again only consider debtor default):
-	
-	\begin{center}
-		\begin{tabular}{cl}
-			$\mathcal{N}$ & at $T_0$, \\
-			$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., N\}$, \\
-			$\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+\mathbf{1}_{\{\tau > T_k\}}$ 
-			& at $T_k$.
-		\end{tabular}
-	\end{center}
-	Note that if $\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right) > 0$ at $T_k$, the debtor could get a new loan on the nominal $\tilde{R}$ for better conditions then the initial one.\\
-	From there it is easy to compute the price:
-	\begin{align}\label{eq:priceofcancellableloan}
-		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]
-	\end{align}
-	
-	\begin{remark}
-		One can also construct the cash flows for the cancellable loan from a loan and a call option on a loan:
-		
-		\begin{center}
-			\begin{tabular}{cl}
-				$\mathcal{N}$ & at $T_0$, \\
-				$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., k\}$, \\
-				$-\tilde{R}\mathbf{1}_{\{\tau > T_k\}}$  & at $T_k$ and\\
-				$\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) \right)^+\mathbf{1}_{\{\tau > T_k\}}$ 
-				& at $T_k$.
-			\end{tabular}
-		\end{center}
-		
-		For any $c_i, \mathcal{N}, \tilde{R} \in \mathbb{R}$ for $i \in \{1, ..., N\}$ this will yield the same price formula as \cref{eq:priceofcancellableloan}.
-	\end{remark}
-	\begin{proof}
-		This can be trivially derived from the relation:
-		\begin{align*}
-			&\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]\\
-			&\;= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j)\right)^+}{B^d(T_k)}\right]
-			+ \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}}{B^d(T_k)}\right]\\
-			&\;= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j)\right)^+}{B^d(T_k)}\right]
-			+\sum_{j=k+1}^{N}c_jP^{d,*}(0;T_j) - \tilde{R}P^{d,*}(0;T_k)
-		\end{align*}
-	\end{proof}
-	Let us look at how to set the starting value of the cancellable loan to zero.
-	We have to set the coupons and $\tilde{R}$ such that:
-	\begin{align*}
-		\mathcal{N} + \Pi^\Psi \mbeq \sum_{i=1}^{N}c_iP^{d,*}(0;T_i),
-	\end{align*}
-	where $\Pi^\Psi$ is the price of a put option on a coupon bond with maturity $T_k$ and strike $\tilde{R}$, i.e.
-	\begin{align*}
-		\Pi^\Psi = \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]
-	\end{align*}
-	Note that it is easiest to distribute the value of $\Pi^\Psi$ on the first $k$ coupons, as $\Pi^\Psi$ itself is influenced by the later ones.
-	Hence we can set the later coupons as done before and distribute the accrued price of $\Pi^\Psi$ to the earlier ones: 
-	\begin{align*}
-		c_i &= \mathcal{N} \Delta T_{i-1} L^d_{i-1}(0) + \frac{\Pi^\Psi}{k P^{d,*}(0;T_i)} \quad &\text{for } i \in \{1,...,k\}\\
-		c_i &= \mathcal{N} \Delta T_{i-1} L^d_{i-1}(0) \quad &\text{for } i \in \{k+1,..., N -1\}\\
-		c_i &= \mathcal{N} \left(\Delta T_{i-1} L^d_{i-1}(0) + 1\right) \quad &\text{for } i = N
-	\end{align*}
-	Generally the redemption $\tilde{R}$ can be set arbitrarily and the price formula will hold. However, \color{red}it is good practice to \color{black} set it to the price of the remaining nominal (which is not payed back through the coupons until $T_k$) plus a penalty $p\in \mathbb{R}$:
-	\begin{align*}
-		\tilde{R} = \sum_{j=k+1}^{N}c_j \frac{P^{d,*}(T_0;T_j)}{P^{d,*}(T_0;T_k)} + p
-	\end{align*}
-	%TODO: What is the price for both parties defaultable
-	
-	
-	Let us generalize this product for the possibility to cancel at any time past $T_k$ for a fixed $k \in \{1,...,N-1\}$.
-	Note that in this case the redemption $\tilde{R}_t$ would depend on the cancel time, but still be deterministic. Then the adjusted cash flow is
-	
-	\begin{center}
-		\begin{tabular}{cl}
-			$\mathcal{N}$ & at $T_0$, \\
-			$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., N\}$, \\
-			$\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu\right)\mathbf{1}_{\{\tau > \nu\}}$
-			& at $\nu$,
-		\end{tabular}
-	\end{center}
-	
-	where $\nu = \nu(\omega)$ is the stopping time:
-	\begin{align*}
-		\nu(\omega) = \min\left(t\in \left[T_k,T_N\right[ \;\left| \;\left(\sum_{j=m(t)+1}^{N}c_jP^{d,*}(t;T_j) - \tilde{R}_t\right) > 0\right. \right) \wedge T_N
-	\end{align*}
-	Hence this has the form of an American option, where we can choose to exercise the option in the time interval $\left[T_k,T_N\right]$. As always the price can be obtained by taking the discounted expectation:	
-	\begin{align*}
-		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu\right)}{B^d(\nu)}\right].
-	\end{align*}
-	As $\nu$ is only dependent on $\mathbb{F}$-adapted values, it is also a value in terms of model primitives, which makes it usable to us.
-	
-	
 	
 	
 	\pagebreak
