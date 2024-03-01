@@ -144,7 +144,10 @@
 	
 	
 	\section{Introduction}
-	\color{red}The valuation of loans in financial markets is crucial for creditors and debtors alike. Understanding and measuring the risks associated with interest rates, especially default risk, is essential for valuing and collateralizing financial products\color{black}. This master's thesis focuses on extending the existing and well researched discrete forward rate models (short: LIBOR models) to account for default risk, building upon the work of Professor Dr. Christian Fries.
+	Loans play a significant role not only in the financial world, but also in the lives of private people. Statista shows that the total volume of loans given to private households in 2023 in Germany was roughly $1.5$ trillion Euros, which is more  than triple the volume of that from 1991  \cite{krediteinDeutschlandStatista}. It can be assumed that the figure for loans granted to companies is significantly higher still.\\
+	This gives notion to the importance of loan valuation in financial markets. Understanding and measuring the risks associated with interest rates, but also and especially the ones associated to default probability, is essential for valuing loans correctly.\\
+	This master's thesis focuses on extending the existing and well researched discrete forward rate models (short: LIBOR models) to account for default risk, building upon the work of Professor Dr. Christian Fries \cite{friesDLMM}.\\
+	These models are then used to value different kind of loan products.
 	
 	
 	\subsection{Motivation}
@@ -168,12 +171,13 @@
 	
 	\subsection{Preliminaries}
 	The thesis is aimed at an audience that has a deep analytical background and a basic knowledge in probability theory and financial mathematics.\\
-	A list of required topics may include, but is not limited to
+	A list of required fundamental topics may include, but is not limited to
 	\begin{itemize}
 		\item Brownian Motions and martingales,
 		\item stochastic integration,
 		\item Itô stochastic processes and
 		\item definition of and theorems on arbitrage free markets.
+		\item Monte Carlo methods
 	\end{itemize}
 	Furthermore we assume a fundamental understanding of what these mathematical concepts imply on the real world and the other way around: How are the mathematical concepts motivated by the economical world?
 	
@@ -403,9 +407,8 @@
 	\pagebreak
 	\section{LIBOR Market Model}\label{sec::LIBORModel}
 	
-	While the actual LIBOR, short for "London Inter-Bank Offered Rate" \color{red}[Add source] \color{black} %TODO: Add source
-	lost most of its influence after the banking crash of 2008 \color{red}[Add source] \color{black} %TODO: Add source
-	the LIBOR market model -- or discrete forward rate model -- is still a very popular mathematical model for simulation and valuation of financial products on fixed income markets.\\
+	The actual LIBOR, short for "London Inter-Bank Offered Rate" phased out in the last year, due to "scandals and questions around its validity as a benchmark rate"\cite{investopediaLIBOR}.
+	However, the LIBOR market model -- or discrete forward rate model -- is still a very popular mathematical model for simulation and valuation of financial products on fixed income markets.\\
 	The idea of the model is to discretize a given time horizon into periods, for each of which different rates hold. The main difference to other models however is, that each rate for a given period is driven by different stochastic parameters.
 	\\
 	The basic assumption of the LIBOR Market Model is that we are in an arbitrage free and complete market.
@@ -467,7 +470,7 @@
 	\begin{remark}
 		Note that \cref{eq:spotNumeraire} can be rewritten to:
 		\begin{align}\label{eq:spotNumeraireAlt}
-			B(t) = P(t;T_{m(t)+1})\prod_{i=0}^{m(t)}\left(1 + L\left(T_{i-1};T_{i-1},T_i\right)\left(T_{i+1}-T_i\right)\right).
+			B(t) = P(t;T_{m(t)+1})\prod_{i=0}^{m(t)}\left(1 + L\left(T_{i-1};T_{i-1},T_i\right)\cdot\left(T_{i+1}-T_i\right)\right).
 		\end{align}
 	\end{remark}
 	The numeraire in the spot measure can be explained as follows:\\
@@ -496,7 +499,7 @@
 		\end{align}
 		where $(W^{\mathbb{Q}^B, L_i})_{i\in \{0, ..., N\}}$ are possibly instantaneously correlated Brownian Motions.
 	\end{assumption}
-	In the LIBOR model, all other variables are then derived from these interest rates, most importantly the $T_i$-bond prices. The attentive reader will have noticed, however, that there is a hole in this derivation: the so-called short-period bond $P(t;T_{m(t)+1})$ cannot be calculated by $(L_i(t))_{i\in\{0, ..., N\}}$ alone, which is why we need the following assumption:
+	In the LIBOR model, all other variables are then derived from these interest rates, most importantly the $T_i$-bond prices. The attentive reader will have noticed, however, that there is a hole in this derivation: the so-called short-period bond $P(t;T_{m(t)+1})$ cannot be calculated by $\left(L_i(t)\right)_{i\in\{0, ..., N\}}$ alone, which is why we need the following assumption:
 	\begin{assumption}\label{as:LMMShortPeriodBond}
 		The short-period bond
 		\begin{align*}
@@ -586,7 +589,7 @@
 	\section{Defaultable LIBOR Market Models}\label{sec:defaultableLMM}
 	
 	In this section we introduce defaultable LIBOR market models that we can use to value credits and credit options.\\
-	Our main source for this section is the article "Defaultable Discrete Forward Rate Model with Covariance Structure guaranteeing Positive Credit Spreads" authored by Professor Christian Fries \cite{FriesDLMM}.\\
+	Our main source for this section is the article "Defaultable Discrete Forward Rate Model with Covariance Structure guaranteeing Positive Credit Spreads" authored by Professor Christian Fries \cite{friesDLMM}.\\
 
 	\subsection{The Defaultable Forward Rate}
 		We remain in the same setting as in the non-defaultable model, where we have a LIBOR tenor discretization \((T_i)_{i\in\{0, 1, ..., N\}}\) and a set of (non-defaultable) zero coupon bonds \((P(t;T_i))_{i\in\{0, 1, ..., N\}}\). Hence we can define the same products and apply the same valuation formulas. This also means we have to apply the same numeraire for pricing, as in the non-defaultable model.\\
@@ -603,7 +606,7 @@
 		The \emph{Defaultable Zero Coupon Bond} with price process \[P^d(t; T_i)\] at time \(t \in \left[0, T\right]\) is a traded asset that pays \(1 - J(T_i)\) at maturity  \(T_i \in \{T_0, ..., T_N\}\).\\
 		Hence it pays 1 if the default has not happened until maturity. 
 	\end{definition}
-	It is easy to see that if default occurs, the price of a defaultable zero coupon bond jumps to zero. This means that the price process can be discontinuous at default events. This gives notion to the definition of a zero coupon bond conditional on pre-default.
+	It is easy to see that if default occurs, the price of a defaultable zero coupon bond jumps to zero. This means that the price process can be discontinuous at default events. It gives notion to the definition of a zero coupon bond conditional on pre-default.
 	\begin{definition}
 		The \emph{Defaultable Zero Coupon Bond conditional pre-default} is a continuous Itô-stochastic process \(P^{d,*}(t; T_i)\) at time \(t \in \left[0, T_i\right]\) with maturity $T_i$ ($i \in \{0, ..., N\}$) such that
 		\begin{align*}
@@ -793,8 +796,8 @@
 				\lambda^{i k,d}_t &= \left(L^d_i(t) - L_i(t)\right)f^{i k}_t \quad \quad & \text{for } k= m+1, ... m^d
 			\end{aligned}
 		\end{align}
-		where $f^{i k}_t$ are (possibly stochastic) processes for $i=1, ..., N$ and $k= m+1, ... m^d$.\\
-		Then $S = (S_i)_{i\in \{0, ..., N\}}$ satisfies 
+		where $f^{i k}_t$ are (possibly stochastic) processes for $i\in\{1, ..., N-1\}$ and $k\in \{m+1, ..., m^d\}$.\\
+		Then $S = (S_i)_{i\in \{0, ..., N-1\}}$ satisfies 
 		\begin{align*}
 			dS_i = S_i(t)\tilde{\mu}^{i,S}_t dt + S_i(t)\tilde{\lambda}^{i,S}_t \cdot dU_t.
 		\end{align*}
@@ -1006,7 +1009,7 @@
 			Q(T_i, \omega) = \prod_{j=1}^{i}q(T_j, \omega)
 		\end{align*}
 	\end{definition}
-	While $Q$ in theory is not a probability, we can view it as the pathwise survival probability until $T_i$, if we have no information regarding the actual default state even at time $T_i$. Note that this is an \emph{interpretation} and the actual proof for this statement needs extra assumptions \color{red}[Attach proof for this?]\color{black}.\\
+	While $Q$ in theory is not a probability, we can view it as the pathwise survival probability until $T_i$, if we have no information regarding the actual default state even at time $T_i$. This, however; is only an \emph{interpretation} and the actual proof for this statement needs extra assumptions.\\ %TODO: Maybe add proof
 	What we actually prove in the next chapter is that the total survival probability until $T_i$ is given by the expectation of $Q$:
 	\begin{align*}
 		\mathbb{Q}^B\left(\{\tau > T_i\}\right) = \mathbb{E}^{\mathbb{Q}^B} \left[Q(T_i;\omega)\right]
@@ -1034,8 +1037,8 @@
 	Due to $B^d$ not being a traded product, it is not a real numeraire. Hence there is not an equivalent martingale measure w.r.t. $B^d$ that we can use to price other products. And yet, we will see that the valuation formula for defaultable products is similar to a change of numeraires with $B^d$. Therefore, let us look at valuation in more detail.
 	
 	\subsection{Valuation Methodology}\label{sec:pricing}
-	A model is useless without a practical application for it. Hence we take a look at how to apply our results to pricing loans and credit options.\\
-	Note here that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo methods to approximate the expectation as we will see in \color{red}Add section reference\color{black}.\\
+	A model is useless without a practical application for it. Hence we take a look at how to apply our results to pricing and valuation.\\
+	Note here that the model is for use in numerical option pricing, so deriving prices in terms of an expectation over model primitives (directly simulated values or values that can be derived from these) is sufficient. We can then use Monte Carlo methods to approximate the expectation as we will see in \cref{sec:numericalvaluation}.\\
 	For a start let us define our simulation filtration:
 	\begin{definition}
 		The filtration $\mathbb{F} := (\mathcal{F}_t)_{t\in\left[0,\tilde{T}\right]}$ is given by
@@ -1190,7 +1193,7 @@
 	\begin{align*}
 		P^{d,*}(0;T) = \mathbb{E}^{\mathbb{Q}^B}\left[\frac{1}{B^d(T)}\right],
 	\end{align*}
-	compensating the buyer for the associated default risk. Consequently, such a party can only borrow funds at a rate derived from the defaultable numeraire. This further implies that the valuation of any forward contract from their standpoint is based on this rate, as any self-financing replication strategy for any financial product would involve borrowing at this rate for the initial investment. The valuation of a $T$-claim with payoff $X$ is hence of the form:
+	compensating the buyer for the associated default risk. Consequently, such a party can only borrow funds at a rate derived from the defaultable numeraire. This further implies that the valuation of any forward contract from their perspective is based on this rate, as any self-financing replication strategy for any financial product would involve borrowing at this rate for the initial investment. The valuation of a $T$-claim with payoff $X$ is hence of the form:
 	\begin{align}\label{eq:claimvaluedwithfundingcurve}
 		\mathbb{E}^{\mathbb{Q}^B}\left[\frac{X}{B^d(T)}\right]
 	\end{align}
@@ -1304,7 +1307,7 @@
 		\caption[Comparison of Numerical Schemes for two paths of a Geometric Brownian Motion]{Comparison of Numerical Schemes for two paths of a Geometric Brownian Motion}
 		\label{fig:schemesdirectcompare}
 	\end{figure}
-	As time discretization we chose $\Delta t = 0.2$.\\
+	As time discretization we choose $\Delta t = 0.2$.\\
 	In this case the functional Euler scheme generates exact paths, which do not have any numeric error from discretizing the SDE.
 	We see that the Euler scheme portrays a numerical error that is quite extensive at certain times. One path of the Euler scheme even reaches a value below zero, while the dynamics of the geometric Brownian motion are such that this should be impossible. It is worth to note, however, that the time discretization is chosen quite rough for demonstration purposes.\\
 	%TODO Adjust the following sentece:
@@ -1384,7 +1387,7 @@
 		which yields \cref{eq:timelipschitz}.
 	\end{proof}
 	Note that as a starting point we need to choose Lipschitz-continuous $\lambda$ and $\lambda^d$.\\
-	We have not proved \cref{eq:lipschitzcont,eq:lineargrowth,eq:timelipschitz} for the whole domain of $\lambda^d$ and $\mu^d$. If $C^i_1$ and $C_2$ are chosen such that the probability of $L_i(t), L^d_i(t)\in \left[C^i_1, C_2\right]$ is effectively zero for all $t\in \left[0,\tilde{T}\right]$, this is sufficient for our numerical analysis, however. We use a trick: we argument that we can use the Euler scheme for SDEs with adjusted drift $\hat{\mu}^{i,d}$ and factor loadings $\hat{\lambda}^{i k, d}$:
+	We have not proved \cref{eq:lipschitzcont,eq:lineargrowth,eq:timelipschitz} for the whole domain of $\lambda^d$ and $\mu^d$. If $C^i_1$ and $C_2$ are chosen such that the probability of $L_i(t), L^d_i(t)\in \left[C^i_1, C_2\right]$ is effectively zero for all $t\in \left[0,\tilde{T}\right]$, this is sufficient for our numerical analysis, however. We use a trick: we argue that we can use the Euler scheme for SDEs with adjusted drift $\hat{\mu}^{i,d}$ and factor loadings $\hat{\lambda}^{i k, d}$:
 	\begin{align*}
 		\hat{\mu}^{i,d}_t &:= \mu^{i,d}\left(t, L_t\big|_{\left[C_1,C_2\right]}, L^d_t\big|_{\left[C_1,C_2\right]} \right)\\
 		\hat{\lambda}^{i k, d}_t &:= \lambda^{i k,d}\left(t,  L_t\big|_{\left[C_1,C_2\right]}, L^d_t\big|_{\left[C_1,C_2\right]}\right),
@@ -1481,22 +1484,23 @@
 	
 	In \cref{fig:multimodelgetfactorloading} we see how the workflow of \texttt{getFactorLoading(...)} in \texttt{MultiLIBORVectorModel} achieves returning a joint factor loading vector for multiple models. First the component index is checked, which model it corresponds to, and the respective factor loadings are fetched. Then they are reordered to represent a model with $m + \sum_{i=0}^{l-1}\left(m^{d^i}-m\right)$ factors. Here $l$ is the number of defaultable models and $m^{d^i}$ is the number of factors corresponding to the $i$-th defaultable model. Note that the first Brownian Motion factors of each defaultable model match the Brownian Motion factors of the non-defaultable model. All factors that correspond exclusively to other defaultable models are set to constant zero.
 	
-	\subsubsection*{Valuation of Financial Products}
-	
-	
 	
 	\pagebreak
 	\section{Numerical Analysis}
 	% Positivity of the Spreads
 	% Valuation of basic products
-	\color{red}
-	In this section we will analyze the numerical results that our model yields. It is divided into three parts:
-	In the first subsection we will inspect the performance, so time the model, test the numerical valuation against approximation formulas for two specific products and we test the positivity of the spread in three different cases.
-	The second subsection is dedicated to a qualitative analysis of some specific product valuations, which we found to be interesting. Each product here will be first described theoretically and then we analyze what the implementation yields in different cases.
-	In the third part we show various numerical results, that are interesting.
-	\color{black}
+	In this section we will analyze the numerical results that our model yields. It is divided into three parts:\\
+	In the first subsection we will inspect the performance, which we measure by time, numerical error and the realization of the positivity condition in the numerical implementation.\\
+	The second subsection is dedicated to a qualitative analysis of some specific product valuations, which were found to be interesting. Each product will be first described theoretically and then the numerical implementation is analyzed.\\
+	In the third part we show how the input parameters, namely the initial spread curve and the covariance parameters impact the variance and correlation of the model.\\
+	Note that we have not given a simpler parametrization for the covariance structure than the free parameter matrix. For all our valuations we used equally distributed randomly generated free parameter matrices, centered around zero.
+	To still have a very simple grip on the input, we define $\Delta f$ as the size of the interval where the free parameters lie in. Hence it always holds that:
+	\begin{align*}
+		\max\left(f^{i k} - f^{j l} | i,j \in\{0,...,N-1\}, l,k\in\{m+1,...,m^d\}\right) \le \Delta f
+	\end{align*}
 	
 	\subsection{Performance of the model}
+	We start with analyzing the performance of the model. While for theoretical analysis irrelevant, timing is an important measure for programming, as it can reveal inefficiencies and bottle necks of the model.We start with this topic.
 	\subsubsection{Timing}
 	Timing is performed by extending the class "Time", which only has two relevant (static) methods: \emph{tic()} which starts the timer, and \emph{toc()} which yields the result (in Nanoseconds). Note that the calculation of the paths is performed using lazy initialization, which means, the calculation is only performed, if we actually \emph{use} the results. 
 	\begin{figure}[h]
@@ -1507,7 +1511,6 @@
 	\end{figure}
 	\Cref{fig:comparisonofcalctime} shows that the calculation time of the defaultable model is not only double of the calculation time of the non-defaultable model, as one could expect. It rather lies between 5-7 times as much computational time. Note that while the computation time itself depends heavily on the system used (we used a Windows System with 11 cores and 16 GB RAM), the relative position of the two curves shown, should be roughly equal.
 	The reason for this result might lie in the programming design: because the simulating process expects every SDE value to be in an array, a heavily amount of time is spent copying data from one array to another. Another might lie in the duplication of computing the non-defaultable values, such as drift and factor loadings (which are needed for the calculation of the drift of the spread/defaultable LIBORs).
-	%TODO: At the conclusion, increase performance by looking at RV CUDA extension and OpenCL extension.
 	
 	\subsubsection{Numerical error}
 	We can estimate the numerical error, by looking at the defaultable bond prices at time 0. These are given in analytical form, by deriving them from the initial value of the defaultable LIBOR rate: 
@@ -1521,28 +1524,33 @@
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.7\linewidth]{figures/Today/BondPriceError_rel}
-		\caption{Relative error of defaultable bond prices calculated by a defaultable LIBOR model by a functional Euler-Maruyama scheme with time step $\Delta t=0.02$ and $25000$ sample paths.}
+		\caption{Relative error of defaultable bond prices calculated under the spot measure by a defaultable LIBOR model through a functional Euler-Maruyama scheme with time step $\Delta t=0.02$ and $25000$ sample paths and exponential state space.}
 		\label{fig:bondpriceerrorrel}
 	\end{figure}
-	\cref{fig:bondpriceerrorrel} shows how this error evolves over time.
-	\color{red}Extend!!\color{black}
-	
+	\Cref{fig:bondpriceerrorrel} shows how this error evolves over time. One can see that at initial time the error is quite low, but exponentially rising after some LIBOR periods. The reason for this structure are two main factors: 
+	\begin{itemize}
+		\item The exponential structure of the spread model also implies that all numerical errors are exponential over time.\\
+		\item The use of the spot measure implies that the numeraire gathers more stochasticity over time, making Monte Carlo methods more prone to numerical errors.
+	\end{itemize}
+	Note that the level of the error is quite low with $0.12$ \% being the largest relative error.\\
+	The zero-coupon bond error as shown in \cref{fig:bondpriceerrorrel} can be extinguished by applying the analytic initial prices as a control variate. Note however that this will not totally extinguish the numerical error for the valuation of other products.\\
+		
 	Another possibility to measure the numerical error, is to directly use the LIBOR rates. From the proof of \cref{theo:defDriftTheo} we know that $L^d_i(t)P^d(t;T_{i+1})$ discounted is a martingale. Hence we know, that its expectation is also its starting value:
 	\begin{align*}
 		L^d_i(0)P^d(0;T_{i+1}) = \mathbb{E}^{\mathbb{Q}^B}\left[\frac{L^d_i\left(T_{i}\right)}{B(T_{i+1})}\mathbf{1}_{\{\tau > T_{i+1}\}}\right]
 	\end{align*}
 	Using Monte Carlo on the same product yields the approximation:
 	\begin{align*}
-		L^d_i(0)P^d(0;T_{i+1}) \approx \mathbb{E}^{\mathbb{Q}^B}\left[\frac{L^d_i\left(T_{i}\right)}{B(T_{i+1})}\mathbf{1}_{\{\tau > T_{i+1}\}}\right]
+		L^d_i(0)P^d(0;T_{i+1}) \approx \mathbb{E}^{\mathbb{Q}^B}\left[\frac{L^d_i\left(T_{i}\right)}{B(T_{i+1})}Q\left(T_{i+1}\right)\right]
 	\end{align*}
 	The relative error is shown in \cref{fig:liborerrorrel}.
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.7\linewidth]{figures/Today/LIBORError_rel}
-		\caption{Relative error for the approximation of LIBOR rates using a functional Euler-Maruyama schemewith time step $\Delta t=0.02$ and $25000$ sample paths}
+		\caption{Relative error for the approximation of LIBOR rates calculated under the spot measure by a defaultable LIBOR model through a functional Euler-Maruyama scheme with time step $\Delta t=0.02$ and $25000$ sample paths and exponential state space.}
 		\label{fig:liborerrorrel}
 	\end{figure}
-	\color{red}Extend!!\color{black}
+	There we see that the errors do not follow as strong of a pattern as the bond price errors. It is true, however, that also here a larger maturity time yields a larger error, which is normal for Monte Carlo methods. Also here we can observe that the relative error stays a low level even at a large fixing time.
 	
 	
 	\subsubsection{Positivity of the model}
@@ -1563,10 +1571,10 @@
 				$ 0.01$ 	& &  2.814E-06 & & 2.965E-06 & &  2.084E-04 & & 2.152E-04\\ \specialrule{0.1em}{0em}{0em}
 		\end{tabular}}
 	\end{table}
-	There we indeed see that the normal Euler-Maruyama scheme generates negative values, as well for the free parameters with a large range as for those with a smaller range. While for a smaller $\Delta f$ (i.e.\ the range of the free parameters) the scheme seems to be stable from $\Delta t=0.1$ downwards, the larger values of $\Delta f$ seem to pose a problem for the Euler scheme even when choosing rather small time steps.
+	There we indeed see that the normal Euler-Maruyama scheme generates negative values, as well for the free parameters with a large range as for those with a smaller range. While for a smaller $\Delta f$ (i.e.\ the range of the free parameters) the scheme seems to be stable from $\Delta t=0.1$ downwards, the larger values of $\Delta f$ seem to pose a problem for the Euler scheme even when choosing rather small time steps. This comes as no surprise as we see in \cref{sec:impactofdeltaf} that $\Delta f$ has a direct link to the variance of the model.
 	
 	
-	\subsection{Numerical Results on Loan Valuation}
+	\subsection{Numerical Results on Loan Valuation}\label{sec:numericalvaluation}
 	In this section we look at some concrete valuation examples. Since our model has its main strength in capturing default probability directly within the discount curve it has a native application in loan pricing.\\
 	Therefore let us first take a look at what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time."\cite{corpFinInst}.\\
 	Hence a loan is nothing else than a fixed coupon bond, where the nominal $\mathcal{N}$ represents the debt and the coupons $c_i$ represent the interest.
@@ -1621,15 +1629,14 @@
 	\begin{align*}
 		\mathbb{E}^{\mathbb{Q}^B}\left[\frac{\mathcal{N}Q^c(T_s)}{B^{d^d}(T_s)}\right] - \sum_{i=s+1}^{N}c_i\mathbb{E}^{\mathbb{Q}^B}\left[\frac{Q^c(T_i)}{B^{d^d}(T_i)}\right]
 	\end{align*}
-	Let us use our model to value the derived products from the different perspectives. In \cref{fig:pricingcouponbondforwarddefversionbycoupons} we see the prices of the product if both parties involved are defaultable in perspective to only the debtor being defaultable.\\
-	\color{red}Elaborate!!!\color{black}
+	Let us use our model to value the derived products from the different perspectives. In \cref{fig:pricingcouponbondforwarddefversionbycoupons} we see the prices of the product if both parties involved are defaultable in perspective to only the debtor being defaultable.
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.7\linewidth]{figures/Today/PricingCouponBondForward_DefVersion_byCoupons}
 		\caption{Price of a coupon bond forward if both involved parties are defaultable and only the debtor being defaultable plotted against the coupon rates.}
 		\label{fig:pricingcouponbondforwarddefversionbycoupons}
 	\end{figure}
-	The figure visualizes that the forward coupon bond has two main stochastic cost drivers: 
+	\\The figure visualizes that the forward coupon bond has two main stochastic cost drivers: 
 	\begin{itemize}
 		\item The default probability \emph{past} maturity time, which has a positive relation to the price: if the default probability rises, $P^{d,*}(T_s;T_i)$ decreases, which drives the price up, visualized by the case of a defaultable debtor.
 		\item The default probability \emph{before} maturity time, which has a negative relation to the price intensity: if the default probability rises, $Q(T_s)$ decreases, which lowers the absolute value of the price (as $0 < Q(T_s) < 1$). This is visualized by the case of the creditor being defaultable, as their default probability is only accounted until $T_s$.
@@ -1648,7 +1655,7 @@
 		\caption{Valuation of a coupon bond forward valued from the creditor's perspective and the debtor's plotted against the coupon rates}
 		\label{fig:valuationcouponbondforwardbycoupons}
 	\end{figure}
-	\\\color{red}Elaborate!!!\color{black}
+	\\One can explain this phenomena through the default probability of the creditor. While in the example before only the probability of default until maturity time affected the value, now one has to consider also the one past maturity time for valuation.
 		
 	
 	\subsubsection{Cancellable Loans}\label{sec:cancellableLoans}
@@ -1711,38 +1718,57 @@
 	\begin{align*}
 		\mathcal{N} &- \sum_{i=1}^{N}\mathbb{E}^{\mathbb{Q}^B}\left[\frac{c_iQ^d(T_i)}{B^{d^c}(T_i)}\right] \\ &+\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}\left[\left.\left(\sum_{j=m(\nu)+1}^{N}\frac{c_i Q^d(T_i)}{B^{d^c}(T_i)} - \frac{\tilde{R_\nu}Q^d(\nu)}{B^{d^c}(\nu)}\right)^+ \right| \mathcal{F}_\nu\right]\right]
 	\end{align*}
+	Note that the creditor would have a different stopping criterion $\nu$ if it were their option to exercise. 
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.7\linewidth]{figures/Today/CancellableLoan_byCouponRate}
 		\caption{Cancellable loan by coupon rate valued from the creditor's perspective with the creditor's stopping criterion, as well as with the debtor's stopping criterion and from the debtor's perspective}
 		\label{fig:cancellableloanbycouponrate}
 	\end{figure}
-	Note that the creditor would have a different stopping criterion $\nu$ if it were their option to exercise. Hence, for valuation we can see two different paths: either the creditor values with their stopping criterion or they value with the debtor's criterion. 
-	As visualized in \cref{fig:cancellableloanbycouponrate}.
-	\color{red}Elaborate!!!\color{black}. 
-	%TODO: Elaborate
+	Hence, for valuation we can see two different paths: either the creditor values with their stopping criterion or they value with the debtor's criterion. 
+	As visualized in \cref{fig:cancellableloanbycouponrate} we can see, that considering funding costs does significantly impact the valuation. In fact the value as seen from the creditor's perspective is substantially lower as that seen from the debtor. The reason for this is explained in \cref{sec:fundingconsiderations}: the creditor has to hedge against the debtors default risk, but also consider that he can not borrow money at the risk free rate. While the debtor can also not borrow money at the risk free rate, he does not have to hedge against his own default.
 	
 	\subsection{Impact of the model inputs}
-	Let us analyze how the initial spread and the matrix of free parameters affect the model. \Cref{fig:spreadvarcovbyfreeparameters} illustrates how the variance of the spread is impacted by the initial spread. We see that the effects are exponential. This is to be expected as the model is lognormal. We also see that the effect is greater for a larger $\Delta f$.
+	Let us analyze how the input parameters -- i.e.\ initial spread and the matrix of free parameters -- affect the model. We start with the initial spread.
+	\subsubsection{Impact of the initial spread}
+	\Cref{fig:spreadvarcovbyinitspread} illustrates how the variance of the spread of two models ($S^d$ and $S^c$) is impacted by their initial spread curve. For illustration purposes the initial spread is fixed for each LIBOR period in the example. We see that the effects are exponential. This is to be expected as the model is lognormal.
 	\begin{figure}[h!]
 		\centering
-		\includegraphics[width=0.7\linewidth]{figures/Today/SpreadVarCovByFreeParameters}
+		\includegraphics[width=0.7\linewidth]{figures/Today/SpreadVarCovByInitSpread}
 		\caption{Impact of the initial spread on the variance and covariance of the terminal spread.}
-		\label{fig:spreadvarcovbyfreeparameters}
+		\label{fig:spreadvarcovbyinitspread}
 	\end{figure}
-	Let us take a look at the correlation of two jointly simulated defaultable models. Also here we are interested in reviewing how the model input affects the values. Remember that in \cref{sec:pricing} we assumed two models for the joint valuation of products to be independent. \Cref{fig:spreadcorrelationbyinitspread} shows that at least numerically this seems to be possible to achieve. Even when using only two additional Brownian Motion factors, there is almost no correlation to be found between the terminal spreads of the two models. We see that the initial spread indeed has an impact on the correlation structure, although on a very low niveau.
+	We also see that the effect is dependent on $\Delta f$: the larger the range of the free parameter the greater the impact of the initial spread. As the example simulates the different models jointly, one could argue that part of the processes' variance is due to a strong dependence between the two, which can be discarded, as the covariance shows no impact.
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.7\linewidth]{figures/Today/SpreadCorrelationByInitSpread}
 		\caption{Terminal correlation of two spread of defaultable LIBOR models to the same non defaultable model by the initial spread curve.}
 		\label{fig:spreadcorrelationbyinitspread}
+	\end{figure}%TODO: 
+	\\Let us take a look at the correlation of two jointly simulated defaultable models. Also here we are interested in reviewing how the model input affects the values. Remember that in \cref{sec:pricing} we assumed two models for the joint valuation of products to be independent. \Cref{fig:spreadcorrelationbyinitspread} shows that at least numerically this seems to be possible to achieve. Even when using only two additional Brownian Motion factors, there is almost no correlation to be found between the terminal spreads of the two models. We see that the initial spread indeed has an impact on the correlation structure, although at a very low level.
+	
+	\subsubsection{Impact of the free parameters}\label{sec:impactofdeltaf}
+	The model as described in \cref{sec:defaultableLMM} has another input, which is the free parameter matrix for the covariance structure of the defaultable LIBORs. 
+	Since our research does not address the parametrization of this structure (note the potential for time-dependent $f^{i k}_t$), we employ a matrix of time-constant free parameters, generated randomly and evenly distributed around 0. We then use $\Delta f$ as our handle to experiment the impact of the input. For each model we fix the seed of the generator to visualize the actual impact.
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figures/Today/SpreadVarCovByFreeParameters}
+		\caption{Variance of the terminal spread of two models and their Covariance plotted against $\Delta f$}
+		\label{fig:spreadvarcovbyfreeparameters}
 	\end{figure}
+	\\Let us again analyze the variance. As visualized in \cref{fig:spreadvarcovbyfreeparameters} we see as expected that the range of free parameters indeed has a major impact. Even though only changing $\Delta f$ by $0.15$ the variance has a jump from almost zero to $0.45$. It is clear, that the relation is again exponential. As the model of the spread is log-normal and the factor loadings of the last $m^d - m$ factors are the free parameters this relation comes as no surprise.
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figures/Today/SpreadCorrelationByFreeParameters}
+		\caption{Correlation of two models spread plotted against $\Delta f$}
+		\label{fig:spreadcorrelationbyfreeparameters}
+	\end{figure}
+	We look at the correlation, which again plays at an insignificant level as seen in \cref{fig:spreadcorrelationbyfreeparameters}. However here one can see that, though on a low level, the correlation indeed is impacted by the range of free parameters. A lower $\Delta f$ implies a higher dependence (keep in mind that a negative correlation implies the same level of dependence as the same value in the positive direction). This makes sense, as the lower the free parameters, the more randomness is explained by the first factors, which are common for both models. A free parameter matrix that has constant zero values would constitute the same SDEs for the spread with the same Brownian Motion, with only the initial values being different.
 	
-	
-	
+		
 	\pagebreak
 	\section{Conclusion}\label{sec:conclusion}
-	In conclusion, it can be said that default forward rate models make a significant contribution to the modeling and analysis of defaultable bond and loan behaviour. The implementation of the model in Java provides a solid basis for the simulation and valuation of financial products such as loans. However, despite the performance achieved, there is still room for improvement, especially in terms of time performance.\\
+	In conclusion, it can be said that default forward rate models make a significant contribution to the modeling and analysis of defaultable bond and loan behavior. The implementation of the model in Java provides a solid basis for the simulation and valuation of financial products such as loans. However, despite the performance achieved, there is still room for improvement, especially in terms of time performance.\\
 	Investigating a potential implementation of the model in C++ could provide promising results, as this language often offers higher speed for computationally intensive tasks. Furthermore, evaluating the use of an implementation of \texttt{RandomvariableFactory} that runs calculations on the GPU is a promising way to improve computational speed. Such implementations already exist, however were not used in our analysis.\\
 	The defaultable LIBOR model has several notable strengths that underscore its relevance and applicability in the financial world. One of its outstanding features is its ability to combine default risk and interest rates into a single model, allowing for a consistent analysis of products that are naturally bound to both values, such as bonds. This integration allows financial players to develop a more comprehensive understanding of market conditions and risk factors.\\
 	In addition, there is a need for further research, particularly in the area of generating an appropriate free parameter matrix for the given covariance model. A solid structure based on fewer parameters is crucial for an effective calibration of the model and enables a precise adjustment to market conditions. This aspect underlines the importance of continuous research efforts to continuously improve the model and ensure its adaptability to changing market conditions.\\
