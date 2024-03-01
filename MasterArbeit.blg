@@ -1,0 +1,35 @@
+This is 8-bit Big BibTeX version 0.99d-x4.00 (TeX Live 2023)
+Implementation:  Microsoft(R) C/C++ for Win32
+Release version: 4.00 (22 may 2022)
+
+The 8-bit codepage and sorting file: 88591lat.csf
+The top-level auxiliary file: MasterArbeit.aux
+Case mismatch error between cite keys FriesDLMM and friesDLMM
+---line 71 of file MasterArbeit.aux
+ : \citation{FriesDLMM
+ :                    }
+I'm skipping whatever remains of this command
+The style file: acm.bst
+Reallocated glb_str_ptr (elt_size=4) to 10 items from 0.
+Reallocated global_strs (elt_size=200001) to 10 items from 0.
+Reallocated glb_str_end (elt_size=4) to 10 items from 0.
+Database file #1: Bibliographie.bib
+Warning--entry type for "friesDLMM" isn't style-file defined
+--line 9 of file Bibliographie.bib
+Warning--entry type for "finmathWebsite" isn't style-file defined
+--line 20 of file Bibliographie.bib
+Warning--entry type for "corpFinInst" isn't style-file defined
+--line 64 of file Bibliographie.bib
+Warning--entry type for "finKnowledgeStudy" isn't style-file defined
+--line 74 of file Bibliographie.bib
+Warning--entry type for "myJavaImplementation" isn't style-file defined
+--line 86 of file Bibliographie.bib
+
+Here's how much of BibTeX's memory you used:
+ Cites:                10 out of 750
+ Fields:              104 out of 5000
+ Hash table:       199842 out of 200000
+ Strings:             590 out of 200000
+ Free string pool:   5665 out of 65000
+ Wizard functions:   2253 out of 3000
+(There was 1 error message)

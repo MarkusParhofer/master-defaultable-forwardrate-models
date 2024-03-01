@@ -1,0 +1,142 @@
+\documentclass[12pt]{article}
+\usepackage[a4paper, width=6.3in, left=1.3in, right=1.3in, height=9.2in, top=1.1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsfonts,amsmath,amssymb,amsthm}
+\usepackage[htt]{hyphenat}
+\usepackage{fancyhdr}
+\usepackage[nottoc,notlot,notlof]{tocbibind}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage[table]{xcolor}
+\fancyfoot[R]{\thepage}
+\usepackage{ctable}
+\usepackage{color} %red, green, blue, yellow, cyan, magenta, black, white
+\usepackage[title, titletoc]{appendix}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage[noabbrev]{cleveref}
+\usepackage{subfig}
+
+\renewcommand{\thesubfigure}{Figure \arabic{subfigure}}
+\captionsetup[subfigure]{labelformat=simple, labelsep=colon}
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+\definecolor{mygreen}{RGB}{28,172,0} % color values Red, Green, Blue
+\definecolor{mydarkgreen}{RGB}{28,132,0} 
+\definecolor{mylilas}{RGB}{170,55,241}
+\definecolor{mygrey}{RGB}{123,123,123}
+\definecolor{myorange}{RGB}{230,80,80}
+\definecolor{codebackground}{RGB}{230,230,230}
+\definecolor{mydarkblue}{RGB}{0,102,153}
+
+
+\newcommand{\mbeq}{\overset{!}{=}}
+
+% Paths to java files. Note these might give errors when working on a different computer
+\newcommand{\finmathlib}{C:/Users/marku/IdeaProjects/finmath-lib/src/main/java/net/finmath}
+\newcommand{\libMC}{\finmathlib/montecarlo}
+\newcommand{\codepath}{C:/Users/marku/IdeaProjects/master-thesis-default-forward-rate-models/src}
+\newcommand{\codepathmodels}{\codepath/main/java/info/quantlab/masterthesis}
+\newcommand{\codedlmm}[1]{\codepathmodels/defaultablelibormodels/#1}
+\newcommand{\codecovdlmm}[1]{\codepathmodels/defaultablecovariancemodels/#1}
+\newcommand{\codeprocess}[1]{\codepathmodels/process/#1}
+
+\newcommand{\fig}[1]{figures/#1}
+
+\newcommand{\einsch}{\,\rule[-5pt]{0.4pt}{15pt}\,{}}
+%\newcommand{\EQB}[1]{\mathbb{E}^{\mathbb{Q}^B}\left[#1\right]}
+\parindent 0ex
+\renewcommand{\baselinestretch}{1.5}
+\newtheorem{assumption}{Assumption}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+
+\crefname{assumption}{assumption}{assumptions}
+\crefname{notation}{notation}{notations}
+\crefname{remark}{remark}{remarks}
+
+
+\renewcommand{\labelenumi}{\em{(\roman{enumi})}}
+\renewcommand{\labelenumii}{\em{(\alph{enumii})}}
+\captionsetup[figure]{skip=0pt}
+
+
+\lstset{
+	inputencoding		=utf8,
+	postbreak			=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+	language			=Java,
+	basicstyle			=\ttfamily\scriptsize,
+	backgroundcolor		=\color{codebackground},
+	tabsize				=3,
+	captionpos			=b,
+	morekeywords		={java2tikz},
+	keywordstyle		=\color{orange},
+	morekeywords		=[2]{1},
+	keywordstyle		=[2]{\color{black}},
+	identifierstyle		=\color{black},
+	stringstyle			=\color{mygreen},
+	commentstyle		=\color{mydarkgreen},
+	showstringspaces	=false,
+	showspaces			=false,
+	numbers				=left,
+	numberstyle			=\tiny\color{black},
+	numbersep			=5pt,
+	breaklines,
+	breakatwhitespace,
+	emph=[1]{RandomVariable,ProcessModel,MonteCarloProcess,LIBORMarketModel,DefaultableLIBORMarketModel,SimulationModel,CalculationException},emphstyle=[1]\color{mydarkblue}, %some words to emphasise
+	emph=[2]{SPREADS}, emphstyle=[2]\color{mylilas},    
+}
+
+
+\begin{document}
+We use $x\cdot y$ as the dot product of two vectors $x$ and $y$.\\
+
+We show the existence for the SDEs of the spread in the log-normal state space, meaning we will show the three conditions for the SDE of $s_t = log(S_t)$:
+\begin{align*}
+	ds^i_t = \left(\tilde{\mu}_i\left(t,\exp(s^i_t)\right) -  \frac{\sum_{k=1}^{m^d}\tilde{\lambda}^k_i\left(t,\exp(s^i_t)\right)^2}{2}\right)dt + \tilde{\lambda}_i\left(t,\exp(s_t)\right) \cdot dW_t
+\end{align*}
+Let $L(t) := \left(L_0(t), ..., L_{N-1}(t)\right)$ and $S(t) := \left(S_0(t), ..., S_{N-1}(t)\right)$.\\
+We assume, that the factor loadings of the non-defaultable model $\lambda^{i k}_t$ are chosen such that they are Lipschitz and have sub-linear growth and prevent $L_i(t) < c_i$, where $c_i$ is a constant with $c_i\Delta T_i > -1$ for all $i \in \{0, ..., N-1\}$. \\
+We therefore define the box $A = \prod_{i=0}^{N-1}\left[c_i, \infty\right[$. According to our assumptions, it holds that $L(t)\in A$ for all $t\in \left[0,\tilde{T}\right]$.\\
+Furthermore, we assume that the free parameters $f^{i,k}(t,L(t), S(t)) := f^{i,k}_t$ are continuous and bounded by $K_1 > 0$ (i.e. $|f^{ik}(t,x,s)| \le K$) on $\left[0,\tilde{T}\right]\times A \times \mathbb{R}_{>0}^N$ (this yields Lipschitz-continuity and sub-linear growth).
+\\
+We derive $\tilde{\lambda}^k_i$:
+\begin{align*}
+	\tilde{\lambda}^k_i\left(t,x, s\right) = 
+	\left\{
+	\begin{aligned}
+		&\frac{\lambda^{i k}_t \Delta T_i}{1 + x_i\Delta T_i} \quad &\text{for } k \in \{1,...,m\}\\
+		&f^{i k}(t,x,s) \quad &\text{for } k \in \{m+1,...,m^d\}
+	\end{aligned}
+	\right.
+\end{align*}
+note that we immediately get the desired conditions for $\tilde{\lambda}^k_i$ for $(t,x,s) \in \left[0,\tilde{T}\right]\times A\times\mathbb{R}_{>0}^{N}$, which is sufficient, because $x$ are given in $A$ and are not influenced by the SDEs of $s_t$.\\
+
+Deriving $\tilde{\mu}_i$ yields:
+\begin{align*}
+	\tilde{\mu}_i\left(t,x, s\right) = \underbrace{\frac{\mu^i_t \Delta T_i }{1 + x_i\Delta T_i}}_{\text{(A)}} + \underbrace{\sum_{k=m+1}^{m^d}f^{i k}(t,x,s) \sum_{j=m(t)+1}^{i}\frac{s_j f^{j k}(t,x,s)\Delta T_j}{1 + x_j\Delta T_j + s_j \Delta T_j}}_{\text{(B)}}
+\end{align*}
+By the same arguments as before (A) is Lipschitz and has sub-linear growth. (B) is bounded by a constant, because
+\begin{align*}
+	\text{(B)} \le \sum_{k=m+1}^{m^d}K_1 \sum_{j=m(t)+1}^{i}\frac{s_j K_1\Delta T_j}{1 + c_j\Delta T_j + s_j \Delta T_j} \le m^diK_1 = K_2.\tag{C}
+\end{align*}
+We get
+\begin{align*}
+	\tilde{\mu}^i_t - \frac{1}{2}\tilde{\lambda}_i\cdot \tilde{\lambda}_i &= \frac{\mu^i_t \Delta T_i }{1 + x_i\Delta T_i} - \frac{\lambda^{i}_t \cdot\lambda^{i}_t (\Delta T_i)^2}{2(1 + x_i\Delta T_i)^2}\tag{D}\\
+	&+ \sum_{j=m(t)+1}^{i} \frac{f^{i}\cdot f^{j}s_j\Delta T_j}{1 + x_j \Delta T_j + s_j \Delta T_j} - \frac{f^i \cdot f^i}{2}\tag{E}
+\end{align*}
+Because (E) is bounded by $(K_2^2 + \frac{K_1^2}{2})$ we only need to show that (D) is also Lipschitz and has sub linear growth:
+\begin{align*}
+	\frac{\mu^i_t \Delta T_i }{1 + x_i\Delta T_i} - \frac{\lambda^{i}_t \cdot\lambda^{i}_t (\Delta T_i)^2}{2(1 + x_i\Delta T_i)^2} = \frac{\Delta T_i }{1 + x_i\Delta T_i}\sum_{j=m(t)+1}^{i}\frac{\lambda^{i}_t \cdot\lambda^{j}_t \Delta T_j}{1 + x_j\Delta T_j} - \frac{\lambda^{i}_t \cdot\lambda^{i}_t (\Delta T_i)^2}{2(1 + x_i\Delta T_i)^2}\\
+	= \frac{\Delta T_i }{1 + x_i\Delta T_i}\sum_{j=m(t)+1}^{i - 1}\frac{\lambda^{i}_t \cdot\lambda^{j}_t \Delta T_j}{1 + x_j\Delta T_j} + \frac{\lambda^{i}_t \cdot\lambda^{i}_t (\Delta T_i)^2}{2(1 + x_i\Delta T_i)^2}
+\end{align*}
+\end{document}

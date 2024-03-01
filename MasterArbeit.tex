@@ -1184,7 +1184,7 @@
 		and (B) in the same way as in the proof of \cref{lm:pricingdefaultableclaims}.
 	\end{proof}
 	
-	\subsubsection{Funding considerations}
+	\subsubsection{Funding considerations}\label{sec:fundingconsiderations}
 	In this subsection we will only discuss products, that can not be traded after the initial time. This means we have to separate the terms \emph{pricing} and \emph{valuation}. While the first term corresponds to determining the cost to again set up a product like this, the latter corresponds to determining the worth at the time, for a specific party. We will see, that the difference is the numeraire.\\
 	We have previously established that a party facing default risk can offer self-distributed zero-coupon bonds at a price of
 	\begin{align*}
@@ -1207,11 +1207,11 @@
 	\begin{align*}
 		\mathbb{E}^{\mathbb{Q}^B}\left[ \frac{X^O + X^S}{B^{d^c}(T_i)} \right]
 	\end{align*}
-	We see that a whole term is dropped: $X^D$ which is dependent on the default of $c$. Reasoning with funding costs: it is unnecessary to replicate cash flows that go beyond one owns default. Reasoning with the analogy above: $X^D$ is only relevant in the case where $c$ defaults, hence $c$ can neither benefit nor incur liabilities from $X^D$.\\
-	\color{red}Add Content!!!\color{black}\\%TODO: Ausführen & Verbessern
+	We see that an entire term is omitted: $X^D$, which is dependent on the default of $c$. We can also justify this with the analogy above: $X^D$ is only relevant in the case in which $c$ defaults, so $c$ can neither benefit from $X^D$ nor incur liabilities.\\
+	Next we will see how we can also account for some behavioural aspects in pricing.
 	
 	\subsubsection{Introducing Behavioral Aspects}
-	Let us look at a specific product category: American loan options. This is the option to buy or sell a loan at a fixed nominal, even if the market conditions have changed. We assume an over the counter (OTC) product, meaning trading the product to other counter parties is not possible. The payoff of such a product if exercised at $t$ would be (in this case we can buy the loan):\\
+	Let us look at a specific product category: American loan options. This is the option to buy or sell a loan at a fixed nominal, even if the market conditions have changed. We assume an over the counter (OTC) product, meaning trading the product to other counter parties is not possible. The payoff of such a product if exercised at $t$ would be (in this case we can buy the loan):
 	\begin{align*}
 		\Psi(t) = \left(\mathcal{N} - \Pi_t\right)^+,
 	\end{align*}
@@ -1228,57 +1228,11 @@
 	\end{remark}
 	
 	How do we inject such a behavioral aspect in our valuation formula? We could construct a stochastic model which simulates the exercising of a market participant. However, we already omitted modeling the default time for the simple reason of computational cost and modeling behavior would require at least the same amount of computing power.\\
-	Hence we try a simpler approach: we apply a so called deterministic shadow barrier $\tilde{S}_t$ (for flexibility we leave it dependent on time), which leads to a different cash flow:
-	
+	Hence we try a simpler approach: we apply a so called deterministic shadow barrier $\tilde{S}_t$ (for flexibility we leave it dependent on time), which leads to a different cash flow:	
 	\begin{align*}
 		\Psi(t) = \left(\mathcal{N} - \Pi_t - \tilde{S}_t\right)^+,
 	\end{align*}
-	
-	Generally one can see $\tilde{S}_t$ as the profit it takes, until the debtor would be motivated enough to exercise the option.
-	 \color{red}Elaborate!!!\color{black}. 
-	%TODO: Elaborate
-	
-	
-	% -------- Pricing of credits with optionalities
-	
-	
-	\pagebreak
-	
-	
-	With these formulas we now have an expression for claim prices in terms of an expectation over model primitives. We can therefore move to more specific products now.
-	
-	
-	\subsection{Introducing Behavioral Aspects}
-	Let us spin our model a bit further. Until now we have assumed that all market participants have a perfect overview of the market (captured by the filtration $\mathbb{G}$). Furthermore we assumed that debtors always act in an optimized manner (exercise the option if it has a positive value). While big companies may have implemented ways such that these are feasible assumptions, this is far from realistic for small market participants such as private people.\\
-	A study from 2021 from Germany asked people how to best spend €1,000 given two options: making a special repayment of an existing loan of theirs, which charges 5 \% interest or invest in a fixed coupon bond with 3 \% interest and maturity of 3 years \cite{finKnowledgeStudy}.
-	The results showed that only 60 \% of the participants would make the special repayment. 15 \% stated that they did not know the answer, 13 \% thought both options were equally good and 12 \% would rather buy the coupon bond \cite{finKnowledgeStudy}.\\
-	% Not only knowing when to cancel, but also motivation is something to take into account when dealing with private debtors: 
-	This shows that the assumption of optimal exercising for cancellable loans is an idealization and hence for fair pricing models we need to adjust for this deficit.
-	
-	\begin{remark}
-		Note that in general (non-defaultable) option pricing an adjustment would generate an arbitrage possibility, because small market participants could buy cheap options and resell them to big companies at a higher price, without any risk.\\
-		However, a cancellable loan is not transferable (the defaultable LIBOR models are calibrated to the individual client), meaning it also can not be resold. This closes the arbitrage possibility.
-	\end{remark}
-	
-	How do we inject such a behavioral aspect in our valuation formula? We could construct a stochastic model which simulates the exercising of a market participant. However, we already omitted modeling the default time for the simple reason of computational cost and modeling behavior would require at least the same amount of computing power.\\
-	Hence we try a simpler approach: we apply a so called deterministic shadow barrier $\tilde{S}_t$, for each $t \in \left[T_k,T_N\right]$, which leads to a different cash flow:
-	
-	\begin{center}
-		\begin{tabular}{cl}
-			$\mathcal{N}$ & at $T_0$, \\
-			$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., N\}$, \\
-			$\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu - \tilde{S}_\nu\right)\mathbf{1}_{\{\tau > \nu\}}$
-			& at $\nu$,
-		\end{tabular}
-	\end{center}
-	
-	Generally one can see $\tilde{S}_t$ as the profit it takes, until the debtor would be motivated enough to exercise the option. The price calculation is equivalent to before, only we exchange $\tilde{R}_\nu$ for $\tilde{R}_\nu + \tilde{S}_\nu$:
-	\begin{align*}
-		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu - \tilde{S}_\nu\right)}{B^d(\nu)}\right].
-	\end{align*}
-	% TODO: Add a plot of a European cancellable loan, an American one and the Shadow barrier equivalents.
-	%TODO: Warn about relending the money!
-	
+	Generally one can see $\tilde{S}_t$ as the profit it takes, until the debtor would be motivated enough to exercise the option. As an example consider a private person entering a cancellable loan (see \cref{sec:cancellableLoans}). They would not cancel the loan, the moment that they would gain a profit, because that profit would be too small to be a real incentive. Instead, they would wait until the profit is larger (or it has again dropped in which case they would not exercise).
 	
 	
 	
@@ -1535,34 +1489,88 @@
 	\section{Numerical Analysis}
 	% Positivity of the Spreads
 	% Valuation of basic products
+	\color{red}
+	In this section we will analyze the numerical results that our model yields. It is divided into three parts:
+	In the first subsection we will inspect the performance, so time the model, test the numerical valuation against approximation formulas for two specific products and we test the positivity of the spread in three different cases.
+	The second subsection is dedicated to a qualitative analysis of some specific product valuations, which we found to be interesting. Each product here will be first described theoretically and then we analyze what the implementation yields in different cases.
+	In the third part we show various numerical results, that are interesting.
+	\color{black}
 	
-	\subsection{General Loan Pricing}
-	Let us first take a look what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time."\cite{corpFinInst}.\\
+	\subsection{Performance of the model}
+	\subsubsection{Timing}
+	Timing is performed by extending the class "Time", which only has two relevant (static) methods: \emph{tic()} which starts the timer, and \emph{toc()} which yields the result (in Nanoseconds). Note that the calculation of the paths is performed using lazy initialization, which means, the calculation is only performed, if we actually \emph{use} the results. 
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figures/ComparisonOfCalcTime}
+		\caption[Comparison of the calculation time for a 20-tenor LIBOR model]{Comparison of the calculation time for a 20-tenor LIBOR model}
+		\label{fig:comparisonofcalctime}
+	\end{figure}
+	\Cref{fig:comparisonofcalctime} shows that the calculation time of the defaultable model is not only double of the calculation time of the non-defaultable model, as one could expect. It rather lies between 5-7 times as much computational time. Note that while the computation time itself depends heavily on the system used (we used a Windows System with 11 cores and 16 GB RAM), the relative position of the two curves shown, should be roughly equal.
+	The reason for this result might lie in the programming design: because the simulating process expects every SDE value to be in an array, a heavily amount of time is spent copying data from one array to another. Another might lie in the duplication of computing the non-defaultable values, such as drift and factor loadings (which are needed for the calculation of the drift of the spread/defaultable LIBORs).
+	%TODO: At the conclusion, increase performance by looking at RV CUDA extension and OpenCL extension.
+	
+	\subsubsection{Numerical error}
+	We can estimate the numerical error, by looking at the defaultable bond prices at time 0. These are given in analytical form, by deriving them from the initial value of the defaultable LIBOR rate: 
+	\begin{align*}
+		P^d(0;T) = \frac{1}{1+L^d_{m(T)}(0)\left(T - T_{m(T)}\right)}\prod_{j=0}^{m(T)}\frac{1}{1+L^d_j(0)\Delta T_j}
+	\end{align*}
+	but we can also price them numerically with Monte Carlo methods:
+	\begin{align*}
+		\hat{P}^d(0;T) = \hat{\mathbb{E}}^{\mathbb{Q}^B}\left[\frac{1}{B(T)}Q(T)\right]
+	\end{align*}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figures/Today/BondPriceError_rel}
+		\caption{Relative error of defaultable bond prices calculated by a defaultable LIBOR model by a functional Euler-Maruyama scheme with time step $\Delta t=0.02$ and $25000$ sample paths.}
+		\label{fig:bondpriceerrorrel}
+	\end{figure}
+	\cref{fig:bondpriceerrorrel} shows how this error evolves over time.
+	\color{red}Extend!!\color{black}
+	
+	Another possibility to measure the numerical error, is to directly use the LIBOR rates. From the proof of \cref{theo:defDriftTheo} we know that $L^d_i(t)P^d(t;T_{i+1})$ discounted is a martingale. Hence we know, that its expectation is also its starting value:
+	\begin{align*}
+		L^d_i(0)P^d(0;T_{i+1}) = \mathbb{E}^{\mathbb{Q}^B}\left[\frac{L^d_i\left(T_{i}\right)}{B(T_{i+1})}\mathbf{1}_{\{\tau > T_{i+1}\}}\right]
+	\end{align*}
+	Using Monte Carlo on the same product yields the approximation:
+	\begin{align*}
+		L^d_i(0)P^d(0;T_{i+1}) \approx \mathbb{E}^{\mathbb{Q}^B}\left[\frac{L^d_i\left(T_{i}\right)}{B(T_{i+1})}\mathbf{1}_{\{\tau > T_{i+1}\}}\right]
+	\end{align*}
+	The relative error is shown in \cref{fig:liborerrorrel}.
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figures/Today/LIBORError_rel}
+		\caption{Relative error for the approximation of LIBOR rates using a functional Euler-Maruyama schemewith time step $\Delta t=0.02$ and $25000$ sample paths}
+		\label{fig:liborerrorrel}
+	\end{figure}
+	\color{red}Extend!!\color{black}
+	
+	
+	\subsubsection{Positivity of the model}
+	While we have proven that the model in theory does not allow for negative spreads, we test this numerically. This can also be seen as a test for the convergence of the Euler-Maruyama scheme. Note that the functional Euler-Maruyama scheme, uses an exponential and hence eliminates all risks of returning negative paths. Therefore one can look at the minimal path for each spread simulated as odone in \cref{tab:posResults}.
+	\begin{table}[h!]
+		\caption[Positivity Results]{Minimum value of all simulated paths for the spread with $\Delta f$ being the range of the (constant, randomly generated) free parameters centered around 0}
+		\label{tab:posResults}
+		\centering
+		{\rowcolors{2}{black!7}{white!100}
+			\begin{tabular}{ C{1.5cm} p{0.05cm} C{2.0cm} p{0.05cm} C{2.0cm} p{0.05cm} C{2.0cm} p{0.05cm} C{2.0cm}}
+				\specialrule{0.1em}{0em}{0em}
+				Time Step $\Delta t$ 	& & Euler Scheme $\Delta f=1.0$ & & Euler Functional $\Delta f=1.0$  & & Euler Scheme $\Delta f=0.5$ & & Euler Functional $\Delta f=0.5$  \\ \specialrule{0.1em}{0em}{0em}
+				$ 0.5$ 		& & -1.695E-01 & & 5.666E-06 & & -4.227E-03 & & 2.882E-04\\ 
+				$ 0.25$ 	& & -7.206E-02 & & 3.476E-06 & &  8.061E-05 & & 2.359E-04\\
+				$ 0.1$ 		& & -7.583E-03 & & 3.125E-06 & &  1.741E-04 & & 2.161E-04\\
+				$ 0.05$ 	& & -1.168E-04 & & 3.461E-06 & &  1.735E-04 & & 2.259E-04\\
+				$ 0.025$ 	& &  2.180E-06 & & 3.225E-06 & &  2.189E-04 & & 2.478E-04\\
+				$ 0.01$ 	& &  2.814E-06 & & 2.965E-06 & &  2.084E-04 & & 2.152E-04\\ \specialrule{0.1em}{0em}{0em}
+		\end{tabular}}
+	\end{table}
+	There we indeed see that the normal Euler-Maruyama scheme generates negative values, as well for the free parameters with a large range as for those with a smaller range. While for a smaller $\Delta f$ (i.e.\ the range of the free parameters) the scheme seems to be stable from $\Delta t=0.1$ downwards, the larger values of $\Delta f$ seem to pose a problem for the Euler scheme even when choosing rather small time steps.
+	
+	
+	\subsection{Numerical Results on Loan Valuation}
+	In this section we look at some concrete valuation examples. Since our model has its main strength in capturing default probability directly within the discount curve it has a native application in loan pricing.\\
+	Therefore let us first take a look at what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time."\cite{corpFinInst}.\\
 	Hence a loan is nothing else than a fixed coupon bond, where the nominal $\mathcal{N}$ represents the debt and the coupons $c_i$ represent the interest.
-	In the non defaultable case, "pricing" the loan is therefore nothing else than setting the coupons such that (we assume the same coupon tenor as LIBOR tenor):
-	\begin{align}\label{eq:pricingnondefaultableloans}
-		\mathcal{N} \mbeq \sum_{i=1}^{N}c_i P(0;T_i) + \mathcal{N}P(0;T_N)
-	\end{align}
-	\begin{remark}\label{rem:nativecouponsforloans}
-		Setting 
-		\begin{align*}
-			c_i = \mathcal{N}\Delta T_{i-1}L_{i-1}(0)
-		\end{align*}
-		satisfies \cref{eq:pricingnondefaultableloans} and therefore yields a valid loan.
-	\end{remark}
-	\begin{proof}
-		We have 
-		\begin{align*}
-			\Delta T_{i}L_{i}(0) = \frac{P(0;T_{i})}{P(0;T_{i+1})} - 1
-		\end{align*}
-		Inserting in \cref{eq:pricingnondefaultableloans} yields (note $P(0;T_0) = 1$):
-		\begin{align*}
-			\sum_{i=1}^{N}\mathcal{N}\Delta T_{i-1}L_{i-1}(0) P(0;T_i) + \mathcal{N}P(0;T_N) \\
-			=\sum_{i=1}^{N}\mathcal{N}(\frac{P(0;T_{i-1})}{P(0;T_{i})} - 1) P(0;T_i) + \mathcal{N}P(0;T_N)\\
-			= \sum_{i=1}^{N}\mathcal{N}(P(0;T_{i-1}) - P(0;T_{i})) + \mathcal{N}P(0;T_N) = \mathcal{N}
-		\end{align*}
-	\end{proof}
-	Let us look at the defaultable case:
+	We see that in the defaultable case the price is analogous to  the non defaultable case.
 	\begin{lemma}
 		The price of a coupon paying bond which has defaultable cashflows is:
 		\begin{align*}
@@ -1578,17 +1586,9 @@
 		\end{align*}
 		Replacing $c$ with $c_i$, $\mathcal{N}$ repectively, and taking the sum yields the statement.
 	\end{proof}
-	A loan, where the debtor is defaultable hence must satisfy:
-	\begin{align*}
-		\mathcal{N} \mbeq \sum_{i=1}^{N}c_i P^{d,*}(0;T_i) + \mathcal{N}P^{d,*}(0;T_N)
-	\end{align*}
-	We again have a natural solution to this equation. With the same arguments as for \cref{rem:nativecouponsforloans} we find that setting
-	\begin{align*}
-		c_i = \mathcal{N}\Delta T_{i-1}L^d_{i-1}(0)
-	\end{align*}
-	yields a valid loan.\\
-	Note that for a simple loan it does not matter if the creditor is defaultable, because they have no debt w.r.t. the loan after $t=0$ and in case of their default the pending claim would still be collected.\\
-	Let us take a look at a future on defaultable loans, or rather a future on a defaultable coupon paying bond. 
+	Note that for a simple loan it does not matter if the creditor is defaultable, because they have no debt w.r.t. the loan after $t=0$ and in case of their default the pending claim would still be collected.
+	\subsubsection{Loan Futures}
+	We look at a future on defaultable loans, or rather a future on a defaultable coupon paying bond. 
 	Remember that in contrast to an option a future brings the obligation to enter into an agreement.
 	Hence from the debtors point of view we have a payoff function
 	\begin{align}\label{eq:loanForward}
@@ -1599,103 +1599,61 @@
 	\begin{lemma}\label{lm:simpledefcouponbondforward}
 		A $T_s$ claim with a payoff function as in \cref{eq:loanForward} has the price
 		\begin{align*}
-			\Pi^\Psi &= \mathcal{N}P^d(0;T_s) - \sum_{i=s+1}^{N}c_iP^{d}(0; T_i)\\
+			\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\frac{\mathcal{N}}{B^d(T_s)} - \sum_{i=s+1}^{N}\frac{c_i}{B^{d}(T_i)}\right]\\
 			&= \mathcal{N}P^{d,*}(0;T_s) - \sum_{i=s+1}^{N}c_iP^{d,*}(0; T_i)
 		\end{align*}
 		at $t=0$.
 	\end{lemma}
 	\begin{proof}
-		We have:
-		\begin{align*}
-			\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau > T_s\}}}{B(T_s)}\right]\\
-			&=\mathcal{N}\mathbb{E}^{\mathbb{Q}}\left[\dfrac{P^d(T_s;T_s)}{B(T_s)}\right] - \sum_{i=s+1}^{N} c_i \mathbb{E}^{\mathbb{Q}}\left[\dfrac{P^d(T_s;T_i)}{B(T_s)}\right]\\
-			&= \mathcal{N}P^d(0;T_s) - \sum_{i=s+1}^{N} c_i P^d(0;T_i)
-		\end{align*}
+		Follows directly form \cref{sec:pricing}
 	\end{proof}
-	To gain an initial price of zero one can set the coupons as done before:
-	\begin{align*}
-		c_i &= \mathcal{N}\Delta T_{i-1}L^d_{i-1}(0) \quad\text{for } i\in\{1,...,N-1\}, \\ 
-		c_N &= \mathcal{N}\left(1 + \Delta T_{i-1}L^d_{i-1}(0)\right).
-	\end{align*}
-	Let us rewrite the same price as discussed in \cref{lm:simpledefcouponbondforward} for a numerical valuation instead of an analytic one:
-	\begin{align*}
-		\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)}{B(T_s)}Q(T_s)\right].
-	\end{align*}
-	Here one can see that the forward has two main stochastic cost drivers: 
-	\begin{itemize}
-		\item The default probability \emph{past} maturity time, which has a positive relation to the price: if the default probability rises, $P^{d,*}(T_s;T_i)$ decreases, which drives the price up.
-		\item The default probability \emph{before} maturity time, which has a negative relation to the price intensity: if the default probability rises, $Q(T_s)$ decreases, which lowers the absolute value of the price (as $0 < Q(T_s) < 1$).
-	\end{itemize}
-	In the past example default of the creditor did not matter, but in this case actually the future contract depends on their survival. Hence creditor default possibility does indeed change the payoff
+	For a loan future we can also account for the default probability of the creditor. For this we adjust the payoff
 	\begin{align}\label{eq:loanForwardCreditorDefaultable}
-		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau^d > T_s\}}\mathbf{1}_{\{\tau^c > T_s\}}.
+		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau^d > T_s\}}\mathbf{1}_{\{\tau^c > T_s\}}
 	\end{align}
-	and hence also the price of such a product:
-	\begin{lemma}
-		Let \cref{as:counterpartiesareindependent} hold. The price for a product with a payoff as in \cref{eq:loanForwardCreditorDefaultable} at $t=0$ is:
-		\begin{align*}
-			\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)}{B(T_s)}Q^d(T_s)Q^c(T_s)\right]\\
-			&= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)}{B^{d^d}(T_s)}Q^c(T_s)\right]
-		\end{align*}
-	\end{lemma}
-	\begin{proof}
-		Follows directly from \cref{lem:creditordefPrice}.
-	\end{proof}
-	
-	\begin{comment}
-		Until now we have not considered \cref{rem:defaultablepartystillcollects}, which states that a party that is in default still collects its claims, not however pays its liabilities. Let us adjust the cash flows in \cref{eq:loanForward,eq:loanForwardCreditorDefaultable} to account for this. Denoting 
-		\begin{align*}
-			\Psi(T_s) := \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)
-		\end{align*}
-		we get
-		\begin{align}
-			\Psi_1(T_s) &= \Psi\left(T_s\right)^+ - \Psi\left(T_s\right)^-\mathbf{1}_{\{\tau^d > T_s\}}\\
-			\Psi_2(T_s) &= \Psi\left(T_s\right)^+\mathbf{1}_{\{\tau^c > T_s\}} - \Psi\left(T_s\right)^-\mathbf{1}_{\{\tau^d > T_s\}}.
-		\end{align}
-		
-	\end{comment}
-	
-	\begin{figure}[h]
+	and hence also the price:
+	\begin{align}\label{eq:pricecbforwardbothdef}
+		\Pi^\Psi &= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)}{B(T_s)}Q^d(T_s)Q^c(T_s)\right]\\
+		&= \mathbb{E}^{\mathbb{Q}^B}\left[\frac{\mathcal{N}Q^c(T_s)}{B^{d^d}(T_s)} - \sum_{i=s+1}^{N}c_i\frac{Q^c(T_s)}{B^{d^d}(T_i)}\right]
+	\end{align}
+	Note that we applied \cref{rem:defaultablepartystillcollects}, which suggests, a creditor in default still collects their claims, while not pay their liabilities (the default risk of the creditor only matters until $T_s$).\\
+	\Cref{eq:pricecbforwardbothdef} also gives us the valuation from the perspective of the debtor as discussed in \cref{sec:fundingconsiderations}. For the valuation from the creditors perspective we need a slightly different approach, as we also need to discount by the creditors funding curve during the loan itself:
+	\begin{align*}
+		\mathbb{E}^{\mathbb{Q}^B}\left[\frac{\mathcal{N}Q^c(T_s)}{B^{d^d}(T_s)}\right] - \sum_{i=s+1}^{N}c_i\mathbb{E}^{\mathbb{Q}^B}\left[\frac{Q^c(T_i)}{B^{d^d}(T_i)}\right]
+	\end{align*}
+	Let us use our model to value the derived products from the different perspectives. In \cref{fig:pricingcouponbondforwarddefversionbycoupons} we see the prices of the product if both parties involved are defaultable in perspective to only the debtor being defaultable.\\
+	\color{red}Elaborate!!!\color{black}
+	\begin{figure}[h!]
 		\centering
-		\includegraphics[width=0.7\linewidth]{\fig{ValuationCouponBondForwards}}
-		\caption[Valuation of Forwards on Coupon Bonds]{Valuation of Forwards on Coupon Bonds}
-		\label{fig:valuationcouponbondforwards}
+		\includegraphics[width=0.7\linewidth]{figures/Today/PricingCouponBondForward_DefVersion_byCoupons}
+		\caption{Price of a coupon bond forward if both involved parties are defaultable and only the debtor being defaultable plotted against the coupon rates.}
+		\label{fig:pricingcouponbondforwarddefversionbycoupons}
 	\end{figure}
-	It is easy to see that the price of a coupon bond forward, which considers both parties to be defaultable is less intense (i.e. it decreases the absolute value of the price more) than that, which only considers the debtor to be defaultable. In \cref{fig:valuationcouponbondforwards} one can also see that the difference increases the further maturity is away.
+	The figure visualizes that the forward coupon bond has two main stochastic cost drivers: 
+	\begin{itemize}
+		\item The default probability \emph{past} maturity time, which has a positive relation to the price: if the default probability rises, $P^{d,*}(T_s;T_i)$ decreases, which drives the price up, visualized by the case of a defaultable debtor.
+		\item The default probability \emph{before} maturity time, which has a negative relation to the price intensity: if the default probability rises, $Q(T_s)$ decreases, which lowers the absolute value of the price (as $0 < Q(T_s) < 1$). This is visualized by the case of the creditor being defaultable, as their default probability is only accounted until $T_s$.
+	\end{itemize}
+	While for presentation purposes the creditor used for the valuation has a higher default probability than the debtor (larger $\Delta f$ and larger initial spread), the effect -- though strongly reduced -- has the same tendency: \cref{fig:valuationcouponbondforwardbycouponsrightcred} shows the same valuations only with the roles swapped. We see, that also here accounting for the default probability of the creditor flattens the price curve, although way less.
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figures/Today/ValuationCouponBondForward_byCoupons_RightCred}
+		\caption{}
+		\label{fig:valuationcouponbondforwardbycouponsrightcred}
+	\end{figure}	
+	A bigger effect can be seen in \cref{fig:valuationcouponbondforwardbycoupons} where we show the effect of the funding considerations as discussed in \cref{sec:fundingconsiderations}. Note that the two curves are almost parallel.
+	\begin{figure}[!h]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figures/Today/ValuationCouponBondForward_byCoupons}
+		\caption{Valuation of a coupon bond forward valued from the creditor's perspective and the debtor's plotted against the coupon rates}
+		\label{fig:valuationcouponbondforwardbycoupons}
+	\end{figure}
+	\\\color{red}Elaborate!!!\color{black}
+		
 	
-	
-	\subsection{Credit Options}
+	\subsubsection{Cancellable Loans}\label{sec:cancellableLoans}
 	In the last subsection we considered pricing loans and loan forwards. Essentially cash flow that is set in stone (with the exception of default). 
-	Now let us consider more intriguing products which bring an optionality with them:
-	We start with a simple put option on a coupon bond (note that we work a lot with coupon bonds as to their equivalence with a loan). 
-	\begin{remark}
-		A put option on a coupon paying bond, with maturity $T_s$ and strike price $\mathcal{N}$ where the debtor/payer is defaultable has the payoff function
-		\begin{align}\label{eq:couponputoption}
-			\Psi(T_s) =\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)^+\mathbf{1}_{\{\tau > T_s\}}
-		\end{align}
-		where $\left(\cdot\right)^+ := \max(0, \cdot)$.
-	\end{remark}
-	We can numerically compute the price.
-	\begin{lemma}
-		A claim with a payoff function as in \cref{eq:couponputoption} has the price:
-		\begin{align*}
-			\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)^+}{B^d(T_s)}\right]
-		\end{align*}
-	\end{lemma}
-	\begin{proof}
-		Directly follows from \cref{lm:pricingdefaultableclaims}.
-	\end{proof}
-	Also this product can be extended to both counter parties being defaultable: the debtor and the creditor.\\
-	The adjusted formulas are
-	\begin{align*}
-		\Psi(T_s) =\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)^+\mathbf{1}_{\{\tau^d > T_s\}}\mathbf{1}_{\{\tau^c > T_s\}}
-	\end{align*}
-	for the payoff and 
-	\begin{align*}
-		\Pi^\Psi =\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d^d,*}(T_s; T_i)\right)^+}{B^{d^d}(T_s)}Q^c(T_s)\right]
-	\end{align*}
-	for pricing. A proof is omitted as it is trivial.\\
-	A more advanced product is a cancellable loan. We start with the case, where one can cancel the loan at a single time point $T_k$ for $k \in \{1, ... N-1\}$.\\
+	Now let us consider more intriguing products which bring an optionality with them: cancellable loans. We start with the case, where one can cancel the loan at a single time point $T_k$ for $k \in \{1, ... N-1\}$.\\
 	Consider the cash flow of such a product from the debtors point of view:
 	We get the nominal $\mathcal{N}$ at the start of the loan. Then we pay coupons each tenor until $T_k$. If we cancel the loan, we have to pay the redemption $\tilde{R}$, otherwise we keep paying coupons until the end of the loan.
 	\begin{figure}[h]
@@ -1709,8 +1667,7 @@
 		\label{fig:cancellableloan}
 	\end{figure}
 	\\To derive a price for this product, we split the cash flow in two parts: a  loan and a put option on a loan, as visualized in \cref{fig:cancellableloan}. 
-	The option is then treated as single cash flow in terms of the price, which leads us to a payoff of (note, we again only consider debtor default):
-	
+	The option is then treated as single cash flow in terms of the price, which leads us to a payoff of:
 	\begin{center}
 		\begin{tabular}{cl}
 			$\mathcal{N}$ & at $T_0$, \\
@@ -1719,61 +1676,17 @@
 			& at $T_k$.
 		\end{tabular}
 	\end{center}
-	Note that if $\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right) > 0$ at $T_k$, the debtor could get a new loan on the nominal $\tilde{R}$ for better conditions then the initial one.\\
+	Note that if $\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right) > 0$ at $T_k$, the debtor could get a new loan on the nominal $\tilde{R}$ for better conditions than the initial one.\\
 	From there it is easy to compute the price:
 	\begin{align}\label{eq:priceofcancellableloan}
-		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]
+		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\left(\sum_{j=k+1}^{N}\frac{c_i }{B^{d}(T_i)} - \frac{\tilde{R}}{B^{d}(T_k)}\right)^+\right]
+	\end{align}
+	Note that neither the option nor the loan contain a cash flow that the creditor has to pay besides the initial payment, which makes the price independent of the creditors default probability. This is due to the fact, that even if the option is exercised it is still the debtor paying the creditor. For valuation from the creditors perspective, however, we still have to account for their funding costs:
+	\begin{align}\label{eq:valueofcancellableloancreditordefault}
+		\mathcal{N} - \mathbb{E}^{\mathbb{Q}^B}\left[\sum_{i=1}^{N}\frac{c_i}{B^{d^c}(T_i)}Q^d(T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\left.\left(\sum_{j=k+1}^{N}\frac{c_i Q^d(T_i)}{B^{d^c}(T_i)} - \frac{\tilde{R}Q^d(T_k)}{B^{d^c}(T_k)}\right)^+ \right| \mathcal{F}_{T_k}\right]
 	\end{align}
 	
-	\begin{remark}
-		One can also construct the cash flows for the cancellable loan from a loan and a call option on a loan:
-		
-		\begin{center}
-			\begin{tabular}{cl}
-				$\mathcal{N}$ & at $T_0$, \\
-				$-c_i\mathbf{1}_{\{\tau > T_i\}}$ 		  & at $T_i$ for $i \in \{1, ..., k\}$, \\
-				$-\tilde{R}\mathbf{1}_{\{\tau > T_k\}}$  & at $T_k$ and\\
-				$\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) \right)^+\mathbf{1}_{\{\tau > T_k\}}$ 
-				& at $T_k$.
-			\end{tabular}
-		\end{center}
-		
-		For any $c_i, \mathcal{N}, \tilde{R} \in \mathbb{R}$ for $i \in \{1, ..., N\}$ this will yield the same price formula as \cref{eq:priceofcancellableloan}.
-	\end{remark}
-	\begin{proof}
-		This can be trivially derived from the relation:
-		\begin{align*}
-			&\mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]\\
-			&\;= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j)\right)^+}{B^d(T_k)}\right]
-			+ \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}}{B^d(T_k)}\right]\\
-			&\;= \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\tilde{R} - \sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j)\right)^+}{B^d(T_k)}\right]
-			+\sum_{j=k+1}^{N}c_jP^{d,*}(0;T_j) - \tilde{R}P^{d,*}(0;T_k)
-		\end{align*}
-	\end{proof}
-	Let us look at how to set the starting value of the cancellable loan to zero.
-	We have to set the coupons and $\tilde{R}$ such that:
-	\begin{align*}
-		\mathcal{N} + \Pi^\Psi \mbeq \sum_{i=1}^{N}c_iP^{d,*}(0;T_i),
-	\end{align*}
-	where $\Pi^\Psi$ is the price of a put option on a coupon bond with maturity $T_k$ and strike $\tilde{R}$, i.e.
-	\begin{align*}
-		\Pi^\Psi = \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right)^+}{B^d(T_k)}\right]
-	\end{align*}
-	Note that it is easiest to distribute the value of $\Pi^\Psi$ on the first $k$ coupons, as $\Pi^\Psi$ itself is influenced by the later ones.
-	Hence we can set the later coupons as done before and distribute the accrued price of $\Pi^\Psi$ to the earlier ones: 
-	\begin{align*}
-		c_i &= \mathcal{N} \Delta T_{i-1} L^d_{i-1}(0) + \frac{\Pi^\Psi}{k P^{d,*}(0;T_i)} \quad &\text{for } i \in \{1,...,k\}\\
-		c_i &= \mathcal{N} \Delta T_{i-1} L^d_{i-1}(0) \quad &\text{for } i \in \{k+1,..., N -1\}\\
-		c_i &= \mathcal{N} \left(\Delta T_{i-1} L^d_{i-1}(0) + 1\right) \quad &\text{for } i = N
-	\end{align*}
-	Generally the redemption $\tilde{R}$ can be set arbitrarily and the price formula will hold. However, \color{red}it is good practice to \color{black} set it to the price of the remaining nominal (which is not payed back through the coupons until $T_k$) plus a penalty $p\in \mathbb{R}$:
-	\begin{align*}
-		\tilde{R} = \sum_{j=k+1}^{N}c_j \frac{P^{d,*}(T_0;T_j)}{P^{d,*}(T_0;T_k)} + p
-	\end{align*}
-	%TODO: What is the price for both parties defaultable
-	
-	
-	Let us generalize this product for the possibility to cancel at any time past $T_k$ for a fixed $k \in \{1,...,N-1\}$.
+	Let us yet make this a little more intriguing: we generalize this product for the possibility to cancel at any time past $T_k$ for a fixed $k \in \{1,...,N-1\}$.
 	Note that in this case the redemption $\tilde{R}_t$ would depend on the cancel time, but still be deterministic. Then the adjusted cash flow is
 	
 	\begin{center}
@@ -1789,20 +1702,53 @@
 	\begin{align*}
 		\nu(\omega) = \min\left(t\in \left[T_k,T_N\right[ \;\left| \;\left(\sum_{j=m(t)+1}^{N}c_jP^{d,*}(t;T_j) - \tilde{R}_t\right) > 0\right. \right) \wedge T_N
 	\end{align*}
-	Hence this has the form of an American option, where we can choose to exercise the option in the time interval $\left[T_k,T_N\right]$. As always the price can be obtained by taking the discounted expectation:	
+	Hence this takes the form of an American option, where one can choose to exercise the option in the time interval $\left[T_k,T_N\right]$. As always the price can be obtained by taking the discounted expectation:
 	\begin{align*}
-		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\dfrac{\left(\sum_{j=m(\nu)+1}^{N}c_jP^{d,*}(\nu;T_j) - \tilde{R}_\nu\right)}{B^d(\nu)}\right].
+		\mathcal{N} &-\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) \\ &+\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}\left[\left.\left(\sum_{j=m(\nu)+1}^{N}\frac{c_i }{B^{d}(T_i)} - \frac{\tilde{R_\nu}}{B^{d}(\nu)}\right)^+ \right| \mathcal{F}_\nu\right]\right]
 	\end{align*}
 	As $\nu$ is only dependent on $\mathbb{F}$-adapted values, it is also a value in terms of model primitives, which makes it usable to us.
+	A valuation as seen by the creditor can be performed by
+	\begin{align*}
+		\mathcal{N} &- \sum_{i=1}^{N}\mathbb{E}^{\mathbb{Q}^B}\left[\frac{c_iQ^d(T_i)}{B^{d^c}(T_i)}\right] \\ &+\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}\left[\left.\left(\sum_{j=m(\nu)+1}^{N}\frac{c_i Q^d(T_i)}{B^{d^c}(T_i)} - \frac{\tilde{R_\nu}Q^d(\nu)}{B^{d^c}(\nu)}\right)^+ \right| \mathcal{F}_\nu\right]\right]
+	\end{align*}
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figures/Today/CancellableLoan_byCouponRate}
+		\caption{Cancellable loan by coupon rate valued from the creditor's perspective with the creditor's stopping criterion, as well as with the debtor's stopping criterion and from the debtor's perspective}
+		\label{fig:cancellableloanbycouponrate}
+	\end{figure}
+	Note that the creditor would have a different stopping criterion $\nu$ if it were their option to exercise. Hence, for valuation we can see two different paths: either the creditor values with their stopping criterion or they value with the debtor's criterion. 
+	As visualized in \cref{fig:cancellableloanbycouponrate}.
+	\color{red}Elaborate!!!\color{black}. 
+	%TODO: Elaborate
 	
+	\subsection{Impact of the model inputs}
+	Let us analyze how the initial spread and the matrix of free parameters affect the model. \Cref{fig:spreadvarcovbyfreeparameters} illustrates how the variance of the spread is impacted by the initial spread. We see that the effects are exponential. This is to be expected as the model is lognormal. We also see that the effect is greater for a larger $\Delta f$.
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figures/Today/SpreadVarCovByFreeParameters}
+		\caption{Impact of the initial spread on the variance and covariance of the terminal spread.}
+		\label{fig:spreadvarcovbyfreeparameters}
+	\end{figure}
+	Let us take a look at the correlation of two jointly simulated defaultable models. Also here we are interested in reviewing how the model input affects the values. Remember that in \cref{sec:pricing} we assumed two models for the joint valuation of products to be independent. \Cref{fig:spreadcorrelationbyinitspread} shows that at least numerically this seems to be possible to achieve. Even when using only two additional Brownian Motion factors, there is almost no correlation to be found between the terminal spreads of the two models. We see that the initial spread indeed has an impact on the correlation structure, although on a very low niveau.
+	\begin{figure}[h!]
+		\centering
+		\includegraphics[width=0.7\linewidth]{figures/Today/SpreadCorrelationByInitSpread}
+		\caption{Terminal correlation of two spread of defaultable LIBOR models to the same non defaultable model by the initial spread curve.}
+		\label{fig:spreadcorrelationbyinitspread}
+	\end{figure}
 	
 	
 	
 	\pagebreak
 	\section{Conclusion}\label{sec:conclusion}
-	Ideas:\\
-	Outlook: Considering correlated Defaultable models\\
-	Calibration of the defaultable Covariance structure to Products.
+	In conclusion, it can be said that default forward rate models make a significant contribution to the modeling and analysis of defaultable bond and loan behaviour. The implementation of the model in Java provides a solid basis for the simulation and valuation of financial products such as loans. However, despite the performance achieved, there is still room for improvement, especially in terms of time performance.\\
+	Investigating a potential implementation of the model in C++ could provide promising results, as this language often offers higher speed for computationally intensive tasks. Furthermore, evaluating the use of an implementation of \texttt{RandomvariableFactory} that runs calculations on the GPU is a promising way to improve computational speed. Such implementations already exist, however were not used in our analysis.\\
+	The defaultable LIBOR model has several notable strengths that underscore its relevance and applicability in the financial world. One of its outstanding features is its ability to combine default risk and interest rates into a single model, allowing for a consistent analysis of products that are naturally bound to both values, such as bonds. This integration allows financial players to develop a more comprehensive understanding of market conditions and risk factors.\\
+	In addition, there is a need for further research, particularly in the area of generating an appropriate free parameter matrix for the given covariance model. A solid structure based on fewer parameters is crucial for an effective calibration of the model and enables a precise adjustment to market conditions. This aspect underlines the importance of continuous research efforts to continuously improve the model and ensure its adaptability to changing market conditions.\\
+	Another promising approach for future research efforts is to link two defaultable LIBOR models through a correlation to capture and simulate potential structural dependencies between different financial instruments or markets.
+	By integrating correlation structures throughout multiple default forward rate models, one can gain a more comprehensive understanding of the impact of the default probability of large market participants on the valuation of products even for small market participants.\\
+	In summary, the further development and optimization of defaultable LIBOR models is an important area of research that can have a significant impact on the financial industry, both theoretically and practically.
 	
 	
 	
