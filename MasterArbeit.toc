@@ -35,4 +35,3 @@
 \contentsline {subsubsection}{\numberline {6.3.2}Impact of the free parameters}{62}{subsubsection.6.3.2}%
 \contentsline {section}{\numberline {7}Conclusion}{64}{section.7}%
 \contentsline {section}{\numberline {8}List of Symbols}{66}{section.8}%
-\contentsline {section}{References}{67}{section*.46}%
