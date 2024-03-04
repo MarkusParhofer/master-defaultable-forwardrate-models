@@ -98,45 +98,109 @@
 
 
 \begin{document}
-We use $x\cdot y$ as the dot product of two vectors $x$ and $y$.\\
-
-We show the existence for the SDEs of the spread in the log-normal state space, meaning we will show the three conditions for the SDE of $s_t = log(S_t)$:
+Let $L_t := \left(L_0(t), ..., L_{N-1}(t)\right)$ and $S_t := \left(S_0(t), ..., S_{N-1}(t)\right)$.\\
+We show the existence for the SDEs of the log spread, meaning we will show the three conditions for the SDE of $s_t=\log\left(S_t\right)$:
 \begin{align*}
-	ds^i_t = \left(\tilde{\mu}_i\left(t,\exp(s^i_t)\right) -  \frac{\sum_{k=1}^{m^d}\tilde{\lambda}^k_i\left(t,\exp(s^i_t)\right)^2}{2}\right)dt + \tilde{\lambda}_i\left(t,\exp(s_t)\right) \cdot dW_t
+	ds^i_t = \left(\tilde{\mu}^i\left(t,L_t, S_t\right) - \frac{\lVert\tilde{\lambda}^i\left(t,L_t,S_t\right)\rVert ^2}{2}\right) dt
+	 + \tilde{\lambda}^i\left(t,L_t, S_t\right) \cdot dU_t
 \end{align*}
-Let $L(t) := \left(L_0(t), ..., L_{N-1}(t)\right)$ and $S(t) := \left(S_0(t), ..., S_{N-1}(t)\right)$.\\
-We assume, that the factor loadings of the non-defaultable model $\lambda^{i k}_t$ are chosen such that they are Lipschitz and have sub-linear growth and prevent $L_i(t) < c_i$, where $c_i$ is a constant with $c_i\Delta T_i > -1$ for all $i \in \{0, ..., N-1\}$. \\
-We therefore define the box $A = \prod_{i=0}^{N-1}\left[c_i, \infty\right[$. According to our assumptions, it holds that $L(t)\in A$ for all $t\in \left[0,\tilde{T}\right]$.\\
-Furthermore, we assume that the free parameters $f^{i,k}(t,L(t), S(t)) := f^{i,k}_t$ are continuous and bounded by $K_1 > 0$ (i.e. $|f^{ik}(t,x,s)| \le K$) on $\left[0,\tilde{T}\right]\times A \times \mathbb{R}_{>0}^N$ (this yields Lipschitz-continuity and sub-linear growth).
-\\
-We derive $\tilde{\lambda}^k_i$:
+We assume, that the SDEs for $L$ are specified, such that the Lipschitz-continuity and the sub-linear growth conditions are fulfilled and such that they prevent $L_i(t) < c_i$, where $c_i$ is a constant with $c_i\Delta T_i > -1$ for all $i \in \{0, ..., N-1\}$. We also assume that the factor loadings of $\lambda^i(t, L_t)$ depend only on the LIBOR they correspond to: $\lambda^i(t,L_i(t)) := \lambda^i(t,L_t)$
+	(e.g.\ a logmormal statespace with bounded volatility is sufficient). \\
+We define the box $A = \prod_{i=0}^{N-1}\left[c_i, \infty\right[$. According to our assumptions, it holds that $L_t\in A$ for all $t\in \left[0,\tilde{T}\right]$.\\
+Furthermore, we assume that the free parameters are given by $\mathbb{R}$-valued functions $f^{i k}(t,x,s)$ on $\left[0,\tilde{T}\right]\times A \times \mathbb{R}_{>0}^N$ with $f^{i,k}(t,L_t, S_t) := f^{i,k}_t$ and we assume they are Lipschitz in the second and third parameter, and bounded by $K_1 > 0$, i.e.\ $|f^{ik}(t,x,s)| \le K_1$), which yields sub-linear growth.\\
+
+We first prove the following statement for $ x \in A$: there exist a constant $K_2 > 0$ such that
 \begin{align*}
-	\tilde{\lambda}^k_i\left(t,x, s\right) = 
+	0 < \frac{1}{1+ x_i\Delta T_i } \le \frac{1+|x_i|}{1+ x_i\Delta T_i } \le K_2 \tag{A}
+\end{align*}
+The first two inequalities are trivial, as $1 + x_i\Delta T_i > 0$.
+For the second equation first note that for $x_i \ge 0$ this is always true, because (assuming $x_i \ge 0$):
+\begin{align*}
+	\frac{1+|x_i|}{1+ x_i\Delta T_i } &= \underbrace{\frac{1}{1+ x_i\Delta T_i }}_{\le 1}  \underbrace{\frac{x_i}{\frac{1}{\Delta T_i}+ x_i }}_{\le 1}\frac{1}{\Delta T_i}\\
+	&\le 1 + \frac{1}{\Delta T_i}
+\end{align*}
+Also note 
+\begin{align*}
+	\lim\limits_{x_i \rightarrow -\frac{1}{\Delta T_i}} \frac{\overbrace{1 + |x_i|}^{ \ge 1}}{1+ \underbrace{x_i\Delta T_i}_{\rightarrow -1}} = \infty
+\end{align*}
+Since $\frac{1+|z|}{1+ z\Delta T_i }$ is continuous for all $z > -\frac{1}{\Delta T_i}$, we can (for any $c_i$) find an $\epsilon$, such that $-1 < \epsilon\Delta T_i < c_i \Delta T_i$ with:
+\begin{align*}
+	K_2:= \frac{1+|\epsilon|}{1+ \epsilon\Delta T_i } > \frac{1+|x_i|}{1+ x_i\Delta T_i } \quad \text{for all } x \in A
+\end{align*}
+This concludes the proof of statement (A).\\
+Let us now prove that for some constant $K_3 > 0$:
+\begin{align*}
+	\left| y_i \lambda^{ik}(t, x) - x_i \lambda^{ik}(t,y) \right|\le K_3 \;\left| x_i - y_i \right| \left(1 + \left|x_i\right|\right)\left(1 + \left|y_i\right|\right) \tag{B}
+\end{align*}
+W.l.o.g. we assume $|y_i| < |x_i|$ and get:
+\begin{align*}
+	\left| y_i \lambda^{ik}(t, x) - x_i \lambda^{ik}(t,y) \right| &= \left| y_i \lambda^{ik}(t, x) - y_i \lambda^{ik}(t,y) + y_i \lambda^{ik}(t,y) - x_i \lambda^{ik}(t,y) \right|\\
+	&\le \left| y_i \right| \left|\lambda^{ik}(t, x) - \lambda^{ik}(t,y) \right|+ \left|\lambda^{ik}(t,y)\right| \left|y_i - x_i\right|\\
+	& \le C_1 \left| y_i \right| \left|x_i - y_i\right|+ C_2\left(1 + \left|y_i\right|\right) \left|y_i - x_i\right|\\
+	&\le \max\left(C_1, C_2\right) \left(1 + \left|x_i\right| + \left| y_i \right| \right) \left|x_i - y_i\right|\\
+	&\le \max\left(C_1, C_2\right) \left(1 + \left|x_i\right|\right) \left( 1 +\left| y_i \right| \right) \left|x_i - y_i\right|
+\end{align*}
+where $C_1$ and $C_2$ are the Lipschitz- resp. sub-linear growth constants of $\lambda^{i k}$. Setting $K_3:=\max\left(C_1, C_2\right)$ yields  the result.
+
+We now prove the conditions for the factor loadings of the spread. Note that by \cref{...} we have:
+\begin{align*}
+	\tilde{\lambda}^{i k}\left(t,x, s\right) = 
 	\left\{
 	\begin{aligned}
-		&\frac{\lambda^{i k}_t \Delta T_i}{1 + x_i\Delta T_i} \quad &\text{for } k \in \{1,...,m\}\\
+		&\frac{\lambda^{i k}(t,x) \Delta T_i}{1 + x_i\Delta T_i} \quad &\text{for } k \in \{1,...,m\}\\
 		&f^{i k}(t,x,s) \quad &\text{for } k \in \{m+1,...,m^d\}
 	\end{aligned}
 	\right.
 \end{align*}
-note that we immediately get the desired conditions for $\tilde{\lambda}^k_i$ for $(t,x,s) \in \left[0,\tilde{T}\right]\times A\times\mathbb{R}_{>0}^{N}$, which is sufficient, because $x$ are given in $A$ and are not influenced by the SDEs of $s_t$.\\
-
-Deriving $\tilde{\mu}_i$ yields:
+We can prove the conditions for each component and factor, because they are stable under addition. Note that for $k\in\{m+1, ..., m^d\}$ they are immediately given.\\
+We start with sub-linear growth for $k\in\{1,...,m\}$ for all $x \in A$, and for all $s\in \mathbb{R}_{>0}^N$:
 \begin{align*}
-	\tilde{\mu}_i\left(t,x, s\right) = \underbrace{\frac{\mu^i_t \Delta T_i }{1 + x_i\Delta T_i}}_{\text{(A)}} + \underbrace{\sum_{k=m+1}^{m^d}f^{i k}(t,x,s) \sum_{j=m(t)+1}^{i}\frac{s_j f^{j k}(t,x,s)\Delta T_j}{1 + x_j\Delta T_j + s_j \Delta T_j}}_{\text{(B)}}
+	\left|\tilde{\lambda}^{i k}\left(t,x, s\right)\right| = \left|\frac{\lambda^{i k}(t,x) \Delta T_i}{1 + x_i\Delta T_i}\right|\le C_2 \frac{1+|x_i|}{1+x_i\Delta T_i}\le C_2\;K_2=:K_4\tag{C}
 \end{align*}
-By the same arguments as before (A) is Lipschitz and has sub-linear growth. (B) is bounded by a constant, because
+where we used the sub-linear growth of $\lambda^{ik}(t,x)$ in the first inequality and (A) in the second. Hence we even have that $\lambda^{ik}$ is bounded for all $i\in\{0,...N-1\}$ and $k\in\{1,...m^d\}$.\\
+For the Lipschitz condition we have:
 \begin{align*}
-	\text{(B)} \le \sum_{k=m+1}^{m^d}K_1 \sum_{j=m(t)+1}^{i}\frac{s_j K_1\Delta T_j}{1 + c_j\Delta T_j + s_j \Delta T_j} \le m^diK_1 = K_2.\tag{C}
+	&\left|\frac{\lambda^{i k}(t,x) \Delta T_i}{1 + x_i\Delta T_i} - \frac{\lambda^{i k}(t,y) \Delta T_i}{1 + y_i\Delta T_i}\right| =
+	\Delta T_i \left|\dfrac{\lambda^{i k}(t,x)\left(1 + y_i\Delta T_i\right) - \lambda^{i k}(t,y)\left(1 + x_i\Delta T_i\right)}{\left(1 + x_i\Delta T_i\right)\left(1 + y_i\Delta T_i\right)}\right|\\
+	&\le \Delta T_i \left|\dfrac{\left|\lambda^{i k}(t,x) - \lambda^{i k}(t,y)\right| + \Delta T_i \left|\lambda^{i k}(t,x) y_i - \lambda^{i k}(t,y)x_i\right|}{\left(1 + x_i\Delta T_i\right)\left(1 + y_i\Delta T_i\right)}\right|\tag{D}\\
+	&\le \Delta T_i \;\left|\dfrac{C_1\left|x_i - y_i\right| + \Delta T_i K_3 \left(1 + \left|x_i\right|\right)\left( 1 +\left| y_i \right| \right) \left|x_i - y_i\right|}{\left(1 + x_i\Delta T_i\right)\left(1 + y_i\Delta T_i\right)}\right|\tag{E}\\
+	&\le \Delta T_i \;\left|x_i - y_i\right|\left|\dfrac{C_1 + \Delta T_i K_3 \left(1 + \left|x_i\right|\right) \left( 1 +\left| y_i \right| \right)}{\left(1 + x_i\Delta T_i\right)\left(1 + y_i\Delta T_i\right)}\right|\tag{F}\\
+	&\le \left|x_i - y_i\right| \underbrace{\Delta T_i \left(C_1 \left(K_2\right)^2 +\Delta T_i  K_3 \left(K_2\right)^2\right)}_{=:K_5},\tag{G}
 \end{align*}
-We get
+where for (D) we used the triangle inequality, (E) comes from (B) and the Lipschitz condition of $\lambda^{i k}$ and (G) from (A). This yields the Lipschitz condition for the factor loadings $\tilde{\lambda}^{ik}$.\\
+Next we will prove the conditions also for the drift $\tilde{\mu}^i$ but first we need to pave the way. \\
+First note that any multiplication of two factor loadings is again Lipschitz and bounded, i.e. there exist a $K_6 > 0$ and $K_7>0$ such that for all $i, j \in \{0,...,N-1\}$ and $k\in\{1,...,m^d\}$:
 \begin{align*}
-	\tilde{\mu}^i_t - \frac{1}{2}\tilde{\lambda}_i\cdot \tilde{\lambda}_i &= \frac{\mu^i_t \Delta T_i }{1 + x_i\Delta T_i} - \frac{\lambda^{i}_t \cdot\lambda^{i}_t (\Delta T_i)^2}{2(1 + x_i\Delta T_i)^2}\tag{D}\\
-	&+ \sum_{j=m(t)+1}^{i} \frac{f^{i}\cdot f^{j}s_j\Delta T_j}{1 + x_j \Delta T_j + s_j \Delta T_j} - \frac{f^i \cdot f^i}{2}\tag{E}
+	\left|\tilde{\lambda}^{i k}\left(t,x, s\right)\tilde{\lambda}^{j k}\left(t,x, s\right) - \tilde{\lambda}^{i k}\left(t,y, u\right)\tilde{\lambda}^{j k}\left(t,y, u\right)\right| &\le K_6\; \lVert(x,s) - (y,u)\rVert \\
+	\left|\tilde{\lambda}^{i k}\left(t,x, s\right)\tilde{\lambda}^{j k}\left(t,x, s\right)\right| &\le K_7\tag{H}
 \end{align*}
-Because (E) is bounded by $(K_2^2 + \frac{K_1^2}{2})$ we only need to show that (D) is also Lipschitz and has sub linear growth:
+This stems from \cref{...}, together with the fact that both $\tilde{\lambda}^{i k}$ and $\tilde{\lambda}^{j k}$ are bounded.\\
+Now we can prove that $\tilde{\mu}^i$ is Lipschitz and has sub linear growth.\\
+By \cref{...} we have:
 \begin{align*}
-	\frac{\mu^i_t \Delta T_i }{1 + x_i\Delta T_i} - \frac{\lambda^{i}_t \cdot\lambda^{i}_t (\Delta T_i)^2}{2(1 + x_i\Delta T_i)^2} = \frac{\Delta T_i }{1 + x_i\Delta T_i}\sum_{j=m(t)+1}^{i}\frac{\lambda^{i}_t \cdot\lambda^{j}_t \Delta T_j}{1 + x_j\Delta T_j} - \frac{\lambda^{i}_t \cdot\lambda^{i}_t (\Delta T_i)^2}{2(1 + x_i\Delta T_i)^2}\\
-	= \frac{\Delta T_i }{1 + x_i\Delta T_i}\sum_{j=m(t)+1}^{i - 1}\frac{\lambda^{i}_t \cdot\lambda^{j}_t \Delta T_j}{1 + x_j\Delta T_j} + \frac{\lambda^{i}_t \cdot\lambda^{i}_t (\Delta T_i)^2}{2(1 + x_i\Delta T_i)^2}
+	\tilde{\mu}^i_t = &\; \sum_{j=m(t)+1}^{i}\frac{\sum_{k=1}^{m}\lambda^{i k}\left(t, L_t\right) \Delta T_i \lambda^{j k}\left(t, L_t\right) \Delta T_j}{(1 + L_i(t)\Delta T_i) (1 + L_j(t)\Delta T_j)}\\
+	&+ \sum_{j=m(t)+1}^{i}\sum_{k=m+1}^{m^d}f^{i k}(t,L_t,S_t)\dfrac{S_j(t)f^{j k}(t,L_t,S_t)}{1 + L^d_j(t)\Delta T_j}
 \end{align*}
+hence with the relation $L^d_t = L_t + S_t$  we have:
+\begin{align*}
+	\tilde{\mu}^i\left(t, x, s\right) = &\; \sum_{j=m(t)+1}^{i}\sum_{k=1}^{m}\frac{\lambda^{i k}\left(t, x\right) \Delta T_i \lambda^{j k}\left(t, x\right) \Delta T_j}{(1 + x_i\Delta T_i) (1 + x_j\Delta T_j)}\\
+	&+ \sum_{j=m(t)+1}^{i}  \sum_{k=m+1}^{m^d}  f^{i k}(t,x,s)f^{j k}(t,x,s)\dfrac{s_j}{1 + x_j\Delta T_j + s_j\Delta T_j}\\
+	=&\; \sum_{j=m(t)+1}^{i}\sum_{k=1}^{m}\tilde{\lambda}^{i k}\left(t, x, s\right)\tilde{\lambda}{j k}\left(t, x, s\right)\tag{I}\\
+	&+ \sum_{j=m(t)+1}^{i}  \sum_{k=m+1}^{m^d}  \tilde{\lambda}^{i k}\left(t, x, s\right)\tilde{\lambda}^{j k}\left(t, x, s\right)\underbrace{\frac{s_j}{1 + x_j\Delta T_j + s_j\Delta T_j}}_{=(K)}\tag{J}
+\end{align*}
+As (I) is just the sum of Lipschitz-continuous and bounded functions, it is again Lipschitz and bonded. Because $x_j\Delta T_j > c_j > -1$ and $s_j \ge 0$, (K) is naturally bounded by some constant $C_3$ with the same arguments as for (A). Also with an exactly analogous proof to (A) we have that $\frac{1 + \left|y_j\right| + \left|v_j\right|}{1 + \Delta T_j(x_j + s_j)}$ is bounded by some constant $C_4$. For Lipschitz continuity we have therefore:
+\begin{align*}
+	&\left|\frac{s_j}{1 + x_j\Delta T_j + s_j\Delta T_j} - \frac{v_j}{1 + y_j\Delta T_j + v_j\Delta T_j} \right|\\
+	&=\left|\frac{(s_j - v_j) + \Delta T_j(s_j y_j - v_jx_j)}{\left(1 + \Delta T_j(x_j + s_j)\right)\left(1 + \Delta T_j(y_j + v_j)\right)}\right|\\
+	&\le \left|\frac{\lVert (x_j,s_j) - (y_j, v_j)\rVert + \Delta T_j(\left|y_j\right| \left|s_j - v_j\right| + \left|v_j\right| \left|y_j - x_j\right|)}{\left(1 + \Delta T_j(x_j + s_j)\right)\left(1 + \Delta T_j(y_j + v_j)\right)}\right|\\
+	&\le \lVert (x_j,s_j) - (y_j, v_j)\rVert\left|\frac{1 + \Delta T_j(\left|y_j\right| + \left|v_j\right|)}{\left(1 + \Delta T_j(x_j + s_j)\right)\left(1 + \Delta T_j(y_j + v_j)\right)}\right|\\
+	&\le \lVert (x_j,s_j) - (y_j, v_j)\rVert\left|\frac{1 + \Delta T_j\left(1 + \left|y_j\right| + \left|v_j\right|\right)\left(1 + \left|x_j\right| + \left|s_j\right|\right)}{\left(1 + \Delta T_j(x_j + s_j)\right)\left(1 + \Delta T_j(y_j + v_j)\right)}\right|\\
+	&\le \lVert (x_j,s_j) - (y_j, v_j)\rVert  \left(C_3^2 + C_4^2\right)
+\end{align*}
+Hence we have that (J) is nothing else than a sum of multiplications of bounded, implying that the drift $\tilde{\mu}^{i}$ is Lipschitz and bounded for all $i\in\{0,...N-1\}$.\\
+This concludes the proof, because by (H) we already have $\lVert\tilde{\lambda}^{i}\rVert ^2$ is Lipschitz and bounded, proving
+\begin{align*}
+	\tilde{\mu}^i\left(t, x, s\right) - \dfrac{\lVert\tilde{\lambda}^{i}(t,x,s)\rVert^2}{2}
+\end{align*}
+is Lipschitz and bounded.
 \end{document}

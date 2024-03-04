@@ -431,7 +431,6 @@
 		A variation of this definition is that $c_i$ are defined as coupon rates and the actual coupon payment is then $c_i\, \mathcal{N}$ at each time step $T_i$. Another popular definition includes the terminal payment of the nominal $\mathcal{N}$ in the last coupon $c_N$. \\
 		Additionally to this "normal" coupon bond one can also find \emph{amortizing} coupon bonds in the market that distribute the nominal $N$ in the coupons over all periods instead of paying it all at once at the maturity time.
 	\end{remark}
-	%TODO: Write and prove the price of a coupon bond
 	\begin{lemma}
 		Let $T_i$ and $c_i$ be as in \cref{def:couponbond}. 
 		The price of a fixed coupon paying bond is:
@@ -489,7 +488,7 @@
 	\begin{assumption}\label{as:LIBORisItoProcess}
 		The one step simple forward rate (called LIBOR rate)
 		\begin{align*}
-			L_i(t) := L(t;T_i, T_{i+1}) \quad \forall i \in \{0, ..., N\}\text{, } t\in[0,T_i],
+			L_i(t) := L(t;T_i, T_{i+1}) \quad \forall i \in \{0, ..., N-1\}\text{, } t\in[0,T_i],
 		\end{align*}
 		where $L(t;S, T)$ is defined as in \cref{def:simpleFR},
 		follows an Itô stochastic process satisfying
@@ -497,7 +496,7 @@
 			dL_i = \mu^i_t dt + \sigma^i_t dW^{\mathbb{Q}^B, L_i}_t,\label{eq:LMMSDE}\\
 			L_i(0)(T_{i+1} - T_i) = \frac{P(0;T_i)}{P(0;T_{i+1})} - 1,
 		\end{align}
-		where $(W^{\mathbb{Q}^B, L_i})_{i\in \{0, ..., N\}}$ are possibly instantaneously correlated Brownian Motions.
+		where $(W^{\mathbb{Q}^B, L_i})_{i\in \{0, ..., N-1\}}$ are possibly instantaneously correlated Brownian Motions.
 	\end{assumption}
 	In the LIBOR model, all other variables are then derived from these interest rates, most importantly the $T_i$-bond prices. The attentive reader will have noticed, however, that there is a hole in this derivation: the so-called short-period bond $P(t;T_{m(t)+1})$ cannot be calculated by $\left(L_i(t)\right)_{i\in\{0, ..., N\}}$ alone, which is why we need the following assumption:
 	\begin{assumption}\label{as:LMMShortPeriodBond}
@@ -602,7 +601,6 @@
 		\[J(t) := \mathbf{1}_{\{\tau(\omega) \le t\}}\]
 	\end{definition}
 	\begin{definition}
-		% TODO: Stimmt das wirklich? ein Default Process ist eher ein sich anbahnendes Ereignis?
 		The \emph{Defaultable Zero Coupon Bond} with price process \[P^d(t; T_i)\] at time \(t \in \left[0, T\right]\) is a traded asset that pays \(1 - J(T_i)\) at maturity  \(T_i \in \{T_0, ..., T_N\}\).\\
 		Hence it pays 1 if the default has not happened until maturity. 
 	\end{definition}
@@ -635,7 +633,6 @@
 		\end{align*}
 	\end{assumption}
 	
-	% TODO: Proof that L^d is an Ito Process
 	\begin{theorem}\label{theo:defDriftTheo}
 		Let $L^d_i$ be defined as in \cref{defLIBOR}. Let $B(t)$ be the numeraire under the spot measure (i.e. $B(t)$ is given by \cref{eq:spotNumeraire}) and $W^{\mathbb{Q}^B}$ a Brownian Motion w.r.t. the spot measure.
 		Let $\sigma^{i, d}_t:=\sigma^{i, d}(t, \omega)$ be a progressive stochastic process. Let 
@@ -706,7 +703,6 @@
 		Inserting into \cref{defDriftDeriv} yields our statement (\ref{defDriftTheo}).
 	\end{proof}
 	
-	%TODO: Insert Terminal measure drift
 	Just as we did in the last section, we now move from the "covariance" process model to a "factor loading" model as described in \cref{sec::FactorLoading}. Note that we also need to include the non defaultable covariance structure for our new model.\\
 	\begin{lemma}\label{lem:defLMMFactorVersion}
 		There exist $m^d$-dimensional stochastic processes $\lambda^{i,d} = (\lambda^{i k, d})_{k \in \{1, ..., m^d\}}$, $\lambda^{i}$ $= ((\lambda^{i k})_{k \in \{1, ... m\}}, (0)_{k \in \{m+1, ... m^d\}})$ and a $m^d $-dimensional $\mathbb{Q}^B$-Brownian Motion $U=(U^k)_{k \in \{1,...,m^d\}}$ such that
@@ -732,7 +728,7 @@
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
-		Follows directly from \cref{sec::FactorLoading}. %TODO: Add right lemma etc.
+		Follows directly from \cref{sec::FactorLoading}.
 	\end{proof}
 	Hence from here on we use this computation friendly version:
 	\begin{align}\label{eq:defLMMSDE}
@@ -766,7 +762,7 @@
 		\end{align*}
 	\end{definition}
 	\begin{remark}
-		A negative spread would mean $L^d_i(t) < L_i(t)$. This constitutes an arbitrage possibility, %TODO: Add example of arbitrage.
+		A negative spread would mean $L^d_i(t) < L_i(t)$. This constitutes an arbitrage possibility, 
 		which is why the model needs to be specified, such that this case is "impossible" (i.e. has probability $0$).
 	\end{remark}
 	The spreads dynamics are given by
@@ -799,7 +795,7 @@
 		where $f^{i k}_t$ are (possibly stochastic) processes for $i\in\{1, ..., N-1\}$ and $k\in \{m+1, ..., m^d\}$.\\
 		Then $S = (S_i)_{i\in \{0, ..., N-1\}}$ satisfies 
 		\begin{align*}
-			dS_i = S_i(t)\tilde{\mu}^{i,S}_t dt + S_i(t)\tilde{\lambda}^{i,S}_t \cdot dU_t.
+			dS_i(t) = S_i(t)\tilde{\mu}^{i,S}_t dt + S_i(t)\tilde{\lambda}^{i,S}_t \cdot dU_t.
 		\end{align*}
 		for some process $\tilde{\mu}^{i,S}$ and $\tilde{\lambda}^{i,S}$.
 	\end{lemma}
@@ -807,16 +803,16 @@
 		By \cref{rem:defLMMDrift} we have:
 		\begin{align*}
 			%\begin{split}
-			dS_i =&\; dL^d_i - dL_i\\
+			dS_i(t) =&\; dL^d_i(t) - dL_i(t)\\
 			=&\; \sum_{k=1}^{m^d}\lambda^{i k,d}_t \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k,d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} dt + \sum_{k=1}^{m^d}\lambda^{i k,d}_tdU^k_t 
 			\\
 			&- \sum_{k=1}^{m}\lambda^{i k}_t \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} dt - \sum_{k=1}^{m}\lambda^{i k}_t dU^k_t\\
 			=&\; \sum_{k=1}^{m}\left(\lambda^{i k,d}_t - \lambda^{i k}_t\right)\left( \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} dt + dU^k_t\right)
 			\tag{A}\\
 			&+ \left(L^d_i(t) - L_i(t)\right)\left(\sum_{k=m + 1}^{m^d}f^{i k}_t \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k, d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} dt + dU^k_t\right)\\
-			=&\; S_i\sum_{k=1}^{m}\frac{\lambda^{i k}_t \Delta T_i}{1 + L_i(t)\Delta T_i}\left( \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} dt + dU^k_t\right)
+			=&\; S_i(t)\sum_{k=1}^{m}\frac{\lambda^{i k}_t \Delta T_i}{1 + L_i(t)\Delta T_i}\left( \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k}_t \Delta T_j}{1 + L_j(t) \Delta T_j} dt + dU^k_t\right)
 			\tag{B}\\
-			&+ S_i\left(\sum_{k=m + 1}^{m^d}f^{i k}_t \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k, d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} dt + dU^k_t\right)
+			&+ S_i(t)\left(\sum_{k=m + 1}^{m^d}f^{i k}_t \sum_{j=m(t)+1}^{i}\frac{\lambda^{j k, d}_t \Delta T_j}{1 + L^d_j(t) \Delta T_j} dt + dU^k_t\right)
 		\end{align*}
 		
 		where (A) comes from the relation:
@@ -830,7 +826,189 @@
 		for $k \in \{1, ..., m\}$.
 	\end{proof}
 	
-	This gives us a whole set of covariance structures for the defaultable LIBOR model, which guarantee positivity of the spread. Note that there might be other structures that also guarantee positivity.\\
+	We still need to prove the existence of a unique solution to the SDE. For this we will use the conditions of Lipschitz continuity and sub-linear growth. Let us recall what these mean.
+	\begin{definition}
+		Let $D\subset \mathbb{R}^n$. A function $f: D \rightarrow \mathbb{R}^d$ is called Lipschitz continuous (or just Lipschitz), if for all $x, y\in D$ there exists a constant $K>0$ such that:
+		\begin{align*}
+			\lVert f(x) - f(y)\rVert \le K \lVert x - y\rVert
+		\end{align*}
+	\end{definition}
+	\begin{definition}
+		Let $D\subset \mathbb{R}^n$. A function $f: D \rightarrow \mathbb{R}^d$ is said to have \emph{sub-linear growth}, if for all $x\in D$ there exists a constant $K>0$ such that:
+		\begin{align*}
+			\lVert f(x)\rVert \le K\left(1 +  \lVert x\rVert\right)
+		\end{align*}
+	\end{definition}
+	It is well known that if the two characteristics are given for the drift and volatility functions of an SDE there exist a unique solution for it.
+	\begin{lemma}
+		Let $\mu: \left[0,\tilde{T}\right]\times\mathbb{R}^n \rightarrow \mathbb{R}^d$ and $\lambda_k: \left[0,\tilde{T}\right]\times\mathbb{R}^n \rightarrow \mathbb{R}^d$ be continuous functions for all $k=1, ..., m$ on $\left[0,\tilde{T}\right]\times\mathbb{R}^n$.Let $\mu(t,x)$ and $\lambda_k(t,x)$ furthermore be Lipschitz and have sub-linear growth in their second variable $x$. Let $x_0\in \mathbb{R}^d$ and $U$ be a $m$-dimensional standard Brownian Motion. Then the SDE
+		\begin{align*}
+			dX_t &= \mu(t, X_t)dt + \lambda(t, X_t)\cdot dU_t \quad \text{for all } t \in \left[0, \tilde{T}\right]\\
+			X_0&=x_0	
+		\end{align*}
+		has a unique strong solution.
+	\end{lemma}
+	\begin{proof}
+		This is a well known result of numerical mathematics. A proof can be found in \cite{kloedenSchemes}, pp. 131.
+	\end{proof}
+	\begin{remark}
+		Recall that the existence of a unique strong solution for an SDE is given by definition if there exists a solution and for any two processes $X$ and $\tilde{X}$ that solve the SDE it holds that:
+		\begin{align*}
+			\mathbb{Q}\left(\sup\limits_{t \in \left[0,\tilde{T}\right]}\lVert X_t - \tilde{X}_t\rVert  > 0\right) = 0
+		\end{align*}
+	\end{remark}
+	In the following paragraphs we therefore need to assume, that the parameters for the SDEs $\mu^{i}$ and $\lambda^{i k}$ are given by functions.\\
+	We can show the two conditions, if the drift- and factor-loading  functions of the non-defaultable model and the free parameter matrix fulfill some smoothness conditions.
+	\begin{theorem}\label{theo:existence}
+		Let $\mathbb{Q}^B$ be the spot measure. 
+		Let the SDEs for the non-defaultable LIBORs $L$ be specified, such that the Lipschitz-continuity and the sub-linear growth conditions are fulfilled and such that they prevent $L_i(t) < c_i$, where $c_i$ is a constant with $c_i\Delta T_i > -1$ for all $i \in \{0, ..., N-1\}$. \\
+		Let the factor loadings of $L$ furthermore depend only on $t$ and the LIBOR it corresponds to: $\lambda^{i k}(t, L_t) = \lambda^{i k}(t,L_i(t))$.\\
+		For all $i\in\{0, ..., N-1\}$ and $k \in \{m+1, ..., m^d\}$ let there be bounded functions $f^{i k}: \left[0,T_i\right]\times \prod_{i=0}^{N-1}\left(c_i,\infty\right)\times \mathbb{R}_{>0}^N \rightarrow\mathbb{R}$ with three variables ($f^{i k}(t,x,s)$) that are continuous in $t$ and jointly Lipschitz in $(x,s)$.\\
+		Then the SDEs for the defaultable LIBORs $L^d$ with factor loadings given by \cref{lem:flguaranteeingpositivespreads} have a unique strong solution.
+	\end{theorem}
+	While this seems like a lot of conditions for the non-defaultable model, such a model is not that hard to find, e.g.\ we can apply log-normal volatility $\sigma(t,x) = x\hat{\sigma}(t)$, where $\hat{\sigma}$ is continuous and only depends on time.\\
+	We state a helpful lemma:
+	\begin{lemma}\label{lem:basicLipschitz}
+		The following statements hold for any $\mathbb{R}$-valued bounded Lipschitz functions $f$ and $g$:
+		\begin{itemize}
+			\item the function $(f\cdot g)$ (i.e.\ the product) is also Lipschitz.
+			\item the function $(f + g)$ (i.e.\ the sum) is also Lipschitz.
+		\end{itemize}
+	\end{lemma}
+	\begin{proof}
+		Let us denote the absolute maximum of $g$ and $f$, $\bar{g}$ and $\bar{f}$ respectively. We get:
+		\begin{align*}
+			|f(x)g(x) - f(y)g(y) | &= | f(x)g(x) - f(y)g(x) + f(y)g(x) - f(y)g(y)|\\
+			&= | f(x)g(x) - f(y)g(x) + f(y)g(x) - f(y)g(y) |\\
+			&\le | f(x) - f(y)| | \bar{g} | + | g(x) - g(y)| | \bar{f} |\\
+			&\le | x - y| \left(K^f| \bar{g} | + K^g| \bar{f} |\right),
+		\end{align*}
+		where $K^f$ and $K^g$ are the Lipschitz constants of $f$ and $g$ respectively.
+		The second statement is trivial.
+	\end{proof}
+	\begin{proof}[Proof of \Cref{theo:existence}]
+		Let us write for the whole vector of LIBOR rates $L_t = \left(L_0(t), ..., L_{N-1}(t)\right)$ and for that of the spread $S_t=\left(S_0(t), ..., S_{N-1}(t)\right)$. Let us also write $A:=\prod_{i=0}^{N-1}\left(c_i,\infty\right)$.\\
+		Note that the existence of strong solutions is inherited over transforms, which means that we can show Lipschitz-continuity and sub-linear growth for $d\log\left(S_i(t)\right)$.\\
+		Therefore let $i\in\{0,...,N-1\}$. Note that by the proof of \cref{lem:flguaranteeingpositivespreads} and \cref{lm:logNormalDyn} we have dynamics of the spread:
+		\begin{align*}
+			d\log\left(S_i(t)\right) = \left(\tilde{\mu}^i\left(t,L_t, S_t\right) - \frac{\lVert\tilde{\lambda}^i\left(t,L_t,S_t\right)\rVert ^2}{2}\right) dt
+				+ \tilde{\lambda}^i\left(t,L_t, S_t\right) \cdot dU_t,
+		\end{align*}
+		where $\tilde{\lambda}^{i}$ is a vector of functions composed of
+		\begin{align*}
+			\tilde{\lambda}^{i k}\left(t,x, s\right) = 
+			\left\{
+			\begin{aligned}
+				&\frac{\lambda^{i k}(t,x) \Delta T_i}{1 + x_i\Delta T_i} \quad &\text{for } k \in \{1,...,m\}\\
+				&f^{i k}(t,x,s) \quad &\text{for } k \in \{m+1,...,m^d\}
+			\end{aligned}
+			\right.
+		\end{align*}
+		and $\tilde{\mu}^{i}$ is
+		\begin{align*}
+			\tilde{\mu}^i(t,x,s) = &\; \sum_{j=m(t)+1}^{i} \sum_{k=m+1}^{m^d} \tilde{\lambda}^{i k}\left(t,x, s\right) \tilde{\lambda}^{j k}\left(t,x, s\right)\\
+			&+ \sum_{j=m(t)+1}^{i}\sum_{k=m+1}^{m^d}\dfrac{s_j\tilde{\lambda}^{i k}\left(t,x, s\right)\tilde{\lambda}^{j k}\left(t,x, s\right)}{1 + \Delta T_j\left(x_j + s_j\right)}
+		\end{align*}
+		We perform the proof of the lemma in six steps.
+		
+		\subparagraph{Step 1:}
+		We first prove the following statement for $ x \in A$: there exist a constant $K_1 > 0$ such that
+		\begin{align*}
+			0 < \frac{1}{1+ x_i\Delta T_i } \le \frac{1+|x_i|}{1+ x_i\Delta T_i } \le K_1 \tag{A}
+		\end{align*}
+		The first two inequalities are trivial, as $1 + x_i\Delta T_i > 0$.\\
+		For the second equation first note that this is always true if $x_i \ge 0$:
+		\begin{align*}
+			\frac{1+|x_i|}{1+ x_i\Delta T_i } &= \underbrace{\frac{1}{1+ x_i\Delta T_i }}_{\le 1}  \underbrace{\frac{x_i}{\frac{1}{\Delta T_i}+ x_i }}_{\le 1}\frac{1}{\Delta T_i}\\
+			&\le 1 + \frac{1}{\Delta T_i}
+		\end{align*}
+		Otherwise we know
+		\begin{align*}
+			\lim\limits_{z \rightarrow -\frac{1}{\Delta T_i}} \frac{\overbrace{1 + |z|}^{ \ge 1}}{1+ \underbrace{z\Delta T_i}_{\rightarrow -1}} = \infty
+		\end{align*}
+		Since $\frac{1+|z|}{1+ z\Delta T_i }$ is continuous for all $z > -\frac{1}{\Delta T_i}$, we can (for any $c_i$) find an $\epsilon$, such that $-1 < \epsilon\Delta T_i < c_i \Delta T_i$ with:
+		\begin{align*}
+			K_1:= \frac{1+|\epsilon|}{1+ \epsilon\Delta T_i } > \frac{1+|x_i|}{1+ x_i\Delta T_i } \quad \text{for all } x \in A
+		\end{align*}
+		This concludes the proof of statement (A).
+		\subparagraph{Step 2:}
+		In the next step we prove that for some constant $K_2 > 0$:
+		\begin{align*}
+			\left| y_i \lambda^{ik}(t, x) - x_i \lambda^{ik}(t,y) \right|\le K_2 \;\left| x_i - y_i \right| \left(1 + \left|x_i\right|\right)\left(1 + \left|y_i\right|\right) \tag{B}
+		\end{align*}
+		First recall that $\lambda^{i k}$ is only dependent on time and the $i$-th component, which together with its sub-linear growth and Lipschitz conditions yield, that there exist constants $C_1,C_2 > 0$ independent of $x$ and $y$, such that
+		\begin{align*}
+			\left|\lambda^{i k}(t,x)- \lambda^{i k}(t,y) \right| &\le C_1\left|x_i - y_i\right|\\
+			\left|\lambda^{i k}(t,x) \right| &\le C_2\left(1 + \left|x_i\right|\right)
+		\end{align*}
+		W.l.o.g. we assume $|y_i| < |x_i|$ and get:
+		\begin{align*}
+			\left| y_i \lambda^{ik}(t, x) - x_i \lambda^{ik}(t,y) \right| &= \left| y_i \lambda^{ik}(t, x) - y_i \lambda^{ik}(t,y) + y_i \lambda^{ik}(t,y) - x_i \lambda^{ik}(t,y) \right|\\
+			&\le \left| y_i \right| \left|\lambda^{ik}(t, x) - \lambda^{ik}(t,y) \right|+ \left|\lambda^{ik}(t,y)\right| \left|y_i - x_i\right|\\
+			& \le C_1 \left| y_i \right| \left|x_i - y_i\right|+ C_2\left(1 + \left|y_i\right|\right) \left|y_i - x_i\right|\\
+			&\le \max\left(C_1, C_2\right) \left(1 + \left|x_i\right| + \left| y_i \right| \right) \left|x_i - y_i\right|\\
+			&\le \max\left(C_1, C_2\right) \left(1 + \left|x_i\right|\right) \left( 1 +\left| y_i \right| \right) \left|x_i - y_i\right|
+		\end{align*}
+		where $C_1$ and $C_2$ are the Lipschitz- resp. sub-linear growth constants of $\lambda^{i k}$. Setting $K_2:=\max\left(C_1, C_2\right)$ yields  the result.
+		\subparagraph{Step 3:}
+		We finally show the sub-linear growth condition for the factor loadings of the spread and even their boundedness.\\
+		Note that for $k\in\{m+1, ..., m^d\}$ is immediately inherited from $f^{i k}$.\\
+		Let $k\in\{1,...,m\}$. We have for all $x \in A$, and for all $s\in \mathbb{R}_{>0}^N$:
+		\begin{align*}
+			\left|\tilde{\lambda}^{i k}\left(t,x, s\right)\right| = \left|\frac{\lambda^{i k}(t,x) \Delta T_i}{1 + x_i\Delta T_i}\right|\le C_2 \frac{1+|x_i|}{1+x_i\Delta T_i}\le C_2\;K_1=:K_3\tag{C}
+		\end{align*}
+		where we used the sub-linear growth of $\lambda^{ik}(t,x)$ in the first inequality and (A) in the second. Hence for all $k\in\{1,...m^d\}$ we have boundedness for $\tilde{\lambda}^{ik}$.
+		\subparagraph{Step 4:}
+		We are ready to show the Lipschitz condition for $\tilde{\lambda}^{ik}$. This is again given for $k\in\{m+1, ..., m^d\}$. Let $k\in\{1, ..., m\}$. We have for any $x,y \in A$ and $s,v \in \mathbb{R}_{>0}^N$:
+		\begin{align*}
+			&\left|\tilde{\lambda}^{ik}(t,x,s) - \tilde{\lambda}^{ik}(t,y,v)\right| = \left|\frac{\lambda^{i k}(t,x) \Delta T_i}{1 + x_i\Delta T_i} - \frac{\lambda^{i k}(t,y) \Delta T_i}{1 + y_i\Delta T_i}\right| \\
+			&= \Delta T_i \left|\dfrac{\lambda^{i k}(t,x)\left(1 + y_i\Delta T_i\right) - \lambda^{i k}(t,y)\left(1 + x_i\Delta T_i\right)}{\left(1 + x_i\Delta T_i\right)\left(1 + y_i\Delta T_i\right)}\right|\\
+			&\le \Delta T_i \left|\dfrac{\left|\lambda^{i k}(t,x) - \lambda^{i k}(t,y)\right| + \Delta T_i \left|\lambda^{i k}(t,x) y_i - \lambda^{i k}(t,y)x_i\right|}{\left(1 + x_i\Delta T_i\right)\left(1 + y_i\Delta T_i\right)}\right|\tag{D}\\
+			&\le \Delta T_i \;\left|\dfrac{C_1\left|x_i - y_i\right| + \Delta T_i K_2 \left(1 + \left|x_i\right|\right)\left( 1 +\left| y_i \right| \right) \left|x_i - y_i\right|}{\left(1 + x_i\Delta T_i\right)\left(1 + y_i\Delta T_i\right)}\right|\tag{E}\\
+			&\le \Delta T_i \;\left|x_i - y_i\right|\left|\dfrac{C_1 + \Delta T_i K_2 \left(1 + \left|x_i\right|\right) \left( 1 +\left| y_i \right| \right)}{\left(1 + x_i\Delta T_i\right)\left(1 + y_i\Delta T_i\right)}\right|\tag{F}\\
+			&\le \left|x_i - y_i\right| \underbrace{\Delta T_i \left(C_1 \left(K_1\right)^2 +\Delta T_i  K_2 \left(K_1\right)^2\right)}_{=:K_4},\tag{G}
+		\end{align*}
+		where the constants $C_1, C_2, K_1, K_2$ are defined as above. For (D) we used the triangle inequality, (E) comes from (B) and the Lipschitz condition of $\lambda^{i k}$ and (G) from (A). This yields the Lipschitz condition for the factor loadings $\tilde{\lambda}^{ik}$.
+		\subparagraph{Step 5:}
+		In this step we note that any multiplication of two factor loadings is again Lipschitz and bounded, i.e. there exist a $K_5 > 0$ and $K_6>0$ such that for all $j \in \{0,...,N-1\}$ and $k\in\{1,...,m^d\}$:
+		\begin{align*}
+			\left|\tilde{\lambda}^{i k}\left(t,x, s\right)\tilde{\lambda}^{j k}\left(t,x, s\right) - \tilde{\lambda}^{i k}\left(t,y, u\right)\tilde{\lambda}^{j k}\left(t,y, u\right)\right| &\le K_5\; \lVert(x,s) - (y,u)\rVert \\
+			\left|\tilde{\lambda}^{i k}\left(t,x, s\right)\tilde{\lambda}^{j k}\left(t,x, s\right)\right| &\le K_6\tag{H}
+		\end{align*}
+		This stems from \cref{...}, together with the fact that both $\tilde{\lambda}^{i k}$ and $\tilde{\lambda}^{j k}$ are bounded.
+		\subparagraph{Step 5:}
+		Now we can prove that $\tilde{\mu}^i$ is Lipschitz and has sub linear growth.\\
+		We have:
+		\begin{align*}
+			\tilde{\mu}^i\left(t,x,s\right) = &\; \sum_{j=m(t)+1}^{i}\sum_{k=1}^{m}\tilde{\lambda}^{i k}\left(t, x, s\right)\tilde{\lambda}^{j k}\left(t, x, s\right)\tag{I}\\
+			&+ \sum_{j=m(t)+1}^{i}  \sum_{k=m+1}^{m^d}  \tilde{\lambda}^{i k}\left(t, x, s\right)\tilde{\lambda}^{j k}\left(t, x, s\right)\underbrace{\frac{s_j}{1 + x_j\Delta T_j + s_j\Delta T_j}}_{=(K)}\tag{J}
+		\end{align*}
+		As (I) is just the sum of Lipschitz-continuous and bounded functions we know through \cref{...} it is again Lipschitz and bonded. Because $x_j\Delta T_j > c_j > -1$ and $s_j \ge 0$, (K) is naturally bounded by some constant $C_3$ with the same arguments as for (A). Also with an exactly analogous proof to (A) we have that $\frac{1 + \left|y_j\right| + \left|v_j\right|}{1 + \Delta T_j(x_j + s_j)}$ is bounded by some constant $C_4$. For Lipschitz-continuity we have therefore:
+		\begin{align*}
+			&\left|\frac{s_j}{1 + x_j\Delta T_j + s_j\Delta T_j} - \frac{v_j}{1 + y_j\Delta T_j + v_j\Delta T_j} \right|\\
+			&=\left|\frac{(s_j - v_j) + \Delta T_j(s_j y_j - v_jx_j)}{\left(1 + \Delta T_j(x_j + s_j)\right)\left(1 + \Delta T_j(y_j + v_j)\right)}\right|\\
+			&\le \left|\frac{\lVert (x_j,s_j) - (y_j, v_j)\rVert + \Delta T_j(\left|y_j\right| \left|s_j - v_j\right| + \left|v_j\right| \left|y_j - x_j\right|)}{\left(1 + \Delta T_j(x_j + s_j)\right)\left(1 + \Delta T_j(y_j + v_j)\right)}\right|\\
+			&\le \lVert (x_j,s_j) - (y_j, v_j)\rVert\left|\frac{1 + \Delta T_j(\left|y_j\right| + \left|v_j\right|)}{\left(1 + \Delta T_j(x_j + s_j)\right)\left(1 + \Delta T_j(y_j + v_j)\right)}\right|\\
+			&\le \lVert (x_j,s_j) - (y_j, v_j)\rVert\left|\frac{1 + \Delta T_j\left(1 + \left|y_j\right| + \left|v_j\right|\right)\left(1 + \left|x_j\right| + \left|s_j\right|\right)}{\left(1 + \Delta T_j(x_j + s_j)\right)\left(1 + \Delta T_j(y_j + v_j)\right)}\right|\\
+			&\le \lVert (x_j,s_j) - (y_j, v_j)\rVert  \left(C_3^2 + C_4^2\right)
+		\end{align*}
+		Hence we have that (J) is nothing else than a sum of multiplications of bounded, Lipschitz functions, implying that the drift $\tilde{\mu}^{i}$ is Lipschitz and bounded for all $i\in\{0,...N-1\}$.
+		\subparagraph{Step 6:}
+		All that is left to do is showing 
+		\begin{align*}
+			\tilde{\mu}^i\left(t, x, s\right) - \dfrac{\lVert\tilde{\lambda}^{i}(t,x,s)\rVert^2}{2}\tag{L}
+		\end{align*}
+		is Lipschitz and bounded. But this is already given, because by (H) we already know 
+		\begin{align*}
+			&\left| \lVert\tilde{\lambda}^{i}(t,x,s)\rVert ^2 - \lVert\tilde{\lambda}^{i}(t,y,v)\rVert ^2\right| \\
+			&\quad= \sum_{k=1}^{m^d}\left(\tilde{\lambda}^{i k}(t,x,s)\right)^2 - \left(\tilde{\lambda}^{i k}(t,x,s)\right)^2 \le m^dK_5\lVert(x,s) - (y,v)\rVert\\
+			&\lVert\tilde{\lambda}^{i}(t,x,s)\rVert ^2 = \sum_{k=1}^{m^d}\left(\tilde{\lambda}^{i k}(t,x,s)\right)^2 \le m^d K_6
+		\end{align*}
+		hence (L) is Lipschitz and bounded. This concludes the proof.		
+	\end{proof}
+	
+	
+	Having proven the existence of a solution in this form, gives us a whole set of covariance structures for the defaultable LIBOR model, which guarantee positivity of the spread. Note that there might be other structures that also guarantee positivity, however the existence of a unique solution must be proved.\\
 	The next sections can be applied to any such model and do not depend on a covariance model that is structured like the one that was derived.\\
 	We now move on to deriving the survival probability, which we need for pricing.
 	
@@ -1326,7 +1504,7 @@
 	\end{definition}
 	It is well known that the Euler scheme fulfills the  following properties:
 	\begin{lemma}
-		Let $X$ be the solution of \cref{eq:schemeGoalSDE}. Let  $\lVert\cdot\rVert$ denote the euclidean norm.
+		Let $X$ be the solution of \cref{eq:schemeGoalSDE}. 
 		Let furthermore 
 		\begin{align}
 			|\mu(t,x) - \mu(t,y)| + \lVert\sigma(t,x) - \sigma(t,y)\rVert &\le K_1 \lVert x - y\rVert, \label{eq:lipschitzcont}\\
@@ -1339,68 +1517,8 @@
 	\begin{proof}
 		See \cite{kloedenSchemes}, pp. 342.
 	\end{proof}
-	Note that we have to apply the conditions component-wise. We see that they are the same as for the unique solution theorem \cite{fima2Lecture}. So if these were not satisfied, we could not guarantee the SDEs of the LIBOR model to have a solution.\\
-	Let us state the following lemmata:
-	\begin{lemma}\label{lem:basicLipschitz}
-		The following statements hold for any $\mathbb{R}$-valued Lipschitz functions $f$ and $g$ with the same closed domain $A$:
-		\begin{itemize}
-			\item the function $(f\cdot g)$ (i.e.\ the product) is also Lipschitz on $A$.
-			\item the function $(f + g)$ (i.e.\ the sum) is also Lipschitz on $A$
-		\end{itemize}
-	\end{lemma}
-	\begin{proof}
-		Let us denote the absolute maximum of $g$ and $f$ on $A$ (which is attained because of continuity and the closed domain) $\bar{g}$ and $\bar{f}$ respectively. We get:
-		\begin{align*}
-			|f(x)g(x) - f(y)g(y) | &= | f(x)g(x) - f(y)g(x) + f(y)g(x) - f(y)g(y)|\\
-			&= | f(x)g(x) - f(y)g(x) + f(y)g(x) - f(y)g(y) |\\
-			&\le | f(x) - f(y)| | \bar{g} | + | g(x) - g(y)| | \bar{f} |\\
-			&\le | x - y| \left(K^f| \bar{g} | + K^g| \bar{f} |\right),
-		\end{align*}
-		where $K^f$ and $K^g$ are the Lipschitz constants of $f$ and $g$ respectively.
-		The second statement is trivial.
-	\end{proof}
-	\begin{lemma}\label{lem:trickLipschitzforEuler}
-		Let $L_t:=\left(L_i(t)\right)_{i\in\{0,...,N-1\}}$ and $L^d_t:=\left(L^d_i(t)\right)_{i\in\{0,...,N-1\}}$.
-		Let $i \in \{0,...,N-1\}$, $C^i_1\in\left]-\frac{1}{\Delta T_i},0\right]$ and $C_2\in\left[0,\infty\right[$. Let $A\subset\mathbb{R}^{1+2N}$ be defined as the box $A:=\left[0, \tilde{T}\right] \times \prod_{j=0}^{N-1}\left[C^j_1, C_2\right]\times \prod_{j=0}^{N-1}\left[C^j_1, C_2\right]$. Let $\lambda^{i k,d}_t$ be such that there exist Lipschitz-continuous $\mathbb{R}$-valued functions $\lambda^{i k,d}(t,x_1,x_2)$ on $A$ such that 
-		\begin{align*}
-		\lambda^{i k,d}\left(t,L_t, L^d_t\right) = \lambda^{i k,d}_t
-		\end{align*}
-		if $L_i(t), L^{d}_i(t) \in \left[C^i_1, C_2\right]$ for all $k \in \{1,...,m^d\}$.\\
-		Then \cref{eq:lipschitzcont,eq:lineargrowth,eq:timelipschitz} are satisfied for the SDEs of $L^d$ for $s,t\in \left[0,\tilde{T}\right]$ and $x,y\in\prod_{j=0}^{N-1}\left[C^j_1, C_2\right]\times \prod_{j=0}^{N-1}\left[C^j_1, C_2\right]$.
-	\end{lemma}
-	\begin{proof}
-		Let
-		\begin{align}\label{eq:driftasfunc}
-			\mu^{i,d}(t,x,y) := \sum_{k=1}^{m}\lambda^{i k,d}\left(t,x,y\right)\sum_{j=m(t)+1}^{i}\frac{\lambda^{j k,d}\left(t,x,y\right) \Delta T_j}{1 + y_j\Delta T_j}
-		\end{align}
-		on $A$. It is easy to see that, if $L_i(t), L^{d}_i(t) \in \left[C^i_1, C_2\right]$ for all $i \in \{0,...,N-1\}$, then $
-			\mu^{i,d}\left(t,L_t, L^d_t\right) = \mu^{i,d}_t$.\\
-		Because $y_j$ is bounded by its domain, we have that $\frac{\Delta T_j}{1 + y_j\Delta T_j}$ is Lipschitz-continuous on $A$ for all $j$. With \cref{lem:basicLipschitz}, it is trivial to see that $\mu^{i,d}(t,x,y)$ is a sum of Lipschitz-continuous functions and, hence, Lipschitz, which means that \cref{eq:lipschitzcont} is satisfied for all $i$.\\
-		Because both $\mu^{i,d}$ and $\lambda^{i k,d}$ are Lipschitz and defined on the closed set $A$, they have an absolute maximum, which we denote $\bar{\mu}^{i,d}$, $\bar{\lambda}^{i k,d}$. Setting $K_2 = \bar{\mu}^{i,d} + \sum_{k=1}^{m^d}\bar{\lambda}^{i k,d}$ yields \cref{eq:lineargrowth}.\\
-		As $\mu^{i,d}$ and $\lambda^{i k,d}$ are Lipschitz:
-		\begin{align*}
-			|\mu^{i,d}(t,x,y) - \mu^{i,d}(s,x,y)| + \lVert\lambda^{i k,d}&\left(t,x,y\right) - \lambda^{i k,d}\left(s,x,y\right)\rVert \\
-			&\le C |t - s|\\
-			&= C \sqrt{|t - s|}\sqrt{|t - s|}\\
-			&\le C \sqrt{\tilde{T}} \left(1 + \lVert (x,y)\rVert\right)\sqrt{|t - s|}
-		\end{align*}
-		which yields \cref{eq:timelipschitz}.
-	\end{proof}
-	Note that as a starting point we need to choose Lipschitz-continuous $\lambda$ and $\lambda^d$.\\
-	We have not proved \cref{eq:lipschitzcont,eq:lineargrowth,eq:timelipschitz} for the whole domain of $\lambda^d$ and $\mu^d$. If $C^i_1$ and $C_2$ are chosen such that the probability of $L_i(t), L^d_i(t)\in \left[C^i_1, C_2\right]$ is effectively zero for all $t\in \left[0,\tilde{T}\right]$, this is sufficient for our numerical analysis, however. We use a trick: we argue that we can use the Euler scheme for SDEs with adjusted drift $\hat{\mu}^{i,d}$ and factor loadings $\hat{\lambda}^{i k, d}$:
-	\begin{align*}
-		\hat{\mu}^{i,d}_t &:= \mu^{i,d}\left(t, L_t\big|_{\left[C_1,C_2\right]}, L^d_t\big|_{\left[C_1,C_2\right]} \right)\\
-		\hat{\lambda}^{i k, d}_t &:= \lambda^{i k,d}\left(t,  L_t\big|_{\left[C_1,C_2\right]}, L^d_t\big|_{\left[C_1,C_2\right]}\right),
-	\end{align*}
-	where we used the functional form of $\mu^{i,d}$, $\lambda^{i,d}$ respectively, and we used $x\big|_{\left[C_1,C_2\right]} = \left(\min\left(\max\left(x_i, C^i_1\right), C_2\right)\right)_{i\in\{0,...,N-1\}}$. This yields $\mu^{i,d}$ and $\lambda^{i k,d}$ for all $i \in \left\{0,...,N-1\right\}$ and $k\in\left\{1,...m^d\right\}$ until $L_t$ or $L^d_t$ exit the box $A$, in which case we just fix $\hat{\mu}^{i,d}$ and $\hat{\lambda}^{i k,d}$ to be the edge case. It is easy to see, that the adjusted functions satisfy \cref{eq:lipschitzcont,eq:lineargrowth,eq:timelipschitz} for all $s,t\in\left[0,\tilde{T}\right]$ and $x,y\in\mathbb{R}^{2N}$.\\
-	The trick is to simulate the paths for the SDEs with the normal $\mu^{i,d}$ and $\lambda^{i k,d}$ anyway. We can only simulate a finite number of paths $Z\in\mathbb{N}$. Hence, we check if there is any path, for which the Euler scheme of $L_i(t)$ and $L^d_i(t)$ hit either $\frac{-1}{\Delta T_i}$ or $\infty$ for any $i\in\{0,...N-1\}$. If there is none, we argument, that we had set $C^i_1$ and $C_2$ to the lowest point of all paths (highest resp.) of $L^d_i(t)$ and $L_i(t)$. Otherwise we should rethink our choice of parameters.
-	\begin{lemma}
-		Let $C^i_1\in\left]-\frac{1}{\Delta T_i}\right]$ and $C_2\in \left[0, \infty\right[$ be arbitrary for all $i \in \{0,...,N-1\}$. Let the factor loadings of the non-defaultable model $\lambda^{i k}(t,L(t))$ be Lipschitz-continuous on $\left[0,\tilde{T}\right]\times\prod_{j=0}^{N-1}\left[C^j_1,C_2\right]$ for all $i \in \{0,...,N-1\}$ and $k \in \{0,...,m\}$.
-		Then the factor loadings $\lambda^{i k, d}$ described in \cref{lem:flguaranteeingpositivespreads} are Lipschitz on the box $A$ (defined in \cref{lem:trickLipschitzforEuler}), if the free parameters $f^{i k}_t=f^{i k}(t,x,y)$ are Lipschitz on the box $A$.
-	\end{lemma}
-	\begin{proof}
-		This is a trivial consequence from \cref{lem:basicLipschitz,lem:trickLipschitzforEuler}.
-	\end{proof}
+	We see that specifically for our model \cref{eq:lineargrowth,eq:timelipschitz} are already given for the log-normal model of the spread through \cref{theo:defDriftTheo}.\\
+	While \cref{eq:timelipschitz} is not generally given, it can be easily achieved by choosing factor loadings $\lambda^{i k}$ (resp. free parameters $f^{i k}$), which are continuously derivable in $t$ for each $L_i$ (resp. $L^d_i$), because the drift $\tilde{\mu}^i$ and factor loadings $\tilde{\lambda}^{i k}$ of the spread (where we use the same terminology as in the proof of \cref{theo:defDriftTheo}) are continuous functions of the two, resulting in again continuous derivability in $t$. As $\tilde{\mu}^i$ and $\tilde{\lambda}^{i k}$ are defined on $t\in\left[0,\tilde{T}\right]$  which is a closed set, their continuous derivative in $t$ is bounded. This makes them Lipschitz-continuous in $t$, which is stronger than \cref{eq:timelipschitz}.\\%TODO: Strong convergence implies weak convergence, hence it is sufficient!
 	This concludes the analysis on how to simulate the LIBORs for our model.
 	
 	
@@ -1690,7 +1808,7 @@
 	\end{align}
 	Note that neither the option nor the loan contain a cash flow that the creditor has to pay besides the initial payment, which makes the price independent of the creditors default probability. This is due to the fact, that even if the option is exercised it is still the debtor paying the creditor. For valuation from the creditors perspective, however, we still have to account for their funding costs:
 	\begin{align}\label{eq:valueofcancellableloancreditordefault}
-		\mathcal{N} - \mathbb{E}^{\mathbb{Q}^B}\left[\sum_{i=1}^{N}\frac{c_i}{B^{d^c}(T_i)}Q^d(T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\left.\left(\sum_{j=k+1}^{N}\frac{c_i Q^d(T_i)}{B^{d^c}(T_i)} - \frac{\tilde{R}Q^d(T_k)}{B^{d^c}(T_k)}\right)^+ \right| \mathcal{F}_{T_k}\right]
+		\mathcal{N} - \mathbb{E}^{\mathbb{Q}^B}\left[\sum_{i=1}^{N}\frac{c_i}{B^{d^c}(T_i)}Q^d(T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\left.\left(\sum_{j=k+1}^{N}\frac{c_i Q^d(T_i)}{B^{d^c}(T_i)} - \frac{\tilde{R}Q^d(T_k)}{B^{d^c}(T_k)}\right)^+ \right| \mathcal{F}_{T_k}\right]\right]
 	\end{align}
 	
 	Let us yet make this a little more intriguing: we generalize this product for the possibility to cancel at any time past $T_k$ for a fixed $k \in \{1,...,N-1\}$.
@@ -1711,12 +1829,12 @@
 	\end{align*}
 	Hence this takes the form of an American option, where one can choose to exercise the option in the time interval $\left[T_k,T_N\right]$. As always the price can be obtained by taking the discounted expectation:
 	\begin{align*}
-		\mathcal{N} &-\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) \\ &+\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}\left[\left.\left(\sum_{j=m(\nu)+1}^{N}\frac{c_i }{B^{d}(T_i)} - \frac{\tilde{R_\nu}}{B^{d}(\nu)}\right)^+ \right| \mathcal{F}_\nu\right]\right]
+		\mathcal{N} &-\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) \\ &+\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}\left[\left.\left(\sum_{j=m(\nu)+1}^{N}\frac{c_i }{B^{d}(T_i)} - \frac{\tilde{R}_\nu}{B^{d}(\nu)}\right)^+ \right| \mathcal{F}_\nu\right]\right]
 	\end{align*}
 	As $\nu$ is only dependent on $\mathbb{F}$-adapted values, it is also a value in terms of model primitives, which makes it usable to us.
 	A valuation as seen by the creditor can be performed by
 	\begin{align*}
-		\mathcal{N} &- \sum_{i=1}^{N}\mathbb{E}^{\mathbb{Q}^B}\left[\frac{c_iQ^d(T_i)}{B^{d^c}(T_i)}\right] \\ &+\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}\left[\left.\left(\sum_{j=m(\nu)+1}^{N}\frac{c_i Q^d(T_i)}{B^{d^c}(T_i)} - \frac{\tilde{R_\nu}Q^d(\nu)}{B^{d^c}(\nu)}\right)^+ \right| \mathcal{F}_\nu\right]\right]
+		\mathcal{N} &- \sum_{i=1}^{N}\mathbb{E}^{\mathbb{Q}^B}\left[\frac{c_iQ^d(T_i)}{B^{d^c}(T_i)}\right] \\ &+\mathbb{E}^{\mathbb{Q}^B}\left[\mathbb{E}^{\mathbb{Q}^B}\left[\left.\left(\sum_{j=m(\nu)+1}^{N}\frac{c_i Q^d(T_i)}{B^{d^c}(T_i)} - \frac{\tilde{R}_\nu Q^d(\nu)}{B^{d^c}(\nu)}\right)^+ \right| \mathcal{F}_\nu\right]\right]
 	\end{align*}
 	Note that the creditor would have a different stopping criterion $\nu$ if it were their option to exercise. 
 	\begin{figure}[h!]
@@ -1742,10 +1860,11 @@
 	\begin{figure}[h!]
 		\centering
 		\includegraphics[width=0.7\linewidth]{figures/Today/SpreadCorrelationByInitSpread}
-		\caption{Terminal correlation of two spread of defaultable LIBOR models to the same non defaultable model by the initial spread curve.}
+		\caption{Terminal correlation of two jointly simulated terminal spread models plotted against the initial spread curve.}
 		\label{fig:spreadcorrelationbyinitspread}
-	\end{figure}%TODO: 
-	\\Let us take a look at the correlation of two jointly simulated defaultable models. Also here we are interested in reviewing how the model input affects the values. Remember that in \cref{sec:pricing} we assumed two models for the joint valuation of products to be independent. \Cref{fig:spreadcorrelationbyinitspread} shows that at least numerically this seems to be possible to achieve. Even when using only two additional Brownian Motion factors, there is almost no correlation to be found between the terminal spreads of the two models. We see that the initial spread indeed has an impact on the correlation structure, although at a very low level.
+	\end{figure}
+	\\Let us take a look at the correlation of two jointly simulated defaultable models. Also here we are interested in reviewing how the model input affects the values. \Cref{fig:spreadcorrelationbyinitspread} therefore shows the correlation for two models each to a constant counterpart as well as to each other. We see, that there is an effect, although it is on a very low level: the lower the initial spread, the higher the dependence on each other.\\
+	Remember that in \cref{sec:pricing} we assumed two models for the joint valuation of products to be independent. \Cref{fig:spreadcorrelationbyinitspread} shows that at least numerically this seems to be possible to achieve. Even when using only two additional Brownian Motion factors, there is almost no correlation to be found between the terminal spreads of the two models.
 	
 	\subsubsection{Impact of the free parameters}\label{sec:impactofdeltaf}
 	The model as described in \cref{sec:defaultableLMM} has another input, which is the free parameter matrix for the covariance structure of the defaultable LIBORs. 
