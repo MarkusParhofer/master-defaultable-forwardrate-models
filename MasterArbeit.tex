@@ -157,15 +157,15 @@
 	Prof. Fries' Paper on "Discrete Forward Rate Model with	Covariance Structure guaranteeing Positive Credit Spreads" \cite{friesDLMM} provides a foundation for models that address this gap by incorporating default risk dynamics directly into the LIBOR model.\\
 	This begs the question of how to apply these models to pricing and how this impacts prices which are otherwise only driven by interest rates.
 	
-	\subsection{Aim of the thesis}
+	\subsection{Structure of the thesis}
 	
 	This thesis aims to contribute to the field by describing the discrete forward rate models, developing a valuation methodology with this framework and providing an implementation in the programming language Java for evaluating its usability.\\
 	
-	We begin by stating some fundamentals in section \ref{sec:Fundamentals}, which are mainly results from financial mathematics in continuous time.\\
-	In section \ref{sec::LIBORModel} we describe the traditional LIBOR market model, which is given by a set of stochastic differential equations.\\
-	Throughout section \ref{sec:defaultableLMM} we describe the model developed by Prof. Fries and derive some implications.\\
-	We then develop a general pricing methodology in section \ref{sec:pricing} and derive valuation formulas for some specific products.\\
-	Section \ref{sec:numerical} gives an overview of the actual numerical specification of the model and also displays results gained from the usage.\\
+	We begin by stating some fundamentals in section \ref{sec:Fundamentals}, which are mainly results from financial mathematics in continuous time.
+	In section \ref{sec::LIBORModel} we describe the traditional LIBOR market model, which is given by a set of stochastic differential equations.
+	Throughout section \ref{sec:defaultableLMM} we describe the model developed by Prof. Fries and derive some implications including a general pricing methodology in section \ref{sec:pricing}.
+	Section \ref{sec:numerical} gives an overview of the actual numerical specification of the model as well as the implementation details in the programming language Java.
+	In section \ref{sec:numericalvaluation} we give an overview of numerical results gained by using the model.
 	Finally, in section \ref{sec:conclusion} we conclude the thesis by summarizing key findings, outlining limitations, and offering recommendations for future research.
 	
 	
@@ -372,8 +372,8 @@
 		Let $U = (U^i)_{i\in\{1, ..., d\}}$ be a $d$-dimensional Brownian Motion, let $(a_i)_{i\in\{1,..., d\}}$ and $(b_i)_{i\in\{1,..., d\}}$ be weights with $\sum_{i=1}^{d}a^2_i = 1$, $\sum_{i=1}^{d}b^2_i = 1$, respectively.\\
 		Then $W^1$ and $W^2$ given by 
 		\begin{align*}
-			W^1_t = \sum_{i=1}^{d}a_iU^i\\
-			W^2_t = \sum_{i=1}^{d}b_iU^i
+			W^1_t = \sum_{i=1}^{d}a_iU^i_t\\
+			W^2_t = \sum_{i=1}^{d}b_iU^i_t
 		\end{align*}
 		are 1-dimensional Brownian Motions with:
 		\begin{align}\label{eq:quadraticcovoflinearcombis}
@@ -397,7 +397,7 @@
 		\end{align*}
 	\end{lemma}
 	\begin{proof}
-		This is a direct implication from the previous results together with the definition of PCA and the proof that it works in \cite{FriesBook}, p.\ 471.
+		This is a direct implication from the previous results together with the results on PCA in \cite{FriesBook}, p.\ 471.
 	\end{proof}
 	We now have a way of constructing correlated Brownian Motions. As mentioned we can perform a factor reduction with PCA, meaning we can construct $d$ correlated Brownian Motions with a $m$-dim. Brownian Motion, where $m < d$. This comes at the cost of "losing" a bit of the independence of some factors. But because in most cases the advantages of a factor reduction (less computational cost) outweigh the disadvantages, we from here on assume that the correlation- and factor loading matrix are not of the same size.
 	
@@ -409,7 +409,7 @@
 	
 	The actual LIBOR, short for "London Inter-Bank Offered Rate" phased out in the last year, due to "scandals and questions around its validity as a benchmark rate" \cite{investopediaLIBOR}.
 	However, the LIBOR market model -- or discrete forward rate model -- is still a very popular mathematical model for simulation and valuation of financial products on fixed income markets.\\
-	The idea of the model is to discretize a given time horizon into periods, for each of which different rates hold. The main difference to other models, however, is that each rate for a given period is driven by different stochastic parameters.
+	The idea of the model is to discretize a given time horizon $\left[0,\tilde{T}\right]$, where $\tilde{T}\in \mathbb{R}$ is the last time point we analyze, into periods, for each of which different rates hold. The main difference to other models, however, is that each rate for a given period is driven by different stochastic parameters.
 	\\
 	The basic assumption of the LIBOR Market Model is that we are in an arbitrage free and complete market.
 	
@@ -425,11 +425,11 @@
 	While the zero coupon bond does not yield any payoff (or coupons) between buying- and maturity time -- hence the name -- one can also find coupon paying bonds:
 	\begin{definition}\label{def:couponbond}
 		Let $T_1 < ... < T_N$ be a tenor with $T_i \in [0,\tilde{T}]$ for all $i\in \{1, ...,N\}$.\\
-		A \emph{(fixed) coupon bond} with nominal $\mathcal{N} \in \mathbb{R}$ and  coupons $c_i \in \mathbb{R}$ for $i\in \{1, ...,N\}$ on the given tenor is a product that pays $c_i$ at each time point $T_i$ and additionally the nominal $\mathcal{N}$ at maturity $T_N$.
+		A \emph{(fixed) coupon bond} with notional $\mathcal{N} \in \mathbb{R}$ and  coupons $c_i \in \mathbb{R}$ for $i\in \{1, ...,N\}$ on the given tenor is a product that pays $c_i$ at each time point $T_i$ and additionally the notional $\mathcal{N}$ at maturity $T_N$.
 	\end{definition}
 	\begin{remark}
-		A variation of this definition is that $c_i$ are defined as coupon rates and the actual coupon payment is then $c_i\, \mathcal{N}$ at each time step $T_i$. Another popular definition includes the terminal payment of the nominal $\mathcal{N}$ in the last coupon $c_N$. \\
-		Additionally to this "normal" coupon bond one can also find \emph{amortizing} coupon bonds in the market that distribute the nominal $N$ in the coupons over all periods instead of paying it all at once at the maturity time.
+		A variation of this definition is that $c_i$ are defined as coupon rates and the actual coupon payment is then $c_i\, \mathcal{N}$ at each time step $T_i$. Another popular definition includes the terminal payment of the notional $\mathcal{N}$ in the last coupon $c_N$. \\
+		Additionally to this "normal" coupon bond one can also find \emph{amortizing} coupon bonds in the market that distribute the notional $N$ in the coupons over all periods instead of paying it all at once at the maturity time.
 	\end{remark}
 	\begin{lemma}
 		Let $T_i$ and $c_i$ be as in \cref{def:couponbond}. 
@@ -848,7 +848,7 @@
 		has a unique strong solution.
 	\end{lemma}
 	\begin{proof}
-		This is a well known result of numerical mathematics. A proof can be found in \cite{kloedenSchemes}, pp.\ 131.
+		This is a well known result of stochastic calculus. A proof can be found in \cite{kloedenSchemes}, pp.\ 131.
 	\end{proof}
 	\begin{remark}
 		Recall that the existence of a unique strong solution for an SDE is given by definition if there exists a solution and for any two processes $X$ and $\tilde{X}$ that solve the SDE it holds that:
@@ -1022,7 +1022,7 @@
 		\mathbb{E}^{\mathbb{Q}^B}_{\mathcal{F}}\left[ \; \cdot \; \right] &=  \mathbb{E}^{\mathbb{Q}^B}\left[ \; \cdot \; | \; \mathcal{F} \; \right]\\
 		\mathbb{Q}^B_{\mathcal{F}}\left(\;\cdot \; \right) &= \mathbb{Q}^B\left( \left. \;\cdot \; \right| \mathcal{F} \right).
 	\end{align*} 
-	With the assumption that the short period bond is deterministic w.r.t. the previous LIBOR time, we can derive the price of a zero-coupon bond that only lives inside a LIBOR period:
+	With the assumption that the short period bond is deterministic w.r.t. the previous LIBOR time, we can derive the price of a zero-coupon bond for which observation time and maturity lie in the same LIBOR period:
 	\begin{lemma}
 		Let \cref{as:LMMShortPeriodBond,as:DLMMShortPeriodBond} be given. For $T_i \le s < t \le T_{i+1}$ it holds that
 		\begin{itemize}
@@ -1391,11 +1391,11 @@
 	Next we will see how we can also account for some behavioural aspects in pricing.
 	
 	\subsubsection{Introducing Behavioral Aspects}
-	Let us look at a specific product category: American loan options. This is the option to buy or sell a loan at a fixed nominal, even if the market conditions have changed. We assume an over the counter (OTC) product, meaning trading the product to other counter parties is not possible. The payoff of such a product if exercised at $t$ would be (in this case we can buy the loan):
+	Let us look at a specific product category: American loan options. This is the option to buy or sell a loan at a fixed notional, even if the market conditions have changed. We assume an over the counter (OTC) product, meaning trading the product to other counter parties is not possible. The payoff of such a product if exercised at $t$ would be (in this case we can buy the loan):
 	\begin{align*}
 		\Psi(t) = \left(\mathcal{N} - \Pi_t\right)^+,
 	\end{align*}
-	where $\mathcal{N}$ is the nominal and $\Pi_t$ denotes the current value at time $t$ of the repayment obligation, typically structured as a coupon bond.\\
+	where $\mathcal{N}$ is the notional and $\Pi_t$ denotes the current value at time $t$ of the repayment obligation, typically structured as a coupon bond.\\
 	In option pricing it is always assumed that all market participants have a perfect overview of the market (captured by the pricing filtration $\mathbb{G}$). Furthermore it is assumed that debtors always act in an optimized manner (exercise the option if it has a positive value). While big companies may have implemented ways such that these are feasible assumptions, this is far from realistic for small market participants such as private people.\\
 	A study from 2021 from Germany asked people how to best spend €1,000 given two options: making a special repayment of an existing loan of theirs, which charges 5 \% interest or invest in a fixed coupon bond with 3 \% interest and maturity of 3 years \cite{finKnowledgeStudy}.
 	The results showed that only 60 \% of the participants would make the special repayment. 15 \% stated that they did not know the answer, 13 \% thought both options were equally good and 12 \% would rather buy the coupon bond \cite{finKnowledgeStudy}.\\
@@ -1525,18 +1525,18 @@
 	This concludes the analysis on how to simulate the LIBORs for our model.
 	
 	
-	\subsection{The finMath Library}
+	\subsection{The finmath Library}
 	We can now start to look at the actual implementation.\\
-	As a starting point for the code base we use the finMath Library of Prof. Christian Fries.\\
-	The finMath library is written in Java and provides interfaces and classes for the use in stochastics and financial mathematics.\\
-	In this section we take a look at the ones that are most frequently used by our code. For a more thorough description one can use the website of the finMath library \cite{finmathWebsite}, which is also our main source for this section.
+	As a starting point for the code base we use the finmath Library of Prof. Christian Fries.\\
+	The finmath library is written in Java and provides interfaces and classes for the use in stochastics and financial mathematics.\\
+	In this section we take a look at the ones that are most frequently used by our code. For a more thorough description one can use the website of the finmath library \cite{finmathWebsite}, which is also our main source for this section.
 	
 	\subsubsection*{RandomVariable}
 	As one can tell from the name, \texttt{RandomVariable} is an interface for working with stochastic values, hence it is the basis for Monte Carlo methods. Operator overloading is not possible in Java so the workaround is to have methods that represent these operations, which is what \texttt{RandomVariable} declares.
 	Taking the expectation (the mean) and the variance is also supported. A nice feature is a \texttt{RandomVariableFactory}, which handles all creations of a \texttt{RandomVariable}.
 	
 	\subsubsection*{ProcessModel}
-	The \texttt{ProcessModel} interface is the finMath equivalent of an SDE. It specifies that any implementation has methods for getting the initial state, the drift and the factor loadings.
+	The \texttt{ProcessModel} interface is the finmath equivalent of an SDE. It specifies that any implementation has methods for getting the initial state, the drift and the factor loadings.
 	
 	\lstinputlisting[caption={The  \texttt{ProcessModel} interface (some methods are ommitted)}, label={lst:javaCode1}, firstnumber=1, linerange={47, 63, 99, 129, 152, 174} ]{JavaCode/ProcessModel.txt}
 	
@@ -1561,11 +1561,11 @@
 	
 	
 	\subsection{Implementation of the Defaultable LIBOR Model}
-	In this section we describe the classes that were implemented for this thesis. The Java files and project setup can be found in the Github repository \url{https://github.com/MarkusParhofer/master-thesis-default-forward-rate-models}. The repository is setup as Maven project, with all dependencies -- such as the finMath library -- linked in the "pom.xml" file. Further description of the packages and classes can be found in the README and the respective Java-Doc.
+	In this section we describe the classes that were implemented for this thesis. The Java files and project setup can be found in the Github repository \url{https://github.com/MarkusParhofer/master-thesis-default-forward-rate-models}. The repository is setup as Maven project, with all dependencies -- such as the finmath library -- linked in the "pom.xml" file. Further description of the packages and classes can be found in the README and the respective Java-Doc.
 	
 	
 	\subsubsection*{DefaultableLIBORMarketModel}
-	To use the full flexibility of the finMath Library, the implementation of our models is structured in the same way as in the finMath library: we have an Interface for the defaultable LIBOR market model which extends the \texttt{ProcessModel}:	
+	To use the full flexibility of the finmath Library, the implementation of our models is structured in the same way as in the finmath library: we have an Interface for the defaultable LIBOR market model which extends the \texttt{ProcessModel}:	
 	\lstinputlisting[caption={Declaration of \texttt{DefaultableLIBORMarketModel}}, label={lst:javaCode2}, firstnumber=1, linerange={12} ]{\codedlmm{DefaultableLIBORMarketModel.java}}
 	
 	\begin{figure}[h]
@@ -1700,7 +1700,7 @@
 	\subsection{Numerical Results on Loan Valuation}\label{sec:numericalvaluation}
 	In this section we look at some concrete valuation examples. Since our model has its main strength in capturing default probability directly within the discount curve it has a native application in loan pricing.\\
 	Therefore let us first take a look at what a loan is in general. "A loan is a sum of money that one or more individuals or companies borrow from banks or other financial institutions [...]. In doing so, the borrower incurs a debt, which he has to pay back with interest and within a given period of time." \cite{corpFinInst}.\\
-	Hence a loan is nothing else than a fixed coupon bond, where the nominal $\mathcal{N}$ represents the debt and the coupons $c_i$ represent the interest.
+	Hence a loan is nothing else than a fixed coupon bond, where the notional $\mathcal{N}$ represents the debt and the coupons $c_i$ represent the interest.
 	We see that in the defaultable case the price is analogous to  the non defaultable case.
 	\begin{lemma}
 		The price of a coupon paying bond which has defaultable cashflows is:
@@ -1725,7 +1725,7 @@
 	\begin{align}\label{eq:loanForward}
 		\Psi(T_s) = \left(\mathcal{N} - \sum_{i=s+1}^{N}c_iP^{d,*}(T_s; T_i)\right)\mathbf{1}_{\{\tau > T_s\}}
 	\end{align}
-	where $T_s$ is the start time of the bond and for ease of notation the terminal coupon $c_N$ includes the terminal payment of the nominal $\mathcal{N}$.\\
+	where $T_s$ is the start time of the bond and for ease of notation the terminal coupon $c_N$ includes the terminal payment of the notional $\mathcal{N}$.\\
 	This payoff function gives us a direct approach to price the product:
 	\begin{lemma}\label{lm:simpledefcouponbondforward}
 		A $T_s$ claim with a payoff function as in \cref{eq:loanForward} has the price
@@ -1785,7 +1785,7 @@
 	In the last subsection we considered pricing loans and loan forwards. Essentially cash flow that is set in stone (with the exception of default). 
 	Now let us consider more intriguing products which bring an optionality with them: cancellable loans. We start with the case, where one can cancel the loan at a single time point $T_k$ for $k \in \{1, ..., N-1\}$.\\
 	Consider the cash flow of such a product from the debtors point of view:
-	We get the nominal $\mathcal{N}$ at the start of the loan. Then we pay coupons each tenor until $T_k$. If we cancel the loan, we have to pay the redemption $\tilde{R}$, otherwise we keep paying coupons until the end of the loan.
+	We get the notional $\mathcal{N}$ at the start of the loan. Then we pay coupons each tenor until $T_k$. If we cancel the loan, we have to pay the redemption $\tilde{R}$, otherwise we keep paying coupons until the end of the loan.
 	\begin{figure}[h]
 		\centering
 		\makebox[\textwidth][c]{%
@@ -1806,7 +1806,7 @@
 			& at $T_k$.
 		\end{tabular}
 	\end{center}
-	Note that if $\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right) > 0$ at $T_k$, the debtor could get a new loan on the nominal $\tilde{R}$ for better conditions than the initial one.\\
+	Note that if $\left(\sum_{j=k+1}^{N}c_jP^{d,*}(T_k;T_j) - \tilde{R}\right) > 0$ at $T_k$, the debtor could get a new loan on the notional $\tilde{R}$ for better conditions than the initial one.\\
 	From there it is easy to compute the price:
 	\begin{align}\label{eq:priceofcancellableloan}
 		\mathcal{N} -\sum_{i=1}^{N}c_iP^{d,*}(0;T_i) +  \mathbb{E}^{\mathbb{Q}^B}\left[\left(\sum_{j=k+1}^{N}\frac{c_i }{B^{d}(T_i)} - \frac{\tilde{R}}{B^{d}(T_k)}\right)^+\right]
@@ -1922,9 +1922,9 @@
 	\vspace{1cm}
 	\section{Links}
 	\begin{itemize}
-		\item Github repository with Maven project implemented for this thesis: \href {https://github.com/MarkusParhofer/master-thesis-default-forward-rate-models}{master thesis github repository}
-		\item Github repository of finmath library: \href{https://github.com/finmath/finmath-lib}{finmath lib github repository}
-		\item Documentation for finmath library: \href{https://www.finmath.net/finmath-lib/}{finmath lib}
+		\item Github repository with Maven project implemented for this thesis: \color{blue} \href {https://github.com/MarkusParhofer/master-thesis-default-forward-rate-models}{master thesis github repository}\color{black}
+		\item Github repository of finmath library: \color{blue} \href{https://github.com/finmath/finmath-lib}{finmath lib github repository}\color{black}
+		\item Documentation for finmath library: \color{blue} \href{https://www.finmath.net/finmath-lib/}{finmath lib}\color{black}
 	\end{itemize}
 
 	\pagebreak
